@@ -7,7 +7,7 @@ export default {
   input: 'src/main.ts',
   output: {
     file: 'dist/bundle.js',
-    format: 'cjs',
+    format: 'es',
     sourcemap: true,
   },
   plugins: [typescript(), terser(), commonjs(), nodeResolve()],
