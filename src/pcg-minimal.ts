@@ -7,13 +7,13 @@ const initialState = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
 const increment = 0x5851f42d4c957f2dn;
 
 /**
- * PCG (Permuted congruential generator) 乱数のクラス
+ * PCG-XSH-RR (Permuted congruential generator) 乱数のクラス
  */
-export default class PCGXSHRR {
+export default class PCGMinimal {
   readonly #state = new BigUint64Array(2);
 
   get [Symbol.toStringTag]() {
-    return PCGXSHRR.name;
+    return PCGMinimal.name;
   }
 
   /** シード値の配列を返す */

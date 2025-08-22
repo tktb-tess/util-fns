@@ -6,17 +6,17 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "declarationDir": "dist/types",
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "emitDeclarationOnly": true,
-
     "strict": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "bundler"
   },
   "include": ["src/**/*.ts"]
 }

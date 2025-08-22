@@ -4,17 +4,20 @@
   "main": "dist/bundle.js",
   "type": "module",
   "scripts": {
-    "build": "rollup"
+    "build": "rollup -c"
   },
   "author": "Tessyrrhaqt",
   "license": "MIT",
   "description": "個人的に使う用の便利関数ライブラリ",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.4",
     "@types/node": "^24.3.0",
     "npm-check-updates": "^18.0.2",
     "rollup": "^4.47.1",
+    "tslib": "^2.8.1",
     "tsx": "^4.20.4",
     "typescript": "^5.9.2"
   }
