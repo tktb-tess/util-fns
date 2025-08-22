@@ -5,7 +5,7 @@ import {
 	residue,
 	getRandBIByBitLength,
 	getRandBIByRange
-} from './util';
+} from './math';
 
 /**
  * translated from python codes in

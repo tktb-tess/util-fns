@@ -10,6 +10,7 @@
   "license": "MIT",
   "description": "個人的に使う用の便利関数ライブラリ",
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.4",
     "@types/node": "^24.3.0",
     "npm-check-updates": "^18.0.2",
