@@ -6,7 +6,7 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "declarationDir": "dist/types",
+    "declarationDir": "dist",
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "emitDeclarationOnly": true,
