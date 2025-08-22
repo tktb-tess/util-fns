@@ -10,5 +10,10 @@ export default {
     format: 'es',
     sourcemap: true,
   },
-  plugins: [typescript(), terser(), commonjs(), nodeResolve()],
+  plugins: [
+    typescript(),
+    terser(),
+    commonjs({ extensions: ['.js', '.ts'] }),
+    nodeResolve(),
+  ],
 };
