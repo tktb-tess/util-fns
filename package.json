@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "main": "dist/bundle.js",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "rollup -c"
   },
