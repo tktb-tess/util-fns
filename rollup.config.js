@@ -6,7 +6,7 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 export default {
   input: 'src/main.ts',
   output: {
-    file: 'dist/bundle.js',
+    file: 'dist/main.js',
     format: 'es',
     sourcemap: true,
   },
