@@ -1,0 +1,20 @@
+{
+  "name": "@tktb-tess/util-fns",
+  "version": "0.1.0",
+  "main": "dist/bundle.js",
+  "type": "module",
+  "scripts": {
+    "build": "rollup"
+  },
+  "author": "Tessyrrhaqt",
+  "license": "MIT",
+  "description": "個人的に使う用の便利関数ライブラリ",
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@types/node": "^24.3.0",
+    "npm-check-updates": "^18.0.2",
+    "rollup": "^4.47.1",
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2"
+  }
+}
