@@ -1,6 +1,6 @@
 {
   "name": "@tktb-tess/util-fns",
-  "version": "0.1.4",
+  "version": "0.1.5-0",
   "main": "dist/bundle.js",
   "type": "module",
   "publishConfig": {
