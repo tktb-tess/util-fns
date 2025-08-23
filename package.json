@@ -1,8 +1,15 @@
 {
   "name": "@tktb-tess/util-fns",
   "version": "0.2.0",
+  "description": "utility functions for personal use",
   "main": "dist/main.js",
   "type": "module",
+  "author": "Tessyrrhaqt",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tktb-tess/util-fns"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -10,9 +17,6 @@
     "build": "rm -r -f dist && rollup -c",
     "test": "npx tsx test/main.test.ts"
   },
-  "author": "Tessyrrhaqt",
-  "license": "MIT",
-  "description": "utility functions for personal use",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",
