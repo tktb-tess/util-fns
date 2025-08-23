@@ -5,5 +5,5 @@ utility functions for personal use
 ## Install
 
 ```bash
-npm install @tktb-tess/util-fns
+npm i @tktb-tess/util-fns
 ```
