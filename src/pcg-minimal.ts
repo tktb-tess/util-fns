@@ -15,10 +15,6 @@ export default class PCGMinimal {
   readonly #state = new BigUint64Array(2);
   readonly [pcgBrand]: unknown;
 
-  get [Symbol.toStringTag]() {
-    return PCGMinimal.name;
-  }
-
   /** シード値の配列を返す */
   static getSeed() {
     return crypto.getRandomValues(new BigUint64Array(2));
