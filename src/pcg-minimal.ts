@@ -1,5 +1,7 @@
 import { rot32 } from './math';
 
+const pcgBrand = Symbol();
+
 /** シードなし時の静的初期化定数 */
 const initialState = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
 
@@ -11,6 +13,7 @@ const increment = 0x5851f42d4c957f2dn;
  */
 export default class PCGMinimal {
   readonly #state = new BigUint64Array(2);
+  readonly [pcgBrand]: unknown;
 
   get [Symbol.toStringTag]() {
     return PCGMinimal.name;
@@ -25,7 +28,6 @@ export default class PCGMinimal {
    * @param seeds 64bit整数の配列 (長さ2以上), 省略した場合, 常に同じ値によって初期化される
    */
   constructor(seeds?: BigUint64Array<ArrayBuffer>) {
-
     if (seeds && seeds[0] && seeds[1]) {
       this.#state[1] = (seeds[1] << 1n) | 1n;
       this.step();
@@ -66,7 +68,7 @@ export default class PCGMinimal {
     /** 32bit 上限 */
     const limit = 0x100000000;
 
-    if (bound > limit) throw Error('bound exceeded limit (2^32)');
+    if (bound > limit) throw Error('`bound` exceeded limit (2^32)');
 
     const threshold = limit % bound;
 
@@ -77,13 +79,13 @@ export default class PCGMinimal {
   }
 
   /**
-   * step の値だけ乱数を生成するジェネレーター関数
+   * step の値だけ乱数を生成する
    * @param step
    * @param bound
    */
-  async *genRands(step: number, bound?: number) {
+  *genRands(step: number, bound?: number) {
     for (let i = 0; i < step; i++) {
-      yield bound ? this.getBoundedRand(bound) : this.getRand();
+      yield typeof bound === 'number' ? this.getBoundedRand(bound) : this.getRand();
     }
   }
 }

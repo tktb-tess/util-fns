@@ -1,4 +1,3 @@
-
 /**
  * 配列が等しいかどうかの真偽値を返す
  * @returns
@@ -83,9 +82,8 @@ export const parseCSV = (csv: string) => {
  */
 export const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
   const utf8 = Buffer.from(str, 'utf8');
-  return crypto.subtle
-    .digest(algorithm, utf8)
-    .then((hash) => Buffer.from(hash));
+  const hash = await crypto.subtle.digest(algorithm, utf8);
+  return Buffer.from(hash);
 };
 
 export const BItoBuffer = (n: bigint) => {

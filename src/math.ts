@@ -28,7 +28,6 @@ export const toBigInt = (...nums: number[]) => {
   return nums.map((n) => BigInt(n));
 };
 
-
 /**
  * `length` ビットの乱数 or `length` ビット以下の乱数を出力する
  * @param length ビット長
@@ -39,12 +38,10 @@ export const getRandBIByBitLength = (length: number, fixed = false) => {
   if (!Number.isFinite(length)) throw Error('`length` is not a valid number');
   if (length <= 0) throw Error('`length` must be positive');
 
-  const div = Math.ceil(length / 32);
-  const u32Arr = crypto.getRandomValues(new Uint32Array(div));
-  let result = Array.from(u32Arr, (n) => n.toString(2).padStart(32, '0')).join(
-    ''
-  );
-  result = result.slice(0, length);
+  const byteLen = Math.ceil(length / 8);
+  const buf = crypto.getRandomValues(Buffer.alloc(byteLen));
+  let result = buf.toString('binary').slice(0, length);
+
   if (fixed) result = result.replace(/^./, '1');
   // console.log(result);
   return BigInt('0b' + result);
@@ -57,7 +54,7 @@ export const getRandBIByBitLength = (length: number, fixed = false) => {
  * @returns `min` 以上 `max` 未満の乱数
  */
 export const getRandBIByRange = (min: bigint, max: bigint) => {
-  if (min >= max) throw Error('RangeError');
+  if (min >= max) throw Error('rangeError');
   const diff = max - min;
   const bitLength = diff.toString(2).length;
 
@@ -108,7 +105,7 @@ export const modPow = (base: bigint, power: bigint, mod: bigint) => {
  * @description `ax - by = gcd(a, b)`
  * @param a
  * @param b
- * @returns `{x, y, gcd(a, b)}`
+ * @returns
  */
 export const exEuclidean = (a: bigint, b: bigint) => {
   // a, b に 0 がある場合の処理
@@ -143,67 +140,67 @@ export const exEuclidean = (a: bigint, b: bigint) => {
 };
 
 /**
+ * min 以上 max 「未満」 の奇数の積を返す
+ * @param min 最小値
+ * @param max 最大値
+ * @returns min 以上 max 未満 の奇数の積
+ */
+const oddProd = (min: bigint, max: bigint): bigint => {
+  if (min >= max) return 1n;
+
+  const max_bits = BigInt((max - 2n).toString(2).length);
+  const num_odds = (max - min) / 2n;
+
+  if (max_bits * num_odds < 63n) {
+    let result = min;
+    for (let i = min + 2n; i < max; i += 2n) {
+      result *= i;
+    }
+    return result;
+  }
+
+  const mid = (min + num_odds) | 1n;
+  const lower = oddProd(min, mid);
+  const higher = oddProd(mid, max);
+  return lower * higher;
+};
+
+/**
+ * 階乗の奇数部分を計算する
+ * @param n 整数
+ * @returns 奇数部の積
+ */
+const oddPart = (n: bigint) => {
+  let L_i = 3n,
+    result = 1n,
+    tmp = 1n;
+  const m = BigInt(n.toString(2).length) - 1n;
+
+  for (let i = m - 1n; i > -1n; --i) {
+    const U_i = ((n >> i) + 1n) | 1n;
+
+    tmp *= oddProd(L_i, U_i);
+    L_i = U_i;
+    result *= tmp;
+  }
+
+  return result;
+};
+
+/**
  * 階乗を計算する \
  * 参考: https://qiita.com/AkariLuminous/items/1b2e964ebabde9419224
- * @param n_ 整数
+ * @param n 整数
  * @returns 引数の階乗
  */
 export const factorial = (n: bigint) => {
-  if (n < 0n) throw Error(`'n_' must be non-negative`);
+  if (n < 0n) throw Error(`'n' must be non-negative`);
   if (n === 0n) return 1n;
 
-  /**
-   * min 以上 max 「未満」 の奇数の積を返す
-   * @param min 最小値
-   * @param max 最大値
-   * @returns min 以上 max 未満 の奇数の積
-   */
-  const oddProd = (min: bigint, max: bigint): bigint => {
-    if (min >= max) return 1n;
+  const twoExp = n - BigInt(n.toString(2).match(/1/g)?.length ?? 0);
+  const odd = oddPart(n);
 
-    const max_bits = BigInt((max - 2n).toString(2).length);
-    const num_odds = (max - min) / 2n;
-
-    if (max_bits * num_odds < 63n) {
-      let result = min;
-      for (let i = min + 2n; i < max; i += 2n) {
-        result *= i;
-      }
-      return result;
-    }
-
-    const mid = (min + num_odds) | 1n;
-    const lower = oddProd(min, mid);
-    const higher = oddProd(mid, max);
-    return lower * higher;
-  };
-
-  /**
-   * 階乗の奇数部分を計算する
-   * @param n 整数
-   * @returns 奇数部の積
-   */
-  const oddPart = (n: bigint) => {
-    let L_i = 3n,
-      result = 1n,
-      tmp = 1n;
-    const m = BigInt(n.toString(2).length) - 1n;
-
-    for (let i = m - 1n; i > -1n; --i) {
-      const U_i = ((n >> i) + 1n) | 1n;
-
-      tmp *= oddProd(L_i, U_i);
-      L_i = U_i;
-      result *= tmp;
-    }
-
-    return result;
-  };
-
-  const two_exp = n - BigInt(n.toString(2).match(/1/g)?.length ?? 0);
-  const odd_part = oddPart(n);
-
-  return odd_part << two_exp;
+  return odd << twoExp;
 };
 
 /**

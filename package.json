@@ -11,7 +11,7 @@
   },
   "author": "Tessyrrhaqt",
   "license": "MIT",
-  "description": "個人的に使う用の便利関数ライブラリ",
+  "description": "utility functions for personal use",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",

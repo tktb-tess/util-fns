@@ -16,7 +16,6 @@ import {
 /**
  * Miller-Rabin テスト (底2)
  * @param n 判定する整数
- * 
  * @returns
  */
 const millerRabinAtBase2 = (n: bigint) => {

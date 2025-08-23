@@ -1,3 +1,3 @@
 # util-fns
 
-個人的に使う用の便利関数ライブラリ
+utility functions for personal use
