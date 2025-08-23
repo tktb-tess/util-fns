@@ -29,6 +29,8 @@ import {
   getRandPrimeByRange,
 } from './baillie-psw';
 
+import Fraction from './fraction';
+
 export {
   isEqArray,
   sleep,
@@ -53,4 +55,5 @@ export {
   getRandPrimeByBitLength,
   getRandPrimeByRange,
   PCGMinimal,
+  Fraction
 };

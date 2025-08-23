@@ -1,19 +1,22 @@
 import { rot32 } from './math';
 
-const pcgBrand = Symbol();
+const __pcg_brand = Symbol();
 
 /** シードなし時の静的初期化定数 */
 const initialState = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
 
 /** 乗数 */
-const increment = 0x5851f42d4c957f2dn;
+const multiplier = 0x5851f42d4c957f2dn;
 
 /**
  * PCG-XSH-RR (Permuted congruential generator) 乱数のクラス
  */
 export default class PCGMinimal {
+  /**
+   * [state, increment]
+   */
   readonly #state = new BigUint64Array(2);
-  readonly [pcgBrand]: unknown;
+  readonly [__pcg_brand]: unknown;
 
   /** シード値の配列を返す */
   static getSeed() {
@@ -38,7 +41,7 @@ export default class PCGMinimal {
   /** 内部状態を1サイクル進める */
   step() {
     if (this.#state[0] && this.#state[1]) {
-      this.#state[0] = this.#state[0] * increment + this.#state[1];
+      this.#state[0] = this.#state[0] * multiplier + this.#state[1];
     }
   }
 
@@ -59,7 +62,7 @@ export default class PCGMinimal {
     return this.value;
   }
 
-  /** `bound` 以下の乱数を返す */
+  /** `bound` 未満の乱数を返す */
   getBoundedRand(bound: number) {
     /** 32bit 上限 */
     const limit = 0x100000000;

@@ -7,7 +7,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "rm -r -f dist && rollup -c"
+    "build": "rm -r -f dist && rollup -c",
+    "test": "npx tsx test/main.test.ts"
   },
   "author": "Tessyrrhaqt",
   "license": "MIT",

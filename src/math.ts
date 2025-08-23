@@ -220,7 +220,7 @@ export const rot32BI = (value: bigint, rot: bigint) => {
  * @returns
  */
 export const rot32 = (value: number, rot: number) => {
-  return (value >>> (rot & 31)) | (value << (-rot & 31));
+  return ((value >>> (rot & 31)) | (value << ((32 - rot) & 31))) >>> 0;
 };
 
 /**
