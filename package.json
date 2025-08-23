@@ -1,6 +1,6 @@
 {
   "name": "@tktb-tess/util-fns",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "utility functions for personal use",
   "main": "dist/main.js",
   "type": "module",
