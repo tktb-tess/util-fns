@@ -1,7 +1,7 @@
-import { PCGMinimal } from '../src/main';
+import { getRandPrimeByBitLength, getRandPrimeByRange } from '../src/main';
 
-const pcgRng = new PCGMinimal(PCGMinimal.getSeed());
+const arr = Array(100)
+  .fill(0)
+  .map(() => getRandPrimeByBitLength(256, true));
 
-for (let i = 0; i < 10; i++) {
-    console.log(pcgRng.getBoundedRand(256));
-}
+console.log(arr.join('\n'));

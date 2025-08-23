@@ -40,7 +40,9 @@ export const getRandBIByBitLength = (length: number, fixed = false) => {
 
   const byteLen = Math.ceil(length / 8);
   const buf = crypto.getRandomValues(Buffer.alloc(byteLen));
-  let result = buf.toString('binary').slice(0, length);
+  let result = Array.from(buf, (n) => n.toString(2).padStart(8, '0'))
+    .join('')
+    .slice(0, length);
 
   if (fixed) result = result.replace(/^./, '1');
   // console.log(result);
