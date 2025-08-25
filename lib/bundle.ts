@@ -63,6 +63,8 @@ import {
   u8ArrToBI,
 } from './u8arr-ext';
 
+import Brand from './brand';
+
 const U8Ext = {
   base64ToU8Arr,
   base64UrlToU8Arr,
@@ -105,4 +107,5 @@ export {
   BItoU8Arr,
   u8ArrToBI,
   U8Ext,
+  type Brand,
 };

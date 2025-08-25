@@ -1,7 +1,5 @@
 import { rot32 } from './math';
 
-const __pcg_brand = Symbol();
-
 /** シードなし時の静的初期化定数 */
 const initialState = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
 
@@ -16,7 +14,6 @@ export default class PCGMinimal {
    * length = 2, `[state, increment]`
    */
   readonly #state = new BigUint64Array(2);
-  readonly [__pcg_brand]: unknown;
 
   /** シード値の配列を返す */
   static getSeed() {
@@ -29,9 +26,9 @@ export default class PCGMinimal {
   constructor(seeds?: BigUint64Array<ArrayBuffer>) {
     if (seeds) {
       this.#state[1] = (seeds[1] << 1n) | 1n;
-      this.step();
+      this.#step();
       this.#state[0] = seeds[0];
-      this.step();
+      this.#step();
     } else {
       this.#state[0] = initialState[0];
       this.#state[1] = initialState[1];
@@ -39,12 +36,12 @@ export default class PCGMinimal {
   }
 
   /** 内部状態を1サイクル進める */
-  step() {
+  #step() {
     this.#state[0] = this.#state[0] * multiplier + this.#state[1];
   }
 
   /** 32bit 乱数を返す (内部状態は変わらない) */
-  get value() {
+  get #value() {
     const prev = this.#state[0];
     if (!prev) throw Error('empty state');
     const rot = prev >> 59n;
@@ -56,8 +53,8 @@ export default class PCGMinimal {
    *  普通はこれを使う
    */
   getRand() {
-    this.step();
-    return this.value;
+    this.#step();
+    return this.#value;
   }
 
   /** `bound` 未満の乱数を返す */

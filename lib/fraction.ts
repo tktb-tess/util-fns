@@ -1,5 +1,4 @@
 import { exEuclidean } from './math';
-const __frac_brand = Symbol();
 
 export type FractionData = {
   type: 'Fraction';
@@ -10,7 +9,6 @@ export type FractionData = {
 export default class Fraction {
   #numerator: bigint;
   #denominator: bigint;
-  readonly [__frac_brand]: unknown;
 
   /**
    * 
