@@ -1,5 +1,5 @@
 import { exEuclidean } from './math';
-const __fraction_brand = Symbol();
+const __frac_brand = Symbol();
 
 export type FractionData = {
   type: 'Fraction';
@@ -10,8 +10,13 @@ export type FractionData = {
 export default class Fraction {
   #numerator: bigint;
   #denominator: bigint;
-  readonly [__fraction_brand]: unknown;
+  readonly [__frac_brand]: unknown;
 
+  /**
+   * 
+   * @param numerator 
+   * @param denominator 
+   */
   constructor(numerator: bigint, denominator: bigint) {
     if (denominator === 0n) {
       this.#denominator = 0n;
@@ -28,7 +33,7 @@ export default class Fraction {
   }
 
   /**
-   * `number` 型から構成
+   * generates fraction from `number` decimal using continued fraction
    * @param value 値
    * @param denominatorDigits 分母の桁数 (十進)
    */
@@ -71,7 +76,7 @@ export default class Fraction {
   }
 
   /**
-   * 約分
+   * reduction
    */
   #reduction() {
     const { gcd } = exEuclidean(this.#numerator, this.#denominator);
@@ -82,7 +87,7 @@ export default class Fraction {
   }
 
   /**
-   * -1 倍
+   * returns a fraction multiplied by -1
    * @returns
    */
   minus() {
@@ -90,7 +95,7 @@ export default class Fraction {
   }
 
   /**
-   * 逆数
+   * returns inverse of this fraction
    * @returns
    */
   inverse() {
@@ -98,7 +103,7 @@ export default class Fraction {
   }
 
   /**
-   * 加法 (非破壊的)
+   * returns `this + right`
    * @param right
    * @returns
    */
@@ -111,7 +116,7 @@ export default class Fraction {
   }
 
   /**
-   * 減法
+   * returns `this - right`
    * @param right
    * @returns
    */
@@ -120,7 +125,7 @@ export default class Fraction {
   }
 
   /**
-   * 乗法
+   * returns `this * right`
    * @param right
    * @returns
    */
@@ -131,7 +136,7 @@ export default class Fraction {
   }
 
   /**
-   * 除法
+   * returns `this / right`
    * @param right
    * @returns
    */
@@ -139,6 +144,17 @@ export default class Fraction {
     return new Fraction(this.#numerator, this.#denominator).multiply(
       right.inverse()
     );
+  }
+
+  /**
+   * mediant
+   * @param right 
+   * @returns 
+   */
+  mediant(right: Fraction) {
+    const denom = this.#denominator + right.#denominator;
+    const num = this.#numerator + right.#numerator;
+    return new Fraction(num, denom);
   }
 
   /**

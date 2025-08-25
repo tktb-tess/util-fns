@@ -39,7 +39,7 @@ export const getRandBIByBitLength = (length: number, fixed = false) => {
   if (length <= 0) throw Error('`length` must be positive');
 
   const byteLen = Math.ceil(length / 8);
-  const buf = crypto.getRandomValues(Buffer.alloc(byteLen));
+  const buf = crypto.getRandomValues(new Uint8Array(byteLen));
   let result = Array.from(buf, (n) => n.toString(2).padStart(8, '0'))
     .join('')
     .slice(0, length);
@@ -64,6 +64,7 @@ export const getRandBIByRange = (min: bigint, max: bigint) => {
     const limit = 100000;
     for (let i = 0; i < limit; i++) {
       const res = getRandBIByBitLength(bitLength);
+
       if (res >= modPow(2n, BigInt(bitLength), diff)) {
         return res % diff;
       }
@@ -91,6 +92,7 @@ export const modPow = (base: bigint, power: bigint, mod: bigint) => {
   if (base === mod - 1n) return power & 1n ? mod - 1n : 1n;
 
   let result = 1n;
+  
   while (power > 0n) {
     if (power & 1n) result = (result * base) % mod;
     base = (base * base) % mod;
