@@ -1,9 +1,14 @@
-import { PCGMinimal } from '../dist/bundle';
+import { getRandPrimeByBitLength } from '../dist/bundle';
 const app = document.getElementById('app')!;
 
-const rng = new PCGMinimal(PCGMinimal.getSeed());
-const arr = Array.from(rng.genRands(1000)).map((n) => n.toString(16).padStart(8, '0')).join('\n');
+const arr = Array(100)
+  .fill(0)
+  .map(() => {
+    const n = getRandPrimeByBitLength(128, true);
+    return n.toString();
+  })
+  .join(', ');
 
 app.innerHTML = `
-<pre>${arr}</pre>
+<p style="overflow-wrap:break-word;">${arr}</p>
 `;
