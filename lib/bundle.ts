@@ -1,12 +1,4 @@
-import {
-  isEqArray,
-  sleep,
-  lazify,
-  parseCSV,
-  getHash,
-  BItoBuffer,
-  bufferToBI,
-} from './util';
+import { isEqArray, sleep, lazify, parseCSV, getHash } from './util';
 
 const Util = {
   isEqArray,
@@ -14,8 +6,6 @@ const Util = {
   lazify,
   parseCSV,
   getHash,
-  BItoBuffer,
-  bufferToBI,
 };
 
 import {
@@ -64,14 +54,30 @@ const Prime = {
 
 import Fraction from './fraction';
 
+import {
+  base64ToU8Arr,
+  base64UrlToU8Arr,
+  u8ArrToBase64,
+  u8ArrToBase64Url,
+  BItoU8Arr,
+  u8ArrToBI,
+} from './u8arr-ext';
+
+const U8Ext = {
+  base64ToU8Arr,
+  base64UrlToU8Arr,
+  u8ArrToBase64,
+  u8ArrToBase64Url,
+  BItoU8Arr,
+  u8ArrToBI,
+};
+
 export {
   isEqArray,
   sleep,
   lazify,
   parseCSV,
   getHash,
-  BItoBuffer,
-  bufferToBI,
   getRndInt,
   residue,
   toBigInt,
@@ -92,4 +98,11 @@ export {
   Util,
   AdMath,
   Prime,
+  base64ToU8Arr,
+  base64UrlToU8Arr,
+  u8ArrToBase64,
+  u8ArrToBase64Url,
+  BItoU8Arr,
+  u8ArrToBI,
+  U8Ext,
 };

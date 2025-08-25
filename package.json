@@ -5,12 +5,19 @@
   "files": [
     "dist"
   ],
-  "main": "dist/main.js",
   "type": "module",
   "author": "Tessyrrhaqt",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "main": "./dist/bundle.umd.cjs",
+  "module": "./dist/bundle.js",
+  "types": "./dist/bundle.d.ts",
+  "exports": {
+    "types": "./dist/bundle.d.ts",
+    "import": "./dist/bundle.js",
+    "require": "./dist/bundle.umd.cjs"
   },
   "repository": {
     "type": "git",

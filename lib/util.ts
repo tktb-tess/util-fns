@@ -1,8 +1,11 @@
+const encoder = new TextEncoder();
+// const decoder = new TextDecoder();
+
 /**
  * 配列が等しいかどうかの真偽値を返す
  * @returns
  */
-export const isEqArray = <T>(arr1: T[], arr2: T[]) => {
+const isEqArray = <T>(arr1: T[], arr2: T[]) => {
   if (arr1.length !== arr2.length) return false;
   else {
     for (let i = 0; i < arr1.length; i++) {
@@ -18,7 +21,7 @@ export const isEqArray = <T>(arr1: T[], arr2: T[]) => {
  * @param delay スリープ時間 (ms)
  * @returns
  */
-export const sleep = (delay: number) => {
+const sleep = (delay: number) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       resolve();
@@ -27,7 +30,7 @@ export const sleep = (delay: number) => {
 };
 
 /** 遅延評価関数化する */
-export const lazify =
+const lazify =
   <ArgT extends unknown[], RetT>(func: (...args: ArgT) => RetT) =>
   (...args: ArgT) =>
   () =>
@@ -39,7 +42,7 @@ export const lazify =
  * @param csv CSV
  * @returns 2次元配列
  */
-export const parseCSV = (csv: string) => {
+const parseCSV = (csv: string) => {
   const rows: string[][] = [];
   let row: string[] = [];
   let currentField = '';
@@ -80,19 +83,14 @@ export const parseCSV = (csv: string) => {
  * @param algorithm アルゴリズム
  * @returns ハッシュ値
  */
-export const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
-  const utf8 = Buffer.from(str, 'utf8');
-  const hash = await crypto.subtle.digest(algorithm, utf8);
-  return Buffer.from(hash);
+const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
+  const utf8 = encoder.encode(str);
+  const digest = await crypto.subtle.digest(algorithm, utf8);
+  return new Uint8Array(digest);
 };
 
-export const BItoBuffer = (n: bigint) => {
-  let str = n.toString(16);
-  if (str.length & 1) str = '0' + str;
-  return Buffer.from(str, 'hex');
-};
+const isNode =
+  typeof process !== 'undefined' &&
+  typeof process.versions.node !== 'undefined';
 
-export const bufferToBI = (buf: Buffer) => {
-  const str = buf.toString('hex') || '00';
-  return BigInt('0x' + str);
-};
+export { isEqArray, sleep, lazify, parseCSV, getHash, isNode };
