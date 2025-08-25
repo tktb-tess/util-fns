@@ -13,7 +13,7 @@ const multiplier = 0x5851f42d4c957f2dn;
  */
 export default class PCGMinimal {
   /**
-   * [state, increment]
+   * length = 2, `[state, increment]`
    */
   readonly #state = new BigUint64Array(2);
   readonly [__pcg_brand]: unknown;
@@ -27,7 +27,7 @@ export default class PCGMinimal {
    * @param seeds 64bit整数の配列 (長さ2以上), 省略した場合, 常に同じ値によって初期化される
    */
   constructor(seeds?: BigUint64Array<ArrayBuffer>) {
-    if (seeds && seeds[0] && seeds[1]) {
+    if (seeds) {
       this.#state[1] = (seeds[1] << 1n) | 1n;
       this.step();
       this.#state[0] = seeds[0];
@@ -40,9 +40,7 @@ export default class PCGMinimal {
 
   /** 内部状態を1サイクル進める */
   step() {
-    if (this.#state[0] && this.#state[1]) {
-      this.#state[0] = this.#state[0] * multiplier + this.#state[1];
-    }
+    this.#state[0] = this.#state[0] * multiplier + this.#state[1];
   }
 
   /** 32bit 乱数を返す (内部状態は変わらない) */
@@ -84,7 +82,9 @@ export default class PCGMinimal {
    */
   *genRands(step: number, bound?: number) {
     for (let i = 0; i < step; i++) {
-      yield typeof bound === 'number' ? this.getBoundedRand(bound) : this.getRand();
+      yield typeof bound === 'number'
+        ? this.getBoundedRand(bound)
+        : this.getRand();
     }
   }
 }

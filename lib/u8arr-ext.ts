@@ -8,7 +8,7 @@ const BItoU8Arr = (n: bigint) => {
 };
 
 const u8ArrToBI = (buf: Uint8Array) => {
-  const str = Array.from(buf, (n) => n.toString(16).padStart(2, '0')) || '00';
+  const str = Array.from(buf, (n) => n.toString(16).padStart(2, '0')).join('') || '00';
   return BigInt('0x' + str);
 };
 
