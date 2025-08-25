@@ -7,6 +7,17 @@ import {
   BItoBuffer,
   bufferToBI,
 } from './util';
+
+const Util = {
+  isEqArray,
+  sleep,
+  lazify,
+  parseCSV,
+  getHash,
+  BItoBuffer,
+  bufferToBI,
+};
+
 import {
   getRndInt,
   residue,
@@ -22,12 +33,34 @@ import {
   isSquare,
 } from './math';
 
+const AdMath = {
+  getRndInt,
+  residue,
+  toBigInt,
+  getRandBIByBitLength,
+  getRandBIByRange,
+  modPow,
+  exEuclidean,
+  factorial,
+  rot32,
+  rot32BI,
+  jacobiSymbol,
+  isSquare,
+};
+
 import PCGMinimal from './pcg-minimal';
+
 import {
   bailliePSW,
   getRandPrimeByBitLength,
   getRandPrimeByRange,
 } from './baillie-psw';
+
+const Prime = {
+  bailliePSW,
+  getRandPrimeByBitLength,
+  getRandPrimeByRange,
+};
 
 import Fraction from './fraction';
 
@@ -55,5 +88,8 @@ export {
   getRandPrimeByBitLength,
   getRandPrimeByRange,
   PCGMinimal,
-  Fraction
+  Fraction,
+  Util,
+  AdMath,
+  Prime,
 };
