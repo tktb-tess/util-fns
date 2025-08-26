@@ -20,15 +20,6 @@ export const residue = (n: bigint, mod: bigint) => {
 };
 
 /**
- * number を bigint に変換
- * @param nums
- * @returns
- */
-export const toBigInt = (...nums: number[]) => {
-  return nums.map((n) => BigInt(n));
-};
-
-/**
  * `length` ビットの乱数 or `length` ビット以下の乱数を出力する
  * @param length ビット長
  * @param fixed true: 固定長, false (デフォルト値): `length` ビット以下の可変ビット長

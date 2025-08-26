@@ -13,7 +13,7 @@ const u8ArrToBI = (buf: Uint8Array) => {
 };
 
 const u8ArrToBase64 = (u8Arr: Uint8Array) => {
-  if (isNode) {
+  if (isNode()) {
     return Buffer.copyBytesFrom(u8Arr).toString('base64');
   } else {
     const bin = Array.from(u8Arr, (n) => String.fromCharCode(n)).join('');
@@ -22,7 +22,7 @@ const u8ArrToBase64 = (u8Arr: Uint8Array) => {
 };
 
 const base64ToU8Arr = (base64: string) => {
-  if (isNode) {
+  if (isNode()) {
     const buf = Buffer.from(base64, 'base64');
     return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
   } else {

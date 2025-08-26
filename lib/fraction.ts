@@ -6,7 +6,7 @@ export type FractionData = {
   denominator: string;
 };
 
-export default class Fraction {
+class Fraction {
   #numerator: bigint;
   #denominator: bigint;
 
@@ -206,3 +206,5 @@ export default class Fraction {
     }
   }
 }
+
+export default Fraction;

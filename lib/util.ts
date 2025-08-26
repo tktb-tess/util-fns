@@ -2,23 +2,74 @@ const encoder = new TextEncoder();
 // const decoder = new TextDecoder();
 
 /**
- * 配列が等しいかどうかの真偽値を返す
+ * オブジェクトが等しいかどうかの真偽値を返す
  * @returns
  */
-const isEqArray = <T>(arr1: T[], arr2: T[]) => {
-  if (arr1.length !== arr2.length) return false;
-  else {
-    for (let i = 0; i < arr1.length; i++) {
-      if (arr1[i] !== arr2[i]) return false;
-    }
+const isEqual = (a: unknown, b: unknown) => {
+  if (typeof a !== typeof b) return false;
 
+  const aName = Object.prototype.toString.call(a);
+  const bName = Object.prototype.toString.call(b);
+  if (aName !== bName) return false;
+
+  if (
+    typeof a === 'string' ||
+    typeof a === 'bigint' ||
+    typeof a === 'boolean' ||
+    typeof a === 'symbol' ||
+    typeof a === 'undefined'
+  ) {
+    return a === b;
+  }
+
+  if (typeof a === 'number') {
+    const bothNaN = Number.isNaN(a) && Number.isNaN(b);
+    return bothNaN || a === b;
+  }
+
+  // null
+  if (a === null) return a === b;
+
+  // Function
+  // still unavailable
+  if (typeof a === 'function') {
+    throw Error('comparing these objects is still unavailable');
+  }
+
+  // Array
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (!isEqual(a[i], b[i])) return false;
+    }
     return true;
   }
+
+  if (aName === '[object Object]') {
+    type KType = string | symbol;
+    const a_ = a as Record<KType, unknown>;
+    const b_ = b as Record<KType, unknown>;
+    const aKeys: KType[] = Object.getOwnPropertyNames(a);
+    const bKeys: KType[] = Object.getOwnPropertyNames(b);
+    aKeys.push(...Object.getOwnPropertySymbols(a));
+    bKeys.push(...Object.getOwnPropertySymbols(b));
+
+    for (const aKey of aKeys) {
+      const bKey = bKeys.find((bKey) => bKey === aKey);
+      if (bKey === undefined) return false;
+      const [aVal, bVal] = [a_[aKey], b_[bKey]];
+      if (!isEqual(aVal, bVal)) return false;
+    }
+    return true;
+  }
+
+  // still available
+  throw Error('comparing these objects is still unavailable');
 };
 
 /**
- * スリープ
- * @param delay スリープ時間 (ms)
+ * sleep
+ * @param delay milliseconds
  * @returns
  */
 const sleep = (delay: number) => {
@@ -29,7 +80,9 @@ const sleep = (delay: number) => {
   });
 };
 
-/** 遅延評価関数化する */
+/**
+ * makes function lazy
+ */
 const lazify =
   <ArgT extends unknown[], RetT>(func: (...args: ArgT) => RetT) =>
   (...args: ArgT) =>
@@ -37,8 +90,8 @@ const lazify =
     func(...args);
 
 /**
- * CSVをパースする \
- * クォート対応
+ * parses CSV string \
+ * can deal with CSV with escaping doublequote
  * @param csv CSV
  * @returns 2次元配列
  */
@@ -78,7 +131,7 @@ const parseCSV = (csv: string) => {
 };
 
 /**
- * 文字列のハッシュ値を返す
+ * returns hash of a string
  * @param str 文字列
  * @param algorithm アルゴリズム
  * @returns ハッシュ値
@@ -89,10 +142,17 @@ const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
   return new Uint8Array(digest);
 };
 
-const isNode =
-  typeof process !== 'undefined' &&
-  typeof process.versions.node !== 'undefined';
+/**
+ * number を bigint に変換
+ * @param nums
+ * @returns
+ */
+const toBigInt = (...nums: number[]) => {
+  return nums.map((n) => BigInt(n));
+};
 
-export { isEqArray, sleep, lazify, parseCSV, getHash, isNode };
+const isNode = () =>
+  typeof globalThis.process !== 'undefined' &&
+  typeof globalThis.require !== 'undefined';
 
-
+export { isEqual, sleep, lazify, parseCSV, getHash, isNode, toBigInt };

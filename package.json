@@ -23,6 +23,7 @@
     "type": "git",
     "url": "https://github.com/tktb-tess/util-fns"
   },
+  "homepage": "https://github.com/tktb-tess/util-fns/blob/main/README.md",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
