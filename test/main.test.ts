@@ -1,5 +1,5 @@
 import { it, expect, describe } from 'vitest';
-import { isEqual } from '../lib/bundle';
+import { isEqual } from '../dist/bundle';
 
 describe('judging correctly', () => {
   it('null and object', () => {
