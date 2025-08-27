@@ -41,7 +41,8 @@ import {
   u8ArrToBI,
 } from './u8arr-ext';
 
-import type { Brand } from './brand';
+import { Brand } from './brand';
+import Queue from './queue';
 
 const Util = {
   isEqual,
@@ -109,8 +110,10 @@ export {
   u8ArrToBI,
   PCGMinimal,
   Fraction,
+  Queue,
   Util,
   Calc,
   U8Ext,
   Brand,
 };
+

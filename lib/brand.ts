@@ -1,8 +1,10 @@
-export const Brand = Symbol(`branded-type`);
+const Brand = Symbol(`for-branded-type`);
 
-export type Brand<in out K extends string | symbol> = {
+type Brand<in out K extends string | symbol> = {
     readonly [Brand]: {
-        readonly [key in K]: unknown;
+        readonly [key in K]: K;
     }
 }
+
+export { Brand };
 

@@ -2,18 +2,22 @@ import { exEuclidean } from './math';
 
 export type FractionData = {
   type: 'Fraction';
-  numerator: string;
-  denominator: string;
+  /** `[numerator, denominator]` */
+  value: [string, string];
 };
 
 class Fraction {
   #numerator: bigint;
   #denominator: bigint;
 
+  get [Symbol.toStringTag]() {
+    return 'Fraction';
+  }
+
   /**
-   * 
-   * @param numerator 
-   * @param denominator 
+   *
+   * @param numerator
+   * @param denominator
    */
   constructor(numerator: bigint, denominator: bigint) {
     if (denominator === 0n) {
@@ -119,7 +123,7 @@ class Fraction {
    * @returns
    */
   substr(right: Fraction) {
-    return new Fraction(this.#numerator, this.#denominator).add(right.minus());
+    return this.add(right.minus());
   }
 
   /**
@@ -139,15 +143,13 @@ class Fraction {
    * @returns
    */
   divide(right: Fraction) {
-    return new Fraction(this.#numerator, this.#denominator).multiply(
-      right.inverse()
-    );
+    return this.multiply(right.inverse());
   }
 
   /**
    * mediant
-   * @param right 
-   * @returns 
+   * @param right
+   * @returns
    */
   mediant(right: Fraction) {
     const denom = this.#denominator + right.#denominator;
@@ -188,18 +190,23 @@ class Fraction {
   toJSON(): FractionData {
     return {
       type: 'Fraction',
-      numerator: '0x' + this.#numerator.toString(16),
-      denominator: '0x' + this.#denominator.toString(16),
+      value: ['0x' + this.#numerator.toString(16), '0x' + this.#denominator.toString(16)]
     };
+  }
+
+  static fromData(data: FractionData) {
+    const num = BigInt(data.value[0]);
+    const denom = BigInt(data.value[1]);
+    return new Fraction(num, denom);
   }
 
   static parse(text: string) {
     const parsed = JSON.parse(text);
-    const { type, numerator, denominator } = parsed;
+    const { type, value } = parsed;
     if (type !== 'Fraction') throw Error('cannot parse');
-    if (typeof numerator === 'string' && typeof denominator === 'string') {
-      const num = BigInt(numerator);
-      const denom = BigInt(denominator);
+    if (Array.isArray(value) && value.length === 2) {
+      const num = BigInt(value[0]);
+      const denom = BigInt(value[1]);
       return new Fraction(num, denom);
     } else {
       throw Error('cannot parse');
