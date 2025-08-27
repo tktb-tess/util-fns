@@ -14,7 +14,7 @@ describe('judging correctly', () => {
     const obj2 = NaN;
     const euality = isEqual(obj1, obj2);
     console.log(euality);
-    expect(euality).toBe(true);
+    expect(euality).toBe(false);
   });
 
   it('sample data', async () => {

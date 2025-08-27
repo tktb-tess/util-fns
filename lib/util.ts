@@ -14,17 +14,13 @@ const isEqual = (a: unknown, b: unknown) => {
 
   if (
     typeof a === 'string' ||
+    typeof a === 'number' ||
     typeof a === 'bigint' ||
     typeof a === 'boolean' ||
     typeof a === 'symbol' ||
     typeof a === 'undefined'
   ) {
     return a === b;
-  }
-
-  if (typeof a === 'number') {
-    const bothNaN = Number.isNaN(a) && Number.isNaN(b);
-    return bothNaN || a === b;
   }
 
   // null
@@ -63,7 +59,7 @@ const isEqual = (a: unknown, b: unknown) => {
     return true;
   }
 
-  // still available
+  // still unavailable
   throw Error('comparing these objects is still unavailable');
 };
 

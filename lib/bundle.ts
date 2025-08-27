@@ -112,5 +112,5 @@ export {
   Util,
   Calc,
   U8Ext,
-  type Brand,
+  Brand,
 };
