@@ -1,3 +1,4 @@
 node_modules
 .arc
 dist
+wasm/target

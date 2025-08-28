@@ -1,5 +1,5 @@
 import { it, expect, describe } from 'vitest';
-import { Fraction, isEqual, PCGMinimal, factorial, bailliePSW } from '../dist/bundle';
+import { Fraction, isEqual, PCGMinimal, bailliePSW } from '../dist/bundle';
 
 describe('the function `isEqual` judges type correctly', () => {
   it('distinguish null from object', () => {
@@ -64,3 +64,5 @@ describe('bailliePSW works well', () => {
     
   });
 });
+
+

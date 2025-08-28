@@ -44,6 +44,7 @@ import {
 import { Brand } from './brand';
 import Queue from './queue';
 
+
 const Util = {
   isEqual,
   sleep,
