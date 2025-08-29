@@ -1,4 +1,5 @@
 {
+  "extends": "@tsconfig/svelte/tsconfig.json",
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     "module": "esnext",
@@ -20,5 +21,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["lib"]
+  
+  "include": ["lib", "**/*.svelte"],
 }

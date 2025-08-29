@@ -1,4 +1,6 @@
 node_modules
 .arc
 dist
-wasm/target
+
+# Added by cargo
+/target
