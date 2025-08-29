@@ -30,7 +30,7 @@ import {
   getRandPrimeByRange,
 } from './baillie-psw';
 
-import Fraction from './fraction';
+import Rational, { type RationalData } from './fraction';
 
 import {
   base64ToU8Arr,
@@ -42,8 +42,8 @@ import {
 } from './u8arr-ext';
 
 import { Brand } from './brand';
-import Queue from './queue';
 
+import Queue from './queue';
 
 const Util = {
   isEqual,
@@ -110,7 +110,8 @@ export {
   BItoU8Arr,
   u8ArrToBI,
   PCGMinimal,
-  Fraction,
+  Rational,
+  type RationalData,
   Queue,
   Util,
   Calc,

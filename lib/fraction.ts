@@ -1,17 +1,17 @@
 import { exEuclidean } from './math';
 
-export type FractionData = {
-  type: 'Fraction';
+export type RationalData = {
+  type: 'Rational';
   /** `[numerator, denominator]` */
   value: [string, string];
 };
 
-class Fraction {
+export default class Rational {
   #numerator: bigint;
   #denominator: bigint;
 
   get [Symbol.toStringTag]() {
-    return 'Fraction';
+    return 'Rational';
   }
 
   /**
@@ -41,9 +41,9 @@ class Fraction {
    */
   static fromDecimal(value: number, denominatorDigits = 20) {
     if (Number.isNaN(value)) {
-      return new Fraction(0n, 0n);
+      return new Rational(0n, 0n);
     } else if (Math.abs(value) === Infinity) {
-      return new Fraction(value > 0 ? 1n : -1n, 0n);
+      return new Rational(value > 0 ? 1n : -1n, 0n);
     }
     const isNegative = value < 0;
     if (isNegative) value *= -1;
@@ -51,7 +51,7 @@ class Fraction {
     const a_0 = BigInt(Math.floor(value));
     const fracPart = value - Number(a_0);
     if (fracPart === 0) {
-      return new Fraction(isNegative ? -a_0 : a_0, 1n);
+      return new Rational(isNegative ? -a_0 : a_0, 1n);
     }
     value = 1 / fracPart;
 
@@ -69,12 +69,12 @@ class Fraction {
       [q_n, q_n1] = [q_n1, a_n1 * q_n1 + q_n];
 
       if (fracPart === 0) {
-        return new Fraction(isNegative ? -p_n1 : p_n1, q_n1);
+        return new Rational(isNegative ? -p_n1 : p_n1, q_n1);
       }
 
       value = 1 / fracPart;
     }
-    return new Fraction(isNegative ? -p_n : p_n, q_n);
+    return new Rational(isNegative ? -p_n : p_n, q_n);
   }
 
   /**
@@ -93,7 +93,7 @@ class Fraction {
    * @returns
    */
   minus() {
-    return new Fraction(-this.#numerator, this.#denominator);
+    return new Rational(-this.#numerator, this.#denominator);
   }
 
   /**
@@ -101,7 +101,7 @@ class Fraction {
    * @returns
    */
   inverse() {
-    return new Fraction(this.#denominator, this.#numerator);
+    return new Rational(this.#denominator, this.#numerator);
   }
 
   /**
@@ -109,12 +109,12 @@ class Fraction {
    * @param right
    * @returns
    */
-  add(right: Fraction) {
+  add(right: Rational) {
     const denom = this.#denominator * right.#denominator;
     const num =
       this.#numerator * right.#denominator +
       right.#numerator * this.#denominator;
-    return new Fraction(num, denom);
+    return new Rational(num, denom);
   }
 
   /**
@@ -122,7 +122,7 @@ class Fraction {
    * @param right
    * @returns
    */
-  substr(right: Fraction) {
+  substr(right: Rational) {
     return this.add(right.minus());
   }
 
@@ -131,10 +131,10 @@ class Fraction {
    * @param right
    * @returns
    */
-  multiply(right: Fraction) {
+  multiply(right: Rational) {
     const denom = this.#denominator * right.#denominator;
     const num = this.#numerator * right.#numerator;
-    return new Fraction(num, denom);
+    return new Rational(num, denom);
   }
 
   /**
@@ -142,7 +142,7 @@ class Fraction {
    * @param right
    * @returns
    */
-  divide(right: Fraction) {
+  divide(right: Rational) {
     return this.multiply(right.inverse());
   }
 
@@ -151,10 +151,10 @@ class Fraction {
    * @param right
    * @returns
    */
-  mediant(right: Fraction) {
+  mediant(right: Rational) {
     const denom = this.#denominator + right.#denominator;
     const num = this.#numerator + right.#numerator;
-    return new Fraction(num, denom);
+    return new Rational(num, denom);
   }
 
   /**
@@ -187,17 +187,17 @@ class Fraction {
     return this.toDecimal();
   }
 
-  toJSON(): FractionData {
+  toJSON(): RationalData {
     return {
-      type: 'Fraction',
+      type: 'Rational',
       value: ['0x' + this.#numerator.toString(16), '0x' + this.#denominator.toString(16)]
     };
   }
 
-  static fromData(data: FractionData) {
+  static fromData(data: RationalData) {
     const num = BigInt(data.value[0]);
     const denom = BigInt(data.value[1]);
-    return new Fraction(num, denom);
+    return new Rational(num, denom);
   }
 
   static parse(text: string) {
@@ -207,11 +207,9 @@ class Fraction {
     if (Array.isArray(value) && value.length === 2) {
       const num = BigInt(value[0]);
       const denom = BigInt(value[1]);
-      return new Fraction(num, denom);
+      return new Rational(num, denom);
     } else {
       throw Error('cannot parse');
     }
   }
 }
-
-export default Fraction;

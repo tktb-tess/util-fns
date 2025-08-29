@@ -1,8 +1,13 @@
 const encoder = new TextEncoder();
 // const decoder = new TextDecoder();
 
+const sameValueZero = (a: unknown, b: unknown) => {
+  return [a].includes(b);
+};
+
 /**
  * オブジェクトが等しいかどうかの真偽値を返す
+ * SameValueZero
  * @returns
  */
 const isEqual = (a: unknown, b: unknown) => {
@@ -14,22 +19,22 @@ const isEqual = (a: unknown, b: unknown) => {
 
   if (
     typeof a === 'string' ||
-    typeof a === 'number' ||
     typeof a === 'bigint' ||
     typeof a === 'boolean' ||
     typeof a === 'symbol' ||
-    typeof a === 'undefined'
+    typeof a === 'undefined' ||
+    a === null
   ) {
     return a === b;
   }
 
-  // null
-  if (a === null) return a === b;
+  if (typeof a === 'number') {
+    return (Number.isNaN(a) && Number.isNaN(b)) || a === b;
+  }
 
   // Function
-  // still unavailable
-  if (typeof a === 'function') {
-    throw Error('comparing these objects is still unavailable');
+  if (typeof a === 'function' && typeof b === 'function') {
+    return a.toString() === b.toString();
   }
 
   // Array
@@ -41,6 +46,26 @@ const isEqual = (a: unknown, b: unknown) => {
     return true;
   }
 
+  // Set
+  if (a instanceof Set && b instanceof Set) {
+    const aVals = [...a.values()];
+    const bVals = [...b.values()];
+    if (!isEqual(aVals, bVals)) return false;
+    return true
+  }
+
+  // Map
+  if (a instanceof Map && b instanceof Map) {
+    const aKeys = [...a.keys()];
+    const bKeys = [...b.keys()];
+    if (!isEqual(aKeys, bKeys)) return false;
+    const aVals = [...a.values()];
+    const bVals = [...b.values()];
+    if (!isEqual(aVals, bVals)) return false;
+    return true;
+  }
+
+  // normal Object
   if (aName === '[object Object]') {
     type KType = string | symbol;
     const a_ = a as Record<KType, unknown>;
@@ -60,7 +85,7 @@ const isEqual = (a: unknown, b: unknown) => {
   }
 
   // still unavailable
-  throw Error('comparing these objects is still unavailable');
+  throw Error(`comparing these objects is still unavailable: ${a} ${b}`);
 };
 
 /**
@@ -151,8 +176,4 @@ const isNode = () =>
   typeof globalThis.process !== 'undefined' &&
   typeof globalThis.require !== 'undefined';
 
-
-
-
-export { isEqual, sleep, lazify, parseCSV, getHash, isNode, toBigInt };
-
+export { isEqual, sleep, lazify, parseCSV, getHash, isNode, toBigInt, sameValueZero };

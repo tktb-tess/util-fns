@@ -11,13 +11,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "./dist/bundle.umd.cjs",
-  "module": "./dist/bundle.js",
+  "main": "./dist/bundle.js",
   "types": "./dist/bundle.d.ts",
   "exports": {
     "types": "./dist/bundle.d.ts",
-    "import": "./dist/bundle.js",
-    "require": "./dist/bundle.umd.cjs"
+    "import": "./dist/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -28,7 +26,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "test": "vitest run",
-    "update": "ncu -u && npm i"
+    "update": "ncu -u && npm i",
+    "wasm:clean": "rm -r -f lib/wasm",
+    "wasm:build": "npm run wasm:clean && cd wasm && wasm-pack build --no-pack --out-dir ../lib/wasm"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",

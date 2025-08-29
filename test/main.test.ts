@@ -1,5 +1,5 @@
 import { it, expect, describe } from 'vitest';
-import { Fraction, isEqual, PCGMinimal, bailliePSW } from '../dist/bundle';
+import { Rational, isEqual, PCGMinimal, bailliePSW } from '../dist/bundle';
 
 describe('the function `isEqual` judges type correctly', () => {
   it('distinguish null from object', () => {
@@ -41,7 +41,7 @@ describe('the function `isEqual` judges type correctly', () => {
 });
 
 it('check toStringTag', () => {
-  const half = new Fraction(3n, 2n);
+  const half = new Rational(3n, 2n);
   const rng = new PCGMinimal(PCGMinimal.getSeed());
   console.log(Object.prototype.toString.call(half), `${half}`, +half);
   console.log(Object.prototype.toString.call(rng), ...rng.genRands(4));
