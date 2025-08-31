@@ -1,3 +1,5 @@
+import { wasm_mod_pow } from './wasm/wasm_part';
+
 /**
  * min以上, max未満の整数を返す
  * @param min
@@ -74,6 +76,13 @@ export const getRandBIByRange = (min: bigint, max: bigint) => {
  * @param mod 法
  * @returns 冪剰余
  */
+export const modPow = (b: bigint, e: bigint, m: bigint) => {
+  const res = wasm_mod_pow(b.toString(), e.toString(), m.toString());
+  return BigInt(res);
+};
+
+
+/* old impl
 export const modPow = (base: bigint, power: bigint, mod: bigint) => {
   if (mod < 1n) throw Error('`mod` must be positive');
   if (power < 0n) throw Error('`power` must not be negative');
@@ -89,10 +98,10 @@ export const modPow = (base: bigint, power: bigint, mod: bigint) => {
     if (power & 1n) result = (result * base) % mod;
     base = (base * base) % mod;
     power >>= 1n;
-    // console.log(base, power, mod);
   }
   return result;
 };
+*/
 
 /**
  * 拡張ユークリッドの互除法 \

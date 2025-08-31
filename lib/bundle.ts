@@ -45,9 +45,3 @@ export { Brand } from './brand';
 
 export { default as Queue } from './queue';
 
-import { wasm_test_func } from './wasm/wasm_part';
-
-export const modPowWasm = (b: bigint, e: bigint, m: bigint) => {
-  const res = wasm_test_func(b.toString(), e.toString(), m.toString());
-  return BigInt(res);
-};

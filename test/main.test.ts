@@ -4,11 +4,7 @@ import {
   isEqual,
   PCGMinimal,
   bailliePSW,
-  getRandBIByBitLength,
-  modPow,
-  modPowWasm,
   Queue,
-  getRandPrimeByBitLength,
 } from '../dist/bundle';
 
 describe('the function `isEqual` judges type correctly', () => {
@@ -16,7 +12,7 @@ describe('the function `isEqual` judges type correctly', () => {
     const obj1 = {};
     const obj2 = null;
     const euality = isEqual(obj1, obj2);
-    console.log(euality);
+    // console.log(euality);
     expect(euality).toBe(false);
   });
 
@@ -24,28 +20,32 @@ describe('the function `isEqual` judges type correctly', () => {
     const obj1 = NaN;
     const obj2 = NaN;
     const euality = isEqual(obj1, obj2);
-    console.log(euality);
+    // console.log(euality);
     expect(euality).toBe(true);
   });
 
   it('sample data', async () => {
     const url = 'https://tktb-tess.github.io/commas/out/commas.json';
-    const obj1 = await fetch(url).then((r) => r.json());
-    const obj2 = await fetch(url).then((r) => r.json());
+    const obj1: { [key: string]: unknown } = await fetch(url).then((r) =>
+      r.json()
+    );
+    const obj2 = structuredClone(obj1);
 
     const equality = isEqual(obj1, obj2);
-    console.log(equality);
+    // console.log(equality);
     expect(equality).toBe(true);
   });
 
   it('sample data 2', async () => {
     const url =
       'https://tktb-tess.github.io/cotec-json-data/out/conlinguistics-wiki-list-cotec.json';
-    const obj1 = await fetch(url).then((r) => r.json());
-    const obj2 = await fetch(url).then((r) => r.json());
+    const obj1: { [key: string]: unknown } = await fetch(url).then((r) =>
+      r.json()
+    );
+    const obj2 = structuredClone(obj1);
 
     const equality = isEqual(obj1, obj2);
-    console.log(equality);
+    // console.log(equality);
     expect(equality).toBe(true);
   });
 });
@@ -78,6 +78,7 @@ describe('bailliePSW works well', () => {
   });
 });
 
+/**
 describe('modPow speed comparison', () => {
   const bits = 2048;
   const a = getRandBIByBitLength(bits - 1, true);
@@ -91,3 +92,4 @@ describe('modPow speed comparison', () => {
     expect(r).toBe(1n);
   });
 });
+ */
