@@ -1,4 +1,4 @@
-import {
+export {
   isEqual,
   sleep,
   lazify,
@@ -8,7 +8,7 @@ import {
   isNode,
 } from './util';
 
-import {
+export {
   getRndInt,
   residue,
   getRandBIByBitLength,
@@ -22,17 +22,17 @@ import {
   isSquare,
 } from './math';
 
-import PCGMinimal from './pcg-minimal';
+export { default as PCGMinimal } from './pcg-minimal';
 
-import {
+export {
   bailliePSW,
   getRandPrimeByBitLength,
   getRandPrimeByRange,
 } from './baillie-psw';
 
-import Rational, { type RationalData } from './fraction';
+export { default as Rational, type RationalData } from './fraction';
 
-import {
+export {
   base64ToU8Arr,
   base64UrlToU8Arr,
   u8ArrToBase64,
@@ -41,81 +41,13 @@ import {
   u8ArrToBI,
 } from './u8arr-ext';
 
-import { Brand } from './brand';
+export { Brand } from './brand';
 
-import Queue from './queue';
+export { default as Queue } from './queue';
 
-const Util = {
-  isEqual,
-  sleep,
-  lazify,
-  parseCSV,
-  getHash,
-  isNode,
-  toBigInt,
+import { wasm_test_func } from './wasm/wasm_part';
+
+export const modPowWasm = (b: bigint, e: bigint, m: bigint) => {
+  const res = wasm_test_func(b.toString(), e.toString(), m.toString());
+  return BigInt(res);
 };
-
-const Calc = {
-  getRndInt,
-  residue,
-  getRandBIByBitLength,
-  getRandBIByRange,
-  modPow,
-  exEuclidean,
-  factorial,
-  rot32,
-  rot32BI,
-  jacobiSymbol,
-  isSquare,
-  bailliePSW,
-  getRandPrimeByBitLength,
-  getRandPrimeByRange,
-};
-
-const U8Ext = {
-  base64ToU8Arr,
-  base64UrlToU8Arr,
-  u8ArrToBase64,
-  u8ArrToBase64Url,
-  BItoU8Arr,
-  u8ArrToBI,
-};
-
-export {
-  isEqual,
-  sleep,
-  lazify,
-  parseCSV,
-  getHash,
-  getRndInt,
-  residue,
-  toBigInt,
-  isNode,
-  getRandBIByBitLength,
-  getRandBIByRange,
-  modPow,
-  exEuclidean,
-  factorial,
-  rot32,
-  rot32BI,
-  jacobiSymbol,
-  isSquare,
-  bailliePSW,
-  getRandPrimeByBitLength,
-  getRandPrimeByRange,
-  base64ToU8Arr,
-  base64UrlToU8Arr,
-  u8ArrToBase64,
-  u8ArrToBase64Url,
-  BItoU8Arr,
-  u8ArrToBI,
-  PCGMinimal,
-  Rational,
-  type RationalData,
-  Queue,
-  Util,
-  Calc,
-  U8Ext,
-  Brand,
-};
-

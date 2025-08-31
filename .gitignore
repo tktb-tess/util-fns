@@ -1,6 +1,7 @@
 node_modules
 .arc
 dist
+oo.ts
 
 # Added by cargo
 /target

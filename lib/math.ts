@@ -9,14 +9,15 @@ export const getRndInt = (min: number, max: number) => {
 };
 
 /**
- * 剰余、ただし正の範囲の値を返す
+ * residue, but returns a positive residue even `n` is negative
  * @param n
- * @param mod
+ * @param modulo
  * @returns
  */
-export const residue = (n: bigint, mod: bigint) => {
-  const ans = n % mod;
-  return ans < 0n ? ans + mod : ans;
+export const residue = (n: bigint, modulo: bigint) => {
+  if (modulo < 0n) modulo *= -1n;
+  const ans = n % modulo;
+  return ans < 0n ? ans + modulo : ans;
 };
 
 /**

@@ -6,8 +6,8 @@ const sameValueZero = (a: unknown, b: unknown) => {
 };
 
 /**
- * オブジェクトが等しいかどうかの真偽値を返す
- * SameValueZero
+ * judges whether two objects has the same (nested) properties \
+ * compares with SameValueZero
  * @returns
  */
 const isEqual = (a: unknown, b: unknown) => {
@@ -51,7 +51,7 @@ const isEqual = (a: unknown, b: unknown) => {
     const aVals = [...a.values()];
     const bVals = [...b.values()];
     if (!isEqual(aVals, bVals)) return false;
-    return true
+    return true;
   }
 
   // Map
@@ -102,7 +102,7 @@ const sleep = (delay: number) => {
 };
 
 /**
- * makes function lazy
+ * makes a function be lazy
  */
 const lazify =
   <ArgT extends unknown[], RetT>(func: (...args: ArgT) => RetT) =>
@@ -164,7 +164,7 @@ const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
 };
 
 /**
- * number を bigint に変換
+ * converts numbers to bigints
  * @param nums
  * @returns
  */
@@ -172,8 +172,20 @@ const toBigInt = (...nums: number[]) => {
   return nums.map((n) => BigInt(n));
 };
 
+/**
+ * whether the environment is Node.js
+ * @returns
+ */
 const isNode = () =>
-  typeof globalThis.process !== 'undefined' &&
-  typeof globalThis.require !== 'undefined';
+  globalThis.process && typeof globalThis.process.version !== 'undefined';
 
-export { isEqual, sleep, lazify, parseCSV, getHash, isNode, toBigInt, sameValueZero };
+export {
+  isEqual,
+  sleep,
+  lazify,
+  parseCSV,
+  getHash,
+  isNode,
+  toBigInt,
+  sameValueZero,
+};
