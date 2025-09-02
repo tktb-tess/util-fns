@@ -1,4 +1,5 @@
 import { wasm_mod_pow } from './wasm/wasm_part';
+import { getInitialized, WasmError } from './wasm-init';
 
 /**
  * min以上, max未満の整数を返す
@@ -70,13 +71,15 @@ export const getRandBIByRange = (min: bigint, max: bigint) => {
 };
 
 /**
- * 冪剰余を計算する
- * @param base 底
- * @param power 指数
- * @param mod 法
- * @returns 冪剰余
+ * calculates modpow
+ * @param base
+ * @param power
+ * @param mod
  */
 export const modPow = (b: bigint, e: bigint, m: bigint) => {
+  if (!getInitialized()) {
+    throw new WasmError(`The function 'modPow' uses wasm, but it hasn't been initialized yet. Please execute 'initWasm' before using 'modPow'.`);
+  }
   const res = wasm_mod_pow(b.toString(), e.toString(), m.toString());
   return BigInt(res);
 };

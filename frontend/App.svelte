@@ -1,14 +1,14 @@
 <script lang="ts">
-  let n = $state(2n);
-  const squared = () => {
-    n = n ** 2n;
-  };
-  const reset = () => {
-    n = 2n;
-  };
+  import { onMount } from 'svelte';
+  import { modPow, initWasm } from '../dist/bundle';
+  let wasmIsAvailable = $state(false);
+
+  onMount(async () => {
+    await initWasm().then(() => {
+      wasmIsAvailable = true;
+    })
+  });
 </script>
 
 <p>Hello, svelte!</p>
-<p>{n}</p>
-<button type="button" onclick={squared}>click</button>
-<button type="button" onclick={reset}>reset</button>
+<p>{wasmIsAvailable ? modPow(7n, 30n, 31n) : null}</p>

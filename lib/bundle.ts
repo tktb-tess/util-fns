@@ -45,3 +45,5 @@ export { Brand } from './brand';
 
 export { default as Queue } from './queue';
 
+export { initWasm, getInitialized } from './wasm-init';
+
