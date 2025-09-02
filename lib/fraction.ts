@@ -7,8 +7,8 @@ export type RationalData = {
 };
 
 export default class Rational {
-  #numerator: bigint;
-  #denominator: bigint;
+  #num: bigint;
+  #denom: bigint;
 
   get [Symbol.toStringTag]() {
     return 'Rational';
@@ -21,14 +21,14 @@ export default class Rational {
    */
   constructor(numerator: bigint, denominator: bigint) {
     if (denominator === 0n) {
-      this.#denominator = 0n;
-      this.#numerator = numerator === 0n ? 0n : numerator > 0n ? 1n : -1n;
+      this.#denom = 0n;
+      this.#num = numerator === 0n ? 0n : numerator > 0n ? 1n : -1n;
     } else if (denominator > 0n) {
-      this.#numerator = numerator;
-      this.#denominator = denominator;
+      this.#num = numerator;
+      this.#denom = denominator;
     } else {
-      this.#numerator = -numerator;
-      this.#denominator = -denominator;
+      this.#num = -numerator;
+      this.#denom = -denominator;
     }
 
     this.#reduction();
@@ -81,10 +81,10 @@ export default class Rational {
    * reduction
    */
   #reduction() {
-    const { gcd } = exEuclidean(this.#numerator, this.#denominator);
+    const { gcd } = exEuclidean(this.#num, this.#denom);
     if (gcd !== 0n) {
-      this.#numerator /= gcd;
-      this.#denominator /= gcd;
+      this.#num /= gcd;
+      this.#denom /= gcd;
     }
   }
 
@@ -93,7 +93,7 @@ export default class Rational {
    * @returns
    */
   minus() {
-    return new Rational(-this.#numerator, this.#denominator);
+    return new Rational(-this.#num, this.#denom);
   }
 
   /**
@@ -101,7 +101,7 @@ export default class Rational {
    * @returns
    */
   inverse() {
-    return new Rational(this.#denominator, this.#numerator);
+    return new Rational(this.#denom, this.#num);
   }
 
   /**
@@ -110,10 +110,10 @@ export default class Rational {
    * @returns
    */
   add(right: Rational) {
-    const denom = this.#denominator * right.#denominator;
+    const denom = this.#denom * right.#denom;
     const num =
-      this.#numerator * right.#denominator +
-      right.#numerator * this.#denominator;
+      this.#num * right.#denom +
+      right.#num * this.#denom;
     return new Rational(num, denom);
   }
 
@@ -132,8 +132,8 @@ export default class Rational {
    * @returns
    */
   multiply(right: Rational) {
-    const denom = this.#denominator * right.#denominator;
-    const num = this.#numerator * right.#numerator;
+    const denom = this.#denom * right.#denom;
+    const num = this.#num * right.#num;
     return new Rational(num, denom);
   }
 
@@ -152,8 +152,8 @@ export default class Rational {
    * @returns
    */
   mediant(right: Rational) {
-    const denom = this.#denominator + right.#denominator;
-    const num = this.#numerator + right.#numerator;
+    const denom = this.#denom + right.#denom;
+    const num = this.#num + right.#num;
     return new Rational(num, denom);
   }
 
@@ -162,7 +162,7 @@ export default class Rational {
    * @returns
    */
   toDecimal() {
-    return Number(this.#numerator) / Number(this.#denominator);
+    return Number(this.#num) / Number(this.#denom);
   }
 
   /**
@@ -170,16 +170,16 @@ export default class Rational {
    * @returns
    */
   toString() {
-    if (this.#numerator === 0n && this.#denominator === 0n) {
+    if (this.#num === 0n && this.#denom === 0n) {
       return `NaN`;
-    } else if (this.#numerator === 0n) {
+    } else if (this.#num === 0n) {
       return `0`;
-    } else if (this.#denominator === 0n) {
-      return this.#numerator < 0n ? `-Infinity` : `Infinity`;
-    } else if (this.#denominator === 1n) {
-      return `${this.#numerator}`;
+    } else if (this.#denom === 0n) {
+      return this.#num < 0n ? `-Infinity` : `Infinity`;
+    } else if (this.#denom === 1n) {
+      return `${this.#num}`;
     } else {
-      return `${this.#numerator}/${this.#denominator}`;
+      return `${this.#num}/${this.#denom}`;
     }
   }
 
@@ -190,7 +190,7 @@ export default class Rational {
   toJSON(): RationalData {
     return {
       type: 'Rational',
-      value: ['0x' + this.#numerator.toString(16), '0x' + this.#denominator.toString(16)]
+      value: ['0x' + this.#num.toString(16), '0x' + this.#denom.toString(16)]
     };
   }
 

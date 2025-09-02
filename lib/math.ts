@@ -71,14 +71,16 @@ export const getRandBIByRange = (min: bigint, max: bigint) => {
 };
 
 /**
- * calculates modpow
+ * calculates modpow \
+ * Please call `initWasm` before call this
  * @param base
  * @param power
  * @param mod
+ * 
  */
 export const modPow = (b: bigint, e: bigint, m: bigint) => {
   if (!getInitialized()) {
-    throw new WasmError(`The function 'modPow' uses wasm, but it hasn't been initialized yet. Please execute 'initWasm' before using 'modPow'.`);
+    throw new WasmError(`The function 'modPow' uses wasm, but it hasn't been initialized yet. Please call 'initWasm' before using 'modPow'.`);
   }
   const res = wasm_mod_pow(b.toString(), e.toString(), m.toString());
   return BigInt(res);
@@ -107,8 +109,8 @@ export const modPow = (base: bigint, power: bigint, mod: bigint) => {
 */
 
 /**
- * 拡張ユークリッドの互除法 \
- * 参考: https://qiita.com/angel_p_57/items/56a902cbd1fe519747bd
+ * extended Euclidean algorithm \
+ * reference: https://qiita.com/angel_p_57/items/56a902cbd1fe519747bd
  *
  * @description `ax - by = gcd(a, b)`
  * @param a
