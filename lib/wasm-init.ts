@@ -22,11 +22,11 @@ const getInitialized = () => initialized;
 class WasmError extends Error {
     
     get name() {
-        return 'InitWasmError';
+        return 'WasmError';
     }
 
     get [Symbol.toStringTag]() {
-        return 'InitWasmError';
+        return WasmError.prototype.name;
     }
 
     constructor(message: string, options?: ErrorOptions) {

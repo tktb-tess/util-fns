@@ -4,7 +4,6 @@ export {
   lazify,
   parseCSV,
   getHash,
-  toBigInt,
   isNode,
 } from './util';
 

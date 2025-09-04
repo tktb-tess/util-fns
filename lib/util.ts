@@ -7,7 +7,7 @@ const sameValueZero = (a: unknown, b: unknown) => {
 
 /**
  * judges whether two objects has the same (nested) properties \
- * compares with SameValueZero
+ * compares with SameValueZero, ignores symbol keys in an object
  * @returns
  */
 const isEqual = (a: unknown, b: unknown) => {
@@ -33,8 +33,8 @@ const isEqual = (a: unknown, b: unknown) => {
   }
 
   // Function
-  if (typeof a === 'function' && typeof b === 'function') {
-    return a.toString() === b.toString();
+  if (typeof a === 'function') {
+    return false;
   }
 
   // Array
@@ -70,10 +70,8 @@ const isEqual = (a: unknown, b: unknown) => {
     type KType = string | symbol;
     const a_ = a as Record<KType, unknown>;
     const b_ = b as Record<KType, unknown>;
-    const aKeys: KType[] = Object.getOwnPropertyNames(a);
-    const bKeys: KType[] = Object.getOwnPropertyNames(b);
-    aKeys.push(...Object.getOwnPropertySymbols(a));
-    bKeys.push(...Object.getOwnPropertySymbols(b));
+    const aKeys: KType[] = Object.keys(a_);
+    const bKeys: KType[] = Object.keys(b_);
 
     for (const aKey of aKeys) {
       const bKey = bKeys.find((bKey) => bKey === aKey);
@@ -89,16 +87,34 @@ const isEqual = (a: unknown, b: unknown) => {
 };
 
 /**
+ * a polyfill for `Promise.withResolvers()`
+ */
+const promiseWithResolvers = <T>() => {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+
+  return {
+    promise,
+    resolve,
+    reject,
+  };
+};
+
+/**
  * sleep
  * @param delay milliseconds
  * @returns
  */
 const sleep = (delay: number) => {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, delay);
-  });
+  const { promise, resolve } = promiseWithResolvers<void>();
+  setTimeout(() => {
+    resolve();
+  }, delay);
+  return promise;
 };
 
 /**
@@ -164,28 +180,10 @@ const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
 };
 
 /**
- * converts numbers to bigints
- * @param nums
- * @returns
- */
-const toBigInt = (...nums: number[]) => {
-  return nums.map((n) => BigInt(n));
-};
-
-/**
  * whether the environment is Node.js
  * @returns
  */
 const isNode = () =>
   globalThis.process && typeof globalThis.process.version !== 'undefined';
 
-export {
-  isEqual,
-  sleep,
-  lazify,
-  parseCSV,
-  getHash,
-  isNode,
-  toBigInt,
-  sameValueZero,
-};
+export { isEqual, sleep, lazify, parseCSV, getHash, isNode, sameValueZero };

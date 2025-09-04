@@ -39,7 +39,7 @@ export default class Rational {
    * @param value 値
    * @param denominatorDigits 分母の桁数 (十進)
    */
-  static fromDecimal(value: number, denominatorDigits = 20) {
+  static fromDecimal(value: number, denominatorDigits = 5) {
     if (Number.isNaN(value)) {
       return new Rational(0n, 0n);
     } else if (Math.abs(value) === Infinity) {
