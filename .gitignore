@@ -4,4 +4,4 @@ dist
 oo.ts
 
 # Added by cargo
-/target
+wasm-part/target
