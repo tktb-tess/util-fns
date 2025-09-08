@@ -5,23 +5,27 @@ import {
   PCGMinimal,
   bailliePSW,
   Queue,
+  getRandBIByBitLength,
+  getRandPrimeByBitLength,
+  modPow,
+  initWasm,
 } from '../dist/bundle';
 
 describe('the function `isEqual` judges type correctly', () => {
   it('distinguish null from object', () => {
     const obj1 = {};
     const obj2 = null;
-    const euality = isEqual(obj1, obj2);
+    const equality = isEqual(obj1, obj2);
     // console.log(euality);
-    expect(euality).toBe(false);
+    expect(equality).toBe(false);
   });
 
   it('each NaN are the same', () => {
     const obj1 = NaN;
     const obj2 = NaN;
-    const euality = isEqual(obj1, obj2);
+    const equality = isEqual(obj1, obj2);
     // console.log(euality);
-    expect(euality).toBe(true);
+    expect(equality).toBe(true);
   });
 
   it('sample data', async () => {
@@ -66,7 +70,8 @@ describe('check toStringTag', () => {
 });
 
 describe('bailliePSW works well', () => {
-  it('Cunningham chain', () => {
+  it('Cunningham chain', async () => {
+    await initWasm();
     const chain = [79910197721667870187016101n];
     for (let i = 0; i < 18; i++) {
       const next = chain[i] * 2n - 1n;
@@ -78,18 +83,12 @@ describe('bailliePSW works well', () => {
   });
 });
 
-/**
-describe('modPow speed comparison', () => {
-  const bits = 2048;
+it(`Fermat's little theorem`, async () => {
+  await initWasm();
+  const bits = 256;
   const a = getRandBIByBitLength(bits - 1, true);
   const p = getRandPrimeByBitLength(bits, true);
-  it('JavaScript', () => {
-    const r = modPow(a, p - 1n, p);
-    expect(r).toBe(1n);
-  });
-  it('WebAssembly', () => {
-    const r = modPowWasm(a, p - 1n, p);
-    expect(r).toBe(1n);
-  });
+
+  const r = modPow(a, p - 1n, p);
+  expect(r).toBe(1n);
 });
- */
