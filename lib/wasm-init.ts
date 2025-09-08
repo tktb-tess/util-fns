@@ -1,4 +1,4 @@
-import init from "./wasm/wasm_part";
+import init from './wasm/wasm_part';
 
 let initialized = false;
 
@@ -7,31 +7,15 @@ let initialized = false;
  * Please call it before calling functions using wasm inside.
  */
 const initWasm = async () => {
-    if (!initialized) {
-        await init();
-        initialized = true;
-    }
+  if (initialized) return;
+  await init();
+  initialized = true;
 };
 
 /**
  * returns bool whether wasm has been initialized
- * @returns 
+ * @returns
  */
 const getInitialized = () => initialized;
 
-class WasmError extends Error {
-    
-    get name() {
-        return 'WasmError';
-    }
-
-    get [Symbol.toStringTag]() {
-        return WasmError.prototype.name;
-    }
-
-    constructor(message: string, options?: ErrorOptions) {
-        super(message, options);
-    }
-}
-
-export { initWasm, getInitialized, WasmError };
+export { initWasm, getInitialized };

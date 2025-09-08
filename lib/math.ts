@@ -1,5 +1,5 @@
 import { wasm_mod_pow } from './wasm/wasm_part';
-import { getInitialized, WasmError } from './wasm-init';
+import { getInitialized } from './wasm-init';
 
 /**
  * min以上, max未満の整数を返す
@@ -7,7 +7,7 @@ import { getInitialized, WasmError } from './wasm-init';
  * @param max
  * @returns 範囲内の整数乱数
  */
-export const getRndInt = (min: number, max: number) => {
+export const getRndInt = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min) + min);
 };
 
@@ -17,7 +17,7 @@ export const getRndInt = (min: number, max: number) => {
  * @param modulo
  * @returns
  */
-export const residue = (n: bigint, modulo: bigint) => {
+export const residue = (n: bigint, modulo: bigint): bigint => {
   if (modulo < 0n) modulo *= -1n;
   const ans = n % modulo;
   return ans < 0n ? ans + modulo : ans;
@@ -29,7 +29,7 @@ export const residue = (n: bigint, modulo: bigint) => {
  * @param fixed true: 固定長, false (デフォルト値): `length` ビット以下の可変ビット長
  *
  */
-export const getRandBIByBitLength = (length: number, fixed = false) => {
+export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
   if (!Number.isFinite(length)) throw Error('`length` is not a valid number');
   if (length <= 0) throw Error('`length` must be positive');
 
@@ -50,7 +50,7 @@ export const getRandBIByBitLength = (length: number, fixed = false) => {
  * @param max 上限
  * @returns `min` 以上 `max` 未満の乱数
  */
-export const getRandBIByRange = (min: bigint, max: bigint) => {
+export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
   if (min >= max) throw Error('rangeError');
   const diff = max - min;
   const bitLength = diff.toString(2).length;
@@ -70,22 +70,28 @@ export const getRandBIByRange = (min: bigint, max: bigint) => {
   return min + res;
 };
 
+const throwWasmError = (funcName: string): never => {
+  throw Error(
+    `The function '${funcName}()' uses wasm internally, but it hasn't been initialized yet.
+Please call 'initWasm()' before using '${funcName}()'.`
+  );
+};
+
 /**
  * calculates modpow \
  * Please call `initWasm` before call this
  * @param base
  * @param power
  * @param mod
- * 
+ *
  */
-export const modPow = (b: bigint, e: bigint, m: bigint) => {
+export const modPow = (b: bigint, e: bigint, m: bigint): bigint => {
   if (!getInitialized()) {
-    throw new WasmError(`The function 'modPow' uses wasm, but it hasn't been initialized yet. Please call 'initWasm' before using 'modPow'.`);
+    throwWasmError('modPow');
   }
   const res = wasm_mod_pow(b.toString(), e.toString(), m.toString());
   return BigInt(res);
 };
-
 
 /* old impl
 export const modPow = (base: bigint, power: bigint, mod: bigint) => {
