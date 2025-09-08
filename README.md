@@ -37,7 +37,7 @@ import { modPow } from '@tktb-tess/util-fns';
 
 const main = async () => {
 
-    const ans = modPow(2n, 16n, 17n); // Error: The function 'modPow()' uses wasm internally, but it hasn't been initialized yet. Please call 'initWasm()' before using 'modPow()'.
+    const ans = modPow(2n, 16n, 17n); // Uncaught Error: The function 'modPow()' uses wasm internally, but it hasn't been initialized yet. Please call 'initWasm()' before using 'modPow()'.
 
     console.log(ans);
 };
