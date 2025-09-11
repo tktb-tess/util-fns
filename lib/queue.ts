@@ -1,4 +1,4 @@
-export default class Queue<T> {
+export class Queue<T> {
   get [Symbol.toStringTag]() {
     return `Queue`;
   }

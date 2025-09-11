@@ -8,8 +8,7 @@ import {
   getRandBIByBitLength,
   getRandPrimeByBitLength,
   modPow,
-  initWasm,
-} from '../dist/bundle';
+} from '@tktb-tess/util-fns';
 
 describe('the function `isEqual` judges type correctly', () => {
   it('distinguish null from object', () => {
@@ -71,7 +70,6 @@ describe('check toStringTag', () => {
 
 describe('bailliePSW works well', () => {
   it('Cunningham chain', async () => {
-    await initWasm();
     const chain = [79910197721667870187016101n];
     for (let i = 0; i < 18; i++) {
       const next = chain[i] * 2n - 1n;
@@ -84,7 +82,6 @@ describe('bailliePSW works well', () => {
 });
 
 it(`Fermat's little theorem`, async () => {
-  await initWasm();
   const bits = 256;
   const a = getRandBIByBitLength(bits - 1, true);
   const p = getRandPrimeByBitLength(bits, true);

@@ -1,7 +1,0 @@
-node_modules
-.arc
-test
-src
-lib
-eslint.config.ts
-./index.html

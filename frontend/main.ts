@@ -1,8 +1,5 @@
-import { mount } from 'svelte';
-import App from './app.svelte';
+import { Rational } from '@tktb-tess/util-fns';
 
-const app = mount(App, {
-  target: document.querySelector('body')!,
-});
+const pi = Rational.fromDecimal(Math.PI);
 
-export default app;
+console.log(pi, pi.toDecimal(), pi.toString());

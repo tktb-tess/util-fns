@@ -6,7 +6,7 @@ export type RationalData = {
   value: [string, string];
 };
 
-export default class Rational {
+export class Rational {
   #num: bigint;
   #denom: bigint;
 

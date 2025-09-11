@@ -9,7 +9,7 @@ const multiplier = 0x5851f42d4c957f2dn;
 /**
  * PCG-XSH-RR (Permuted congruential generator) 乱数のクラス
  */
-export default class PCGMinimal {
+export class PCGMinimal {
   /**
    * length = 2, `[state, increment]`
    */

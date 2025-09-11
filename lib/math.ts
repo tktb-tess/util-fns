@@ -1,6 +1,3 @@
-import { wasm_mod_pow } from './wasm/wasm_part';
-import { getInitialized } from './wasm-init';
-
 /**
  * min以上, max未満の整数を返す
  * @param min
@@ -70,41 +67,25 @@ export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
   return min + res;
 };
 
-const throwWasmError = (funcName: string): never => {
-  throw Error(
-    `The function '${funcName}()' uses wasm internally, but it hasn't been initialized yet.
-Please call 'initWasm()' before using '${funcName}()'.`
-  );
-};
-
 /**
- * calculates modpow \
- * Please call `initWasm` before call this
+ * calculates modpow
  * @param base
  * @param power
  * @param mod
  *
  */
-export const modPow = (b: bigint, e: bigint, m: bigint): bigint => {
-  if (!getInitialized()) {
-    throwWasmError('modPow');
-  }
-  const res = wasm_mod_pow(b.toString(), e.toString(), m.toString());
-  return BigInt(res);
-};
-
-/* old impl
 export const modPow = (base: bigint, power: bigint, mod: bigint) => {
   if (mod < 1n) throw Error('`mod` must be positive');
   if (power < 0n) throw Error('`power` must not be negative');
 
-  while (base < 0n) base += mod;
+  base = residue(base, mod);
+
   if (mod === 1n) return 0n;
   if (base % mod === 1n || base % mod === 0n) return base;
   if (base === mod - 1n) return power & 1n ? mod - 1n : 1n;
 
   let result = 1n;
-  
+
   while (power > 0n) {
     if (power & 1n) result = (result * base) % mod;
     base = (base * base) % mod;
@@ -112,7 +93,6 @@ export const modPow = (base: bigint, power: bigint, mod: bigint) => {
   }
   return result;
 };
-*/
 
 /**
  * extended Euclidean algorithm \
