@@ -67,11 +67,10 @@ const isEqual = (a: unknown, b: unknown) => {
 
   // normal Object
   if (aName === '[object Object]') {
-    type KType = string | symbol;
-    const a_ = a as Record<KType, unknown>;
-    const b_ = b as Record<KType, unknown>;
-    const aKeys: KType[] = Object.keys(a_);
-    const bKeys: KType[] = Object.keys(b_);
+    const a_ = a as Record<string, unknown>;
+    const b_ = b as Record<string, unknown>;
+    const aKeys: readonly string[] = Object.keys(a_);
+    const bKeys: readonly string[] = Object.keys(b_);
 
     for (const aKey of aKeys) {
       const bKey = bKeys.find((bKey) => bKey === aKey);
@@ -110,11 +109,9 @@ const promiseWithResolvers = <T>() => {
  * @returns
  */
 const sleep = (delay: number) => {
-  const { promise, resolve } = promiseWithResolvers<void>();
-  setTimeout(() => {
-    resolve();
-  }, delay);
-  return promise;
+  return new Promise<void>((resolve) => {
+    setTimeout(() => resolve(), delay);
+  });
 };
 
 /**
@@ -169,9 +166,9 @@ const parseCSV = (csv: string) => {
 
 /**
  * returns hash of a string
- * @param str 文字列
- * @param algorithm アルゴリズム
- * @returns ハッシュ値
+ * @param str string
+ * @param algorithm
+ * @returns hash
  */
 const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
   const utf8 = encoder.encode(str);
@@ -184,6 +181,35 @@ const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
  * @returns
  */
 const isNode = () =>
-  globalThis.process && typeof globalThis.process.version !== 'undefined';
+  globalThis.process &&
+  typeof process.version !== 'undefined' &&
+  typeof process.versions.node !== 'undefined';
 
-export { isEqual, sleep, lazify, parseCSV, getHash, isNode, sameValueZero };
+const encodeRFC3986URIComponent = (URIComponent: string | number | boolean) => {
+  const pre = encodeURIComponent(URIComponent);
+
+  return pre.replace(
+    /[!'()*]/g,
+    (letter) => `%${letter.charCodeAt(0).toString(16).toUpperCase()}`
+  );
+};
+
+const decodeRFC3986URIComponent = (encodedURIComponent: string) => {
+  if (encodedURIComponent.includes('+')) {
+    throw Error(`An input string has '+'`);
+  }
+  return decodeURIComponent(encodedURIComponent);
+};
+
+export {
+  isEqual,
+  sleep,
+  lazify,
+  parseCSV,
+  getHash,
+  isNode,
+  sameValueZero,
+  promiseWithResolvers,
+  encodeRFC3986URIComponent,
+  decodeRFC3986URIComponent,
+};

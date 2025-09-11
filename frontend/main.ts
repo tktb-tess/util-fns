@@ -1,5 +1,19 @@
-import { Rational } from '@tktb-tess/util-fns';
+import { Executer } from '@tktb-tess/util-fns';
 
-const pi = Rational.fromDecimal(Math.PI);
+const prom = fetch('/.').then((r) => r.text()).then((t) => {
+    const enc = new TextEncoder().encode(t);
+    return crypto.subtle.digest('SHA-512', enc);
+}).then((dig) => {
+    const st = Array.from(new Uint8Array(dig), (n) => String.fromCharCode(n)).join('');
+    return btoa(st);
+});
 
-console.log(pi, pi.toDecimal(), pi.toString());
+const exec = new Executer(prom);
+
+const sample = Executer.boundary((executer: Executer<string>) => {
+  console.log(executer);
+  const text = executer.peer();
+  console.log(text);
+});
+
+sample(exec);

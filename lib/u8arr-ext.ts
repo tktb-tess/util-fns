@@ -22,10 +22,7 @@ const base64ToU8Arr = (base64: string) => {
 
 const u8ArrToBase64Url = (u8Arr: Uint8Array) => {
   const base64 = u8ArrToBase64(u8Arr);
-  return base64
-    .replaceAll('+', '-')
-    .replaceAll('/', '_')
-    .replaceAll(/=*$/g, '');
+  return base64.replaceAll('+', '-').replaceAll('/', '_').replace(/=*$/g, '');
 };
 
 const base64UrlToU8Arr = (base64Url: string) => {

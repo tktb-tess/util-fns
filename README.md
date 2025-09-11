@@ -2,6 +2,10 @@
 
 Utility functions for personal use
 
+ESM only
+
+Available in both a browser and Node.js environment.
+
 ## Install
 
 ```bash
