@@ -17,6 +17,14 @@ export type PromiseData<T> =
 export class Executer<T> {
   #data: PromiseData<T>;
 
+  static get name(): 'Executer' {
+    return 'Executer';
+  }
+
+  get [Symbol.toStringTag]() {
+    return Executer.name;
+  }
+
   constructor(promise: Promise<T>) {
     this.#data = {
       state: 'pending',
@@ -69,5 +77,3 @@ export class Executer<T> {
     return wrapped;
   }
 }
-
-

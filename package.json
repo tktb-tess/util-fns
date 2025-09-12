@@ -18,7 +18,7 @@
     "import": "./dist/bundle.js"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": "^22.0.0"
   },
   "repository": {
     "type": "git",

@@ -10,8 +10,12 @@ export class Rational {
   #num: bigint;
   #denom: bigint;
 
-  get [Symbol.toStringTag]() {
+  static get name(): 'Rational' {
     return 'Rational';
+  }
+
+  get [Symbol.toStringTag]() {
+    return Rational.name;
   }
 
   /**
@@ -111,9 +115,7 @@ export class Rational {
    */
   add(right: Rational) {
     const denom = this.#denom * right.#denom;
-    const num =
-      this.#num * right.#denom +
-      right.#num * this.#denom;
+    const num = this.#num * right.#denom + right.#num * this.#denom;
     return new Rational(num, denom);
   }
 
@@ -190,7 +192,7 @@ export class Rational {
   toJSON(): RationalData {
     return {
       type: 'Rational',
-      value: ['0x' + this.#num.toString(16), '0x' + this.#denom.toString(16)]
+      value: ['0x' + this.#num.toString(16), '0x' + this.#denom.toString(16)],
     };
   }
 

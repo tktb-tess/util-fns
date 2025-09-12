@@ -15,8 +15,12 @@ export class PCGMinimal {
    */
   readonly #state = new BigUint64Array(2);
 
-  get [Symbol.toStringTag]() {
+  static get name(): 'PCGMinimal' {
     return 'PCGMinimal';
+  }
+
+  get [Symbol.toStringTag]() {
+    return PCGMinimal.name;
   }
 
   /** シード値の配列を返す */

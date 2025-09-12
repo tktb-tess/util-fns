@@ -1,9 +1,14 @@
 export class Queue<T> {
-  get [Symbol.toStringTag]() {
-    return `Queue`;
-  }
   readonly #in: T[];
   readonly #out: T[] = [];
+
+  static get name(): 'Queue' {
+    return 'Queue';
+  }
+
+  get [Symbol.toStringTag]() {
+    return Queue.name;
+  }
 
   constructor(...data: T[]) {
     this.#in = data;
