@@ -18,7 +18,8 @@
     "import": "./dist/bundle.js"
   },
   "engines": {
-    "node": "^22.0.0"
+    "node": "^22",
+    "pnpm": "^10"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
