@@ -1,6 +1,12 @@
 const encoder = new TextEncoder();
 // const decoder = new TextDecoder();
 
+/**
+ * compare two objects with SameValueZero method
+ * @param a 
+ * @param b 
+ * @returns 
+ */
 const sameValueZero = (a: unknown, b: unknown) => {
   return [a].includes(b);
 };
@@ -115,7 +121,7 @@ const sleep = (delay: number) => {
 };
 
 /**
- * makes a function be lazy
+ * makes a function lazy
  */
 const lazify =
   <ArgT extends unknown[], RetT>(func: (...args: ArgT) => RetT) =>
@@ -125,7 +131,7 @@ const lazify =
 
 /**
  * parses CSV string \
- * can deal with CSV with escaping doublequote
+ * able to deal with CSV with escaping doublequote
  * @param csv CSV
  * @returns 2次元配列
  */
