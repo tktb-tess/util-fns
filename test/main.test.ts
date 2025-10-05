@@ -10,7 +10,7 @@ import {
   modPow,
 } from '@tktb-tess/util-fns';
 
-describe('the function `isEqual` judges type correctly', () => {
+describe('the function `isEqual` judges type correctly ...', () => {
   it('distinguish null from object', () => {
     const obj1 = {};
     const obj2 = null;

@@ -46,7 +46,7 @@ export class Executer<T> {
       });
   }
 
-  peer(): T {
+  get(): T {
     switch (this.#data.state) {
       case 'fulfilled': {
         return this.#data.data;

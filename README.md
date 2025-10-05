@@ -15,15 +15,14 @@ npm i @tktb-tess/util-fns
 ### Usage
 
 ```ts
-import { modPow } from '@tktb-tess/util-fns';
+import { modPow, bailliePSW } from '@tktb-tess/util-fns';
 
-const main = async () => {
-    const ans = modPow(2n, 16n, 17n);
+const ans = modPow(2n, 16n, 17n);
+console.log(ans); // 1n
 
-    console.log(ans); // 1n
-};
-
-main();
+// Baillie-PSW primality test
+console.log(bailliePSW(2n)); // true
+console.log(bailliePSW(4n)): // false
 
 ```
 

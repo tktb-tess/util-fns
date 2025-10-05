@@ -4,6 +4,5 @@ export * from './pcg-minimal';
 export * from './baillie-psw';
 export * from './fraction';
 export * from './u8arr-ext';
-export * from './brand';
 export * from './queue';
 export * from './executer';
