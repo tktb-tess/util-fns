@@ -8,6 +8,7 @@ import {
   getRandBIByBitLength,
   getRandPrimeByBitLength,
   modPow,
+  NamedError,
 } from '@tktb-tess/util-fns';
 
 describe('the function `isEqual` judges type correctly ...', () => {
@@ -66,6 +67,11 @@ describe('check toStringTag', () => {
     const q = new Queue(0);
     expect(Object.prototype.toString.call(q)).toBe('[object Queue]');
   });
+
+  it('NamedError', () => {
+    const q = new NamedError('SampleError', 'Wow!');
+    expect(Object.prototype.toString.call(q)).toBe('[object NamedError]');
+  });
 });
 
 describe('bailliePSW works well', () => {
@@ -88,4 +94,27 @@ it(`Fermat's little theorem`, async () => {
 
   const r = modPow(a, p - 1n, p);
   expect(r).toBe(1n);
+});
+
+describe('NamedError', async () => {
+  const e = new NamedError('HttpError', '404 Not Found', { status: 404 });
+
+  // console.log(e.name, '\n', e.message, '\n', e.stack, '\n', e.cause);
+
+  it('stringify', () => {
+    const str = JSON.stringify(e);
+    expect(str).includes('HttpError');
+  });
+
+  it('name', () => {
+    expect(e.name).toBe('HttpError');
+  });
+
+  it('cause', () => {
+    expect(e.cause).toStrictEqual({ status: 404 });
+  });
+
+  it('message', () => {
+    expect(e.message).toBe('404 Not Found');
+  });
 });
