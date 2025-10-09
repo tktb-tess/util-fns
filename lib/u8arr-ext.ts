@@ -49,8 +49,9 @@ export const stringToU8Arr = (str: string, encoding: Encoding) => {
       return b;
     }
     case 'base64url': {
-      if (str.length % 4 > 0) {
-        str = str.concat('='.repeat(4 - str.length));
+      const mod4 = str.length % 4;
+      if (mod4 > 0) {
+        str = str.concat('='.repeat(4 - mod4));
       }
       str = str.replaceAll('-', '+').replaceAll('_', '/');
       const b = Uint8Array.from(atob(str), (s) => s.charCodeAt(0));
