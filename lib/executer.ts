@@ -1,4 +1,3 @@
-// type PromiseState = 'pending' | 'fulfilled' | 'rejected';
 
 export type PromiseData<T> =
   | {
@@ -26,24 +25,26 @@ export class Executer<T> {
   }
 
   constructor(promise: Promise<T>) {
-    this.#data = {
-      state: 'pending',
-      promise,
-    };
-
-    promise
+    const p = promise
       .then((data) => {
         this.#data = {
           state: 'fulfilled',
           data,
         };
+        return data;
       })
       .catch((error: unknown) => {
         this.#data = {
           state: 'rejected',
           error,
         };
+        return Promise.reject(error);
       });
+
+    this.#data = {
+      state: 'pending',
+      promise: p,
+    };
   }
 
   get(): T {
