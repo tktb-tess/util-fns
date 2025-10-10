@@ -120,15 +120,14 @@ describe('NamedError', async () => {
   });
 });
 
-it('float random', () => {
+it('random performance', () => {
   const rng = new PCGMinimal(PCGMinimal.getSeed());
   const frng = new FloatRand(rng);
 
-  console.log(frng.getFloatRand());
-  console.log(frng.getFloatRand());
-  console.log(frng.getFloatRand());
-  console.log(frng.getFloatRand());
-  console.log(frng.getFloatRand());
+  for (const _ of Array(1000000).keys()) {
+    rng.getRand();
+    frng.getFloatRand();
+  }
 });
 
 
