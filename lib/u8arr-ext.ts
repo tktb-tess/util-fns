@@ -24,7 +24,9 @@ export const fromString = (str: string, encoding: Encoding) => {
       return Uint8Array.from(arr);
     }
     case 'binary': {
-      return Uint8Array.from(str, (d) => Number.parseInt(d, 2));
+      const matches = str.matchAll(/.{8}/g);
+      const arr = Array.from(matches, (match) => Number.parseInt(match[0], 2));
+      return Uint8Array.from(arr);
     }
   }
 };

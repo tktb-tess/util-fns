@@ -197,9 +197,9 @@ export const bailliePSW = (n: bigint) => {
 };
 
 /**
- * 指定範囲内の確率的素数を返す
- * @param min 下限
- * @param max 上限
+ * returns probable prime of `min` or more and less than `max`
+ * @param min minimum
+ * @param max upper limit
  * @returns
  */
 export const getRandPrimeByRange = (min: bigint, max: bigint) => {
@@ -216,9 +216,9 @@ export const getRandPrimeByRange = (min: bigint, max: bigint) => {
 };
 
 /**
- * 指定ビットの確率的素数を返す
- * @param bitLength ビット長
- * @param fixed true: 固定長, false (デフォルト値): `length` ビット以下の可変ビット長
+ * returns probable prime of `bitLength` bit
+ * @param bitLength bit length of probable prime
+ * @param fixed `true`: fixed to `bitLength`, `false` (default): variable bit length of `bitLength` or under
  * @returns
  */
 export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {

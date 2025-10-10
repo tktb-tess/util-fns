@@ -10,6 +10,8 @@ import {
   modPow,
   NamedError,
   FloatRand,
+  fromString,
+  toString,
 } from '@tktb-tess/util-fns';
 
 describe('the function `isDeepStrictEqual` judges type correctly ...', () => {
@@ -136,5 +138,30 @@ describe('random performance', () => {
     for (let i = 0; i < LIMIT; ++i) {
       void frng.getF32Rand();
     }
+  });
+});
+
+describe('fromString', () => {
+  const str = `寿限無寿限無五劫の擦り切れ海砂利水魚の水行末・雲来末・風来末食う寝る処に住む処藪ら柑子のぶら柑子パイポ・パイポ・パイポのシューリンガンシューリンガンのグーリンダイグーリンダイのポンポコピーのポンポコナの長久命の長助`;
+  const bin = new TextEncoder().encode(str);
+  it('utf-8', () => {
+    const a = toString(bin, 'utf-8');
+    expect(a).toBe(str);
+  });
+  it('base64', () => {
+    const a = fromString(toString(bin, 'base64'), 'base64');
+    expect(a).toStrictEqual(bin);
+  });
+  it('base64url', () => {
+    const a = fromString(toString(bin, 'base64url'), 'base64url');
+    expect(a).toStrictEqual(bin);
+  });
+  it('hex', () => {
+    const a = fromString(toString(bin, 'hex'), 'hex');
+    expect(a).toStrictEqual(bin);
+  });
+  it('binary', () => {
+    const a = fromString(toString(bin, 'binary'), 'binary');
+    expect(a).toStrictEqual(bin);
   });
 });

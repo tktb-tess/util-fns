@@ -28,8 +28,7 @@ export const isDeepStrictEqual = (a: unknown, b: unknown) => {
     typeof a === 'bigint' ||
     typeof a === 'boolean' ||
     typeof a === 'symbol' ||
-    typeof a === 'undefined' ||
-    a === null
+    a == undefined
   ) {
     return a === b;
   }
@@ -88,7 +87,7 @@ export const isDeepStrictEqual = (a: unknown, b: unknown) => {
   }
 
   // still unavailable
-  throw Error(`comparing these objects is still unavailable: ${a} ${b}`);
+  throw Error(`comparing these objects is unavailable:`, { cause: [a, b] });
 };
 
 /**

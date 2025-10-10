@@ -1,5 +1,5 @@
 /**
- * min以上, max未満の整数を返す
+ * returns an integer of `min` or more and less than `max`
  * @param min
  * @param max
  * @returns 範囲内の整数乱数
@@ -36,16 +36,16 @@ export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
     .join('')
     .slice(0, length);
 
-  if (fixed) result = result.replace(/^./, '1');
+  if (fixed) result = result.replace(/^\d/, '1');
   // console.log(result);
   return BigInt('0b' + result);
 };
 
 /**
- * `min` 以上 `max` 未満の乱数を返す
- * @param min 下限
- * @param max 上限
- * @returns `min` 以上 `max` 未満の乱数
+ * returns a random integer of `min` or more and less than `max`
+ * @param min minimum
+ * @param max upper limit
+ * @returns
  */
 export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
   if (min >= max) throw Error('rangeError');
@@ -53,8 +53,8 @@ export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
   const bitLength = diff.toString(2).length;
 
   const res = (() => {
-    const limit = 100000;
-    for (let i = 0; i < limit; i++) {
+    const LIMIT = 100000;
+    for (let i = 0; i < LIMIT; i++) {
       const res = getRandBIByBitLength(bitLength);
 
       if (res >= modPow(2n, BigInt(bitLength), diff)) {
@@ -184,8 +184,8 @@ const oddPart = (n: bigint) => {
 };
 
 /**
- * 階乗を計算する \
- * 参考: https://qiita.com/AkariLuminous/items/1b2e964ebabde9419224
+ * returns factorial of an input \
+ * ref: https://qiita.com/AkariLuminous/items/1b2e964ebabde9419224
  * @param n 整数
  * @returns 引数の階乗
  */
@@ -200,7 +200,7 @@ export const factorial = (n: bigint) => {
 };
 
 /**
- * 32ビット回転 (bigint)
+ * 32-bit rotate (bigint)
  * @param value 値
  * @param rot 回転数
  * @returns
@@ -210,7 +210,7 @@ export const rot32BI = (value: bigint, rot: bigint) => {
 };
 
 /**
- * 32ビット回転
+ * 32-bit rorate (number)
  * @param value 値
  * @param rot 回転数
  * @returns
@@ -220,7 +220,7 @@ export const rot32 = (value: number, rot: number) => {
 };
 
 /**
- * ヤコビ記号
+ * Jacobi symbol `(a/n)`
  * @param a 正の整数
  * @param n 正の奇数
  */
@@ -228,6 +228,7 @@ export const jacobiSymbol = (a: bigint, n: bigint) => {
   if (n < 1n || n % 2n === 0n) {
     throw Error('`n` is invalid');
   }
+
   while (a < 0n) {
     a += n;
   }
@@ -254,7 +255,7 @@ export const jacobiSymbol = (a: bigint, n: bigint) => {
 };
 
 /**
- * 平方数かの判定
+ * whether an input number is square
  * @param n
  * @returns
  */
