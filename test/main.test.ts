@@ -1,7 +1,7 @@
 import { it, expect, describe } from 'vitest';
 import {
   Rational,
-  isEqual,
+  isDeepStrictEqual,
   PCGMinimal,
   bailliePSW,
   Queue,
@@ -9,13 +9,14 @@ import {
   getRandPrimeByBitLength,
   modPow,
   NamedError,
+  FloatRand
 } from '@tktb-tess/util-fns';
 
-describe('the function `isEqual` judges type correctly ...', () => {
+describe('the function `isDeepStrictEqual` judges type correctly ...', () => {
   it('distinguish null from object', () => {
     const obj1 = {};
     const obj2 = null;
-    const equality = isEqual(obj1, obj2);
+    const equality = isDeepStrictEqual(obj1, obj2);
     // console.log(euality);
     expect(equality).toBe(false);
   });
@@ -23,7 +24,7 @@ describe('the function `isEqual` judges type correctly ...', () => {
   it('each NaN are the same', () => {
     const obj1 = NaN;
     const obj2 = NaN;
-    const equality = isEqual(obj1, obj2);
+    const equality = isDeepStrictEqual(obj1, obj2);
     // console.log(euality);
     expect(equality).toBe(true);
   });
@@ -35,7 +36,7 @@ describe('the function `isEqual` judges type correctly ...', () => {
     );
     const obj2 = structuredClone(obj1);
 
-    const equality = isEqual(obj1, obj2);
+    const equality = isDeepStrictEqual(obj1, obj2);
     // console.log(equality);
     expect(equality).toBe(true);
   });
@@ -48,7 +49,7 @@ describe('the function `isEqual` judges type correctly ...', () => {
     );
     const obj2 = structuredClone(obj1);
 
-    const equality = isEqual(obj1, obj2);
+    const equality = isDeepStrictEqual(obj1, obj2);
     // console.log(equality);
     expect(equality).toBe(true);
   });
@@ -118,3 +119,17 @@ describe('NamedError', async () => {
     expect(e.message).toBe('404 Not Found');
   });
 });
+
+it('float random', () => {
+  const rng = new PCGMinimal(PCGMinimal.getSeed());
+  const frng = new FloatRand(rng);
+
+  console.log(frng.getFloatRand());
+  console.log(frng.getFloatRand());
+  console.log(frng.getFloatRand());
+  console.log(frng.getFloatRand());
+  console.log(frng.getFloatRand());
+});
+
+
+

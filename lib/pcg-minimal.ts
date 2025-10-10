@@ -1,4 +1,5 @@
 import { rot32 } from './math';
+import { RandomGenerator } from './random';
 
 /** シードなし時の静的初期化定数 */
 const initialState = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
@@ -9,19 +10,14 @@ const multiplier = 0x5851f42d4c957f2dn;
 /**
  * PCG-XSH-RR (Permuted congruential generator) 乱数のクラス
  */
-export class PCGMinimal {
+export class PCGMinimal implements RandomGenerator {
   /**
    * length = 2, `[state, increment]`
    */
-  readonly #state = new BigUint64Array(2);
+  readonly #state: BigUint64Array<ArrayBuffer>;
 
-  static get name(): 'PCGMinimal' {
-    return 'PCGMinimal';
-  }
-
-  get [Symbol.toStringTag]() {
-    return PCGMinimal.name;
-  }
+  static readonly name = 'PCGMinimal';
+  readonly [Symbol.toStringTag] = PCGMinimal.name;
 
   /** シード値の配列を返す */
   static getSeed() {
@@ -32,6 +28,8 @@ export class PCGMinimal {
    * @param seeds 64bit整数の配列 (長さ2以上), 省略した場合, 常に同じ値によって初期化される
    */
   constructor(seeds?: BigUint64Array<ArrayBuffer>) {
+    this.#state = new BigUint64Array(2);
+
     if (seeds) {
       this.#state[1] = (seeds[1] << 1n) | 1n;
       this.#step();
@@ -51,14 +49,15 @@ export class PCGMinimal {
   /** 32bit 乱数を返す (内部状態は変わらない) */
   get #value() {
     const prev = this.#state[0];
-    if (!prev) throw Error('empty state');
+    if (prev === undefined) throw Error('empty state');
     const rot = prev >> 59n;
     const shifted = BigInt.asUintN(32, (prev ^ (prev >> 18n)) >> 27n);
     return rot32(Number(shifted), Number(rot));
   }
 
-  /** 内部状態を1進め、乱数を返す \
-   *  普通はこれを使う
+  /**
+   * get random 32bit integer
+   * @returns 
    */
   getRand() {
     this.#step();

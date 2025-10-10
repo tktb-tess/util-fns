@@ -7,3 +7,4 @@ export * from './u8arr-ext';
 export * from './queue';
 export * from './executer';
 export * from './named-error';
+export * from './random';

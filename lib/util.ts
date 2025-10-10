@@ -1,15 +1,11 @@
-
-
-export const encoder = new TextEncoder();
+const encoder = new TextEncoder();
 // const decoder = new TextDecoder();
-
-
 
 /**
  * compare two objects with SameValueZero method
- * @param a 
- * @param b 
- * @returns 
+ * @param a
+ * @param b
+ * @returns
  */
 export const sameValueZero = (a: unknown, b: unknown) => {
   return [a].includes(b);
@@ -197,7 +193,9 @@ export const isNode = () =>
   typeof process.version !== 'undefined' &&
   typeof process.versions.node !== 'undefined';
 
-export const encodeRFC3986URIComponent = (URIComponent: string | number | boolean) => {
+export const encodeRFC3986URIComponent = (
+  URIComponent: string | number | boolean
+) => {
   const pre = encodeURIComponent(URIComponent);
 
   return pre.replace(
@@ -229,4 +227,4 @@ export const gzipDecompress = async (comp: Uint8Array<ArrayBuffer>) => {
   }
   const rs2 = rs.pipeThrough(new DecompressionStream('gzip'));
   return new Response(rs2).bytes();
-}
+};

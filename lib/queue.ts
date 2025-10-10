@@ -2,28 +2,37 @@ export class Queue<T> {
   readonly #in: T[];
   readonly #out: T[] = [];
 
-  static get name(): 'Queue' {
-    return 'Queue';
-  }
+  static readonly name = 'Queue';
 
-  get [Symbol.toStringTag]() {
-    return Queue.name;
-  }
+  readonly [Symbol.toStringTag] = Queue.name;
 
+  /**
+   * Queue
+   * @param data
+   */
   constructor(...data: T[]) {
     this.#in = data;
   }
 
+  /**
+   * enqueue data
+   * @param data 
+   * @returns current queue length
+   */
   enqueue(...data: T[]) {
     this.#in.push(...data);
     return this.#in.length + this.#out.length;
   }
 
+  /**
+   * dequeue data
+   * @returns data in the head
+   */
   dequeue() {
     if (this.#out.length === 0) {
       while (this.#in.length > 0) {
-        const popped = this.#in.pop();
-        if (popped !== undefined) this.#out.push(popped);
+        const popped = this.#in.pop()!;
+        this.#out.push(popped);
       }
     }
 
