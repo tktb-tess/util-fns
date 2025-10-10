@@ -1,7 +1,10 @@
 export interface RandomGenerator {
-  getRand(): number;
-  getBoundedRand(bound: number): number;
-  genRands(step: number, bound?: number): Generator<number, void, unknown>;
+  getU32Rand: () => number;
+  getBoundedU32Rand: (bound: number) => number;
+  genU32Rands: (
+    step: number,
+    bound?: number
+  ) => Generator<number, void, unknown>;
 }
 
 /**
@@ -27,13 +30,13 @@ export class FloatRand {
     this.#rng = rng;
   }
 
-  getFloatRand() {
+  #_getF32Rand() {
     // console.log('start.');
     // console.log(Object.getOwnPropertyNames(this.#rng));
     const lowExp = 0;
     const highExp = 127;
 
-    const r1 = this.#rng.getRand() | 0;
+    const r1 = this.#rng.getU32Rand() | 0;
     // console.log('r1', r1);
 
     // 下位8ビットを指数部の値を決定する乱数として使用する
@@ -56,7 +59,7 @@ export class FloatRand {
         if (i > LIMIT) {
           throw Error('loop exceeded limit');
         }
-        const r2 = this.#rng.getRand() | 0;
+        const r2 = this.#rng.getU32Rand() | 0;
 
         if (r2 === 0) {
           exponent -= 32;
@@ -97,5 +100,18 @@ export class FloatRand {
     ]);
     // console.log('created Uint32Array', buffer);
     return new Float32Array(buffer, byteOffset, length)[0];
+  }
+
+  getF32Rand() {
+    const LIMIT = 100000;
+
+    for (let i = 0; i < LIMIT; ++i) {
+      const r = this.#_getF32Rand();
+      if (r < 1) {
+        return r;
+      }
+    }
+
+    throw Error('exceeded loop limit');
   }
 }

@@ -1,6 +1,6 @@
 export class Queue<T> {
   readonly #in: T[];
-  readonly #out: T[] = [];
+  readonly #out: T[];
 
   static readonly name = 'Queue';
 
@@ -12,6 +12,7 @@ export class Queue<T> {
    */
   constructor(...data: T[]) {
     this.#in = data;
+    this.#out = [];
   }
 
   /**

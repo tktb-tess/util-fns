@@ -1,5 +1,5 @@
 import { rot32 } from './math';
-import { RandomGenerator } from './random';
+import type { RandomGenerator } from './random';
 
 /** シードなし時の静的初期化定数 */
 const initialState = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
@@ -28,16 +28,15 @@ export class PCGMinimal implements RandomGenerator {
    * @param seeds 64bit整数の配列 (長さ2以上), 省略した場合, 常に同じ値によって初期化される
    */
   constructor(seeds?: BigUint64Array<ArrayBuffer>) {
-    this.#state = new BigUint64Array(2);
 
     if (seeds) {
+      this.#state = new BigUint64Array(2);
       this.#state[1] = (seeds[1] << 1n) | 1n;
       this.#step();
       this.#state[0] = seeds[0];
       this.#step();
     } else {
-      this.#state[0] = initialState[0];
-      this.#state[1] = initialState[1];
+      this.#state = new BigUint64Array(initialState);
     }
   }
 
@@ -59,13 +58,13 @@ export class PCGMinimal implements RandomGenerator {
    * get random 32bit integer
    * @returns 
    */
-  getRand() {
+  getU32Rand() {
     this.#step();
     return this.#value;
   }
 
   /** `bound` 未満の乱数を返す */
-  getBoundedRand(bound: number) {
+  getBoundedU32Rand(bound: number) {
     /** 32bit 上限 */
     const limit = 0x100000000;
 
@@ -74,7 +73,7 @@ export class PCGMinimal implements RandomGenerator {
     const threshold = limit % bound;
 
     while (true) {
-      const r = this.getRand();
+      const r = this.getU32Rand();
       if (r >= threshold) return r % bound;
     }
   }
@@ -84,11 +83,11 @@ export class PCGMinimal implements RandomGenerator {
    * @param step
    * @param bound
    */
-  *genRands(step: number, bound?: number) {
+  *genU32Rands(step: number, bound?: number) {
     for (let i = 0; i < step; i++) {
       yield typeof bound === 'number'
-        ? this.getBoundedRand(bound)
-        : this.getRand();
+        ? this.getBoundedU32Rand(bound)
+        : this.getU32Rand();
     }
   }
 }

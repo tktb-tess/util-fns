@@ -9,7 +9,7 @@ import {
   getRandPrimeByBitLength,
   modPow,
   NamedError,
-  FloatRand
+  FloatRand,
 } from '@tktb-tess/util-fns';
 
 describe('the function `isDeepStrictEqual` judges type correctly ...', () => {
@@ -64,6 +64,7 @@ describe('check toStringTag', () => {
     const rng = new PCGMinimal(PCGMinimal.getSeed());
     expect(Object.prototype.toString.call(rng)).toBe('[object PCGMinimal]');
   });
+
   it('Queue', () => {
     const q = new Queue(0);
     expect(Object.prototype.toString.call(q)).toBe('[object Queue]');
@@ -120,15 +121,20 @@ describe('NamedError', async () => {
   });
 });
 
-it('random performance', () => {
+describe('random performance', () => {
   const rng = new PCGMinimal(PCGMinimal.getSeed());
   const frng = new FloatRand(rng);
+  const LIMIT = 2 ** 20;
 
-  for (const _ of Array(1000000).keys()) {
-    rng.getRand();
-    frng.getFloatRand();
-  }
+  it('PCGMinimal', () => {
+    for (let i = 0; i < LIMIT; ++i) {
+      void rng.getU32Rand();
+    }
+  });
+
+  it('PCGMinimal + FloatRand', () => {
+    for (let i = 0; i < LIMIT; ++i) {
+      void frng.getF32Rand();
+    }
+  });
 });
-
-
-
