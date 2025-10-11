@@ -28,6 +28,9 @@ jobs:
           cache: pnpm
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Update npm
+        run: pnpm i -g npm@v11.6
+
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile
 
@@ -39,5 +42,3 @@ jobs:
 
       - name: Publish
         run: pnpm publish --no-git-checks --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
