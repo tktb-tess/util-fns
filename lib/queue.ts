@@ -16,7 +16,7 @@ export class Queue<T> {
 
   /**
    * enqueue data
-   * @param data 
+   * @param data
    * @returns current queue length
    */
   enqueue(...data: T[]) {

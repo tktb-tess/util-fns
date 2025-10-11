@@ -233,4 +233,3 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
 
   throw Error('noPrimesFound');
 };
-

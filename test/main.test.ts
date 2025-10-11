@@ -161,7 +161,7 @@ describe('random performance', () => {
 
 describe('fromString', async () => {
   // const url = 'https://tktb-tess.github.io/commas/out/commas.json';
-  const bin = new TextEncoder().encode('春眠不覺曉 處處聞啼鳥 夜來風雨聲 花落知多少');
+  const bin = new TextEncoder().encode('春眠不覺曉\n處處聞啼鳥\n夜來風雨聲\n花落知多少');
   it('utf-8', () => {
     const a = fromString(toString(bin, 'utf-8'), 'utf-8');
     expect(a).toStrictEqual(bin);
@@ -190,6 +190,9 @@ it('compression', async () => {
   const req2 = req.clone();
   const bin = await req.bytes();
   const _bin2 = await req2.bytes();
-  const bin2 = await decompress(await compress(_bin2, 'gzip'), 'gzip');
-  expect(bin).toStrictEqual(bin2);
+  const comped = await compress(_bin2, 'gzip');
+  console.log('raw', bin.byteLength, 'bytes');
+  console.log('compressed', comped.byteLength, 'bytes');
+  const deco = await decompress(comped, 'gzip');
+  expect(bin).toStrictEqual(deco);
 });
