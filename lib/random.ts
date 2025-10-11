@@ -217,10 +217,10 @@ export class FloatRand {
 }
 
 /** シードなし時の静的初期化定数 */
-const initialState = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
+const pcg_initialState = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
 
 /** 乗数 */
-const multiplier = 0x5851f42d4c957f2dn;
+const pcg_multiplier = 0x5851f42d4c957f2dn;
 
 /**
  * PCG-XSH-RR (Permuted congruential generator) 乱数のクラス
@@ -250,13 +250,13 @@ export class PCGMinimal implements RandomGenerator {
       this.#state[0] = seeds[0];
       this.#step();
     } else {
-      this.#state = new BigUint64Array(initialState);
+      this.#state = new BigUint64Array(pcg_initialState);
     }
   }
 
   /** 内部状態を1サイクル進める */
   #step() {
-    this.#state[0] = this.#state[0] * multiplier + this.#state[1];
+    this.#state[0] = this.#state[0] * pcg_multiplier + this.#state[1];
   }
 
   /** 32bit 乱数を返す (内部状態は変わらない) */
