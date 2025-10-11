@@ -217,7 +217,7 @@ export class FloatRand {
 }
 
 /** シードなし時の静的初期化定数 */
-const pcg_initialState = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
+const pcg_initial_state = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
 
 /** 乗数 */
 const pcg_multiplier = 0x5851f42d4c957f2dn;
@@ -250,7 +250,7 @@ export class PCGMinimal implements RandomGenerator {
       this.#state[0] = seeds[0];
       this.#step();
     } else {
-      this.#state = new BigUint64Array(pcg_initialState);
+      this.#state = BigUint64Array.from(pcg_initial_state);
     }
   }
 
