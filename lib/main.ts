@@ -1,6 +1,5 @@
 export * from './util';
 export * from './math';
-export * from './pcg-minimal';
 export * from './baillie-psw';
 export * from './fraction';
 export * from './u8arr-ext';

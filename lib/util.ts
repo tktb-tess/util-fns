@@ -87,7 +87,9 @@ export const isDeepStrictEqual = (a: unknown, b: unknown) => {
   }
 
   // still unavailable
-  throw Error(`comparing these objects is unavailable:`, { cause: [a, b] });
+  throw Error(`comparing these objects is unavailable: ${a}, ${b}`, {
+    cause: [a, b],
+  });
 };
 
 /**
@@ -125,8 +127,8 @@ export const sleep = (delay: number) => {
  * @returns lazified function
  */
 export const lazify =
-  <ArgT extends unknown[], RetT>(func: (...args: ArgT) => RetT) =>
-  (...args: ArgT) =>
+  <TArg extends unknown[], TRet>(func: (...args: TArg) => TRet) =>
+  (...args: TArg) =>
   () =>
     func(...args);
 
@@ -174,7 +176,7 @@ export const parseCSV = (csv: string) => {
 /**
  * returns hash of a string
  * @param str string
- * @param algorithm
+ * @param algorithm hash algorithm
  * @returns hash
  */
 export const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
@@ -210,20 +212,21 @@ export const decodeRFC3986URIComponent = (encodedURIComponent: string) => {
   return decodeURIComponent(encodedURIComponent);
 };
 
-export const gzipCompress = async (bin: Uint8Array<ArrayBuffer>) => {
-  const rs = new Response(bin).body;
-  if (!rs) {
-    throw Error('could not make stream');
-  }
-  const rs2 = rs.pipeThrough(new CompressionStream('gzip'));
+export const compress = async (
+  bin: Uint8Array<ArrayBuffer>,
+  format: CompressionFormat
+) => {
+  const rs = new Blob([bin]).stream();
+  const rs2 = rs.pipeThrough(new CompressionStream(format));
   return new Response(rs2).bytes();
 };
 
-export const gzipDecompress = async (comp: Uint8Array<ArrayBuffer>) => {
-  const rs = new Response(comp).body;
-  if (!rs) {
-    throw Error('could not make stream');
-  }
-  const rs2 = rs.pipeThrough(new DecompressionStream('gzip'));
+export const decompress = async (
+  comp: Uint8Array<ArrayBuffer>,
+  format: CompressionFormat
+) => {
+  const rs = new Blob([comp]).stream();
+  const rs2 = rs.pipeThrough(new DecompressionStream(format));
   return new Response(rs2).bytes();
 };
+

@@ -11,7 +11,6 @@ export class Rational {
   #denom: bigint;
 
   static readonly name = 'Rational';
-
   readonly [Symbol.toStringTag] = Rational.name;
 
   /**

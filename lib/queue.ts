@@ -3,7 +3,6 @@ export class Queue<T> {
   readonly #out: T[];
 
   static readonly name = 'Queue';
-
   readonly [Symbol.toStringTag] = Queue.name;
 
   /**

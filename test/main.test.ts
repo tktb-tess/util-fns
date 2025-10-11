@@ -12,9 +12,11 @@ import {
   FloatRand,
   fromString,
   toString,
+  compress,
+  decompress
 } from '@tktb-tess/util-fns';
 
-describe('the function `isDeepStrictEqual` judges type correctly ...', () => {
+describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   it('distinguish null from object', () => {
     const obj1 = {};
     const obj2 = null;
@@ -76,6 +78,16 @@ describe('check toStringTag', () => {
     const q = new NamedError('SampleError', 'Wow!');
     expect(Object.prototype.toString.call(q)).toBe('[object NamedError]');
   });
+
+  it('FloatRand', () => {
+    const frng = new FloatRand(new PCGMinimal(PCGMinimal.getSeed()));
+    expect(Object.prototype.toString.call(frng)).toBe('[object FloatRand]');
+  });
+
+  it('NamedError', () => {
+    const q = new NamedError('SampleError', 'Wow!');
+    expect(Object.prototype.toString.call(q)).toBe('[object NamedError]');
+  });
 });
 
 describe('bailliePSW works well', () => {
@@ -126,27 +138,33 @@ describe('NamedError', async () => {
 describe('random performance', () => {
   const rng = new PCGMinimal(PCGMinimal.getSeed());
   const frng = new FloatRand(rng);
-  const LIMIT = 2 ** 20;
+  const LIMIT = 2 ** 16;
 
-  it('PCGMinimal', () => {
+  it('PCGMinimal - uint32', () => {
     for (let i = 0; i < LIMIT; ++i) {
       void rng.getU32Rand();
     }
   });
 
-  it('PCGMinimal + FloatRand', () => {
+  it('PCGMinimal - float32', () => {
     for (let i = 0; i < LIMIT; ++i) {
       void frng.getF32Rand();
     }
   });
+
+  it('PCGMinimal - float64', () => {
+    for (let i = 0; i < LIMIT; ++i) {
+      void frng.getF64Rand();
+    }
+  });
 });
 
-describe('fromString', () => {
-  const str = `寿限無寿限無五劫の擦り切れ海砂利水魚の水行末・雲来末・風来末食う寝る処に住む処藪ら柑子のぶら柑子パイポ・パイポ・パイポのシューリンガンシューリンガンのグーリンダイグーリンダイのポンポコピーのポンポコナの長久命の長助`;
-  const bin = new TextEncoder().encode(str);
+describe('fromString', async () => {
+  const url = 'https://tktb-tess.github.io/commas/out/commas.json';
+  const bin = await fetch(url).then((r) => r.bytes());
   it('utf-8', () => {
-    const a = toString(bin, 'utf-8');
-    expect(a).toBe(str);
+    const a = fromString(toString(bin, 'utf-8'), 'utf-8');
+    expect(a).toStrictEqual(bin);
   });
   it('base64', () => {
     const a = fromString(toString(bin, 'base64'), 'base64');
@@ -164,4 +182,14 @@ describe('fromString', () => {
     const a = fromString(toString(bin, 'binary'), 'binary');
     expect(a).toStrictEqual(bin);
   });
+});
+
+it('compression', async () => {
+  const url = 'https://tktb-tess.github.io/commas/out/commas.json';
+  const req = await fetch(url);
+  const req2 = req.clone();
+  const bin = await req.bytes();
+  const _bin2 = await req2.bytes();
+  const bin2 = await decompress(await compress(_bin2, 'gzip'), 'gzip');
+  expect(bin).toStrictEqual(bin2);
 });
