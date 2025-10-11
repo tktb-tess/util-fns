@@ -51,7 +51,7 @@ const DChooser = (n: bigint): [bigint, bigint] => {
     D *= -1n;
 
     if (D === -15n && isSquare(n)) {
-      //The value of D isn't 0, but we are just communicating
+      // The value of D isn't 0, but we are just communicating
       // that we have found a square
       return [0n, 0n];
     }
@@ -100,7 +100,7 @@ const UVSubscript = (
 };
 
 /**
- * Lucasの強素数判定法
+ * Lucas strong probably-prime test
  * @param n
  * @param D
  * @param P
@@ -138,11 +138,11 @@ const lucasSPP = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
 };
 
 /**
- * Baillie-PSW素数判定法
- * @param n 判定したい整数
- * @returns
+ * Baillie-PSW primality test
+ * @param n tested integer
+ * @returns whether `n` is a prime
  */
-const bailliePSW = (n: bigint) => {
+export const bailliePSW = (n: bigint) => {
   if (n <= 1n) return false;
   if (n % 2n === 0n) return n === 2n;
 
@@ -191,18 +191,18 @@ const bailliePSW = (n: bigint) => {
   if (j === 0n) return false;
 
   const Q = (1n - D) / 4n;
-  //console.log('n:', n, 'D:', D, 'P:', 1n, 'Q:', Q);
+  // console.log('n:', n, 'D:', D, 'P:', 1n, 'Q:', Q);
   return lucasSPP(n, D, 1n, Q);
   // console.log(n, 'Lucas-Strong', res);
 };
 
 /**
- * 指定範囲内の確率的素数を返す
- * @param min 下限
- * @param max 上限
+ * returns probable prime of `min` or more and less than `max`
+ * @param min minimum
+ * @param max upper limit
  * @returns
  */
-const getRandPrimeByRange = (min: bigint, max: bigint) => {
+export const getRandPrimeByRange = (min: bigint, max: bigint) => {
   const LIMIT = 100000;
   if (max < 2n) {
     throw Error('noPrimesFound');
@@ -216,12 +216,12 @@ const getRandPrimeByRange = (min: bigint, max: bigint) => {
 };
 
 /**
- * 指定ビットの確率的素数を返す
- * @param bitLength ビット長
- * @param fixed true: 固定長, false (デフォルト値): `length` ビット以下の可変ビット長
+ * returns probable prime of `bitLength` bit
+ * @param bitLength bit length of probable prime
+ * @param fixed `true`: fixed to `bitLength`, `false` (default): variable bit length of `bitLength` or under
  * @returns
  */
-const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
+export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
   const LIMIT = 100000;
   if (bitLength < 2) {
     throw Error('noPrimesFound');
@@ -234,4 +234,3 @@ const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
   throw Error('noPrimesFound');
 };
 
-export { bailliePSW, getRandPrimeByBitLength, getRandPrimeByRange };

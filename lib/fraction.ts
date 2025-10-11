@@ -10,16 +10,11 @@ export class Rational {
   #num: bigint;
   #denom: bigint;
 
-  static get name(): 'Rational' {
-    return 'Rational';
-  }
-
-  get [Symbol.toStringTag]() {
-    return Rational.name;
-  }
+  static readonly name = 'Rational';
+  readonly [Symbol.toStringTag] = Rational.name;
 
   /**
-   *
+   * fraction (rational) class
    * @param numerator
    * @param denominator
    */
@@ -40,8 +35,8 @@ export class Rational {
 
   /**
    * generates fraction from `number` decimal using continued fraction
-   * @param value 値
-   * @param denominatorDigits 分母の桁数 (十進)
+   * @param value decimal
+   * @param denominatorDigits limit of digits of denominator
    */
   static fromDecimal(value: number, denominatorDigits = 5) {
     if (Number.isNaN(value)) {
@@ -59,7 +54,8 @@ export class Rational {
     }
     value = 1 / fracPart;
 
-    // 漸化式 参考: https://tsujimotter.hatenablog.com/entry/continued-fraction
+    // 漸化式
+    // 参考: https://tsujimotter.hatenablog.com/entry/continued-fraction
     // p_0 = 1, p_1 = a_0, p_{n+2} = a_{n+1} * p_{n+1} + p_n
     // q_0 = 0, q_1 = 1,   q_{n+2} = a_{n+1} * q_{n+1} + q_n
     let [p_n, p_n1] = [1n, a_0];
@@ -149,9 +145,10 @@ export class Rational {
   }
 
   /**
-   * mediant
-   * @param right
-   * @returns
+   * returns mediant
+   * @param this `a/b`
+   * @param right `c/d`
+   * @returns `(a+c)/(b+d)`
    */
   mediant(right: Rational) {
     const denom = this.#denom + right.#denom;
@@ -160,16 +157,16 @@ export class Rational {
   }
 
   /**
-   * `number` 型の小数に変換
-   * @returns
+   * returns `number` type decimal
+   * @returns decimal
    */
   toDecimal() {
     return Number(this.#num) / Number(this.#denom);
   }
 
   /**
-   * 分数の文字列に変換
-   * @returns
+   * returns `'numerator/denominator'`
+   * @returns string form
    */
   toString() {
     if (this.#num === 0n && this.#denom === 0n) {
@@ -196,22 +193,37 @@ export class Rational {
     };
   }
 
+  /**
+   * makes instance from RationalData
+   * @param data
+   * @returns
+   */
   static fromData(data: RationalData) {
     const num = BigInt(data.value[0]);
     const denom = BigInt(data.value[1]);
     return new Rational(num, denom);
   }
 
-  static parse(text: string) {
-    const parsed = JSON.parse(text);
-    const { type, value } = parsed;
-    if (type !== 'Fraction') throw Error('cannot parse');
-    if (Array.isArray(value) && value.length === 2) {
-      const num = BigInt(value[0]);
-      const denom = BigInt(value[1]);
-      return new Rational(num, denom);
-    } else {
+  /**
+   * pases string whose form is `'numerator/denominator'`
+   * @param fracStr
+   * @returns
+   */
+  static parse(fracStr: string) {
+    const regex = /^\s*(\d+)\s*\/\s*(\d+)\s*$/;
+    const res = regex.exec(fracStr);
+
+    if (!res) {
       throw Error('cannot parse');
     }
+
+    const n_ = res.at(1);
+    const d_ = res.at(2);
+
+    if (!n_ || !d_) {
+      throw Error('cannot parse');
+    }
+
+    return new Rational(BigInt(n_), BigInt(d_));
   }
 }

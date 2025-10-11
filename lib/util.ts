@@ -3,11 +3,11 @@ const encoder = new TextEncoder();
 
 /**
  * compare two objects with SameValueZero method
- * @param a 
- * @param b 
- * @returns 
+ * @param a
+ * @param b
+ * @returns
  */
-const sameValueZero = (a: unknown, b: unknown) => {
+export const sameValueZero = (a: unknown, b: unknown) => {
   return [a].includes(b);
 };
 
@@ -16,7 +16,7 @@ const sameValueZero = (a: unknown, b: unknown) => {
  * compares with SameValueZero, ignores symbol keys in an object
  * @returns
  */
-const isEqual = (a: unknown, b: unknown) => {
+export const isDeepStrictEqual = (a: unknown, b: unknown) => {
   if (typeof a !== typeof b) return false;
 
   const aName = Object.prototype.toString.call(a);
@@ -28,8 +28,7 @@ const isEqual = (a: unknown, b: unknown) => {
     typeof a === 'bigint' ||
     typeof a === 'boolean' ||
     typeof a === 'symbol' ||
-    typeof a === 'undefined' ||
-    a === null
+    a == undefined
   ) {
     return a === b;
   }
@@ -47,7 +46,7 @@ const isEqual = (a: unknown, b: unknown) => {
   if (Array.isArray(a) && Array.isArray(b)) {
     if (a.length !== b.length) return false;
     for (let i = 0; i < a.length; i++) {
-      if (!isEqual(a[i], b[i])) return false;
+      if (!isDeepStrictEqual(a[i], b[i])) return false;
     }
     return true;
   }
@@ -56,7 +55,7 @@ const isEqual = (a: unknown, b: unknown) => {
   if (a instanceof Set && b instanceof Set) {
     const aVals = [...a.values()];
     const bVals = [...b.values()];
-    if (!isEqual(aVals, bVals)) return false;
+    if (!isDeepStrictEqual(aVals, bVals)) return false;
     return true;
   }
 
@@ -64,10 +63,10 @@ const isEqual = (a: unknown, b: unknown) => {
   if (a instanceof Map && b instanceof Map) {
     const aKeys = [...a.keys()];
     const bKeys = [...b.keys()];
-    if (!isEqual(aKeys, bKeys)) return false;
+    if (!isDeepStrictEqual(aKeys, bKeys)) return false;
     const aVals = [...a.values()];
     const bVals = [...b.values()];
-    if (!isEqual(aVals, bVals)) return false;
+    if (!isDeepStrictEqual(aVals, bVals)) return false;
     return true;
   }
 
@@ -82,19 +81,21 @@ const isEqual = (a: unknown, b: unknown) => {
       const bKey = bKeys.find((bKey) => bKey === aKey);
       if (bKey === undefined) return false;
       const [aVal, bVal] = [a_[aKey], b_[bKey]];
-      if (!isEqual(aVal, bVal)) return false;
+      if (!isDeepStrictEqual(aVal, bVal)) return false;
     }
     return true;
   }
 
   // still unavailable
-  throw Error(`comparing these objects is still unavailable: ${a} ${b}`);
+  throw Error(`comparing these objects is unavailable: ${a}, ${b}`, {
+    cause: [a, b],
+  });
 };
 
 /**
  * a polyfill for `Promise.withResolvers()`
  */
-const promiseWithResolvers = <T>() => {
+export const promiseWithResolvers = <T>() => {
   let resolve!: (value: T | PromiseLike<T>) => void;
   let reject!: (reason?: unknown) => void;
   const promise = new Promise<T>((res, rej) => {
@@ -114,7 +115,7 @@ const promiseWithResolvers = <T>() => {
  * @param delay milliseconds
  * @returns
  */
-const sleep = (delay: number) => {
+export const sleep = (delay: number) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => resolve(), delay);
   });
@@ -122,10 +123,12 @@ const sleep = (delay: number) => {
 
 /**
  * makes a function lazy
+ * @param func function
+ * @returns lazified function
  */
-const lazify =
-  <ArgT extends unknown[], RetT>(func: (...args: ArgT) => RetT) =>
-  (...args: ArgT) =>
+export const lazify =
+  <TArg extends unknown[], TRet>(func: (...args: TArg) => TRet) =>
+  (...args: TArg) =>
   () =>
     func(...args);
 
@@ -133,9 +136,9 @@ const lazify =
  * parses CSV string \
  * able to deal with CSV with escaping doublequote
  * @param csv CSV
- * @returns 2次元配列
+ * @returns parsed 2D array of string
  */
-const parseCSV = (csv: string) => {
+export const parseCSV = (csv: string) => {
   const rows: string[][] = [];
   let row: string[] = [];
   let currentField = '';
@@ -173,10 +176,10 @@ const parseCSV = (csv: string) => {
 /**
  * returns hash of a string
  * @param str string
- * @param algorithm
+ * @param algorithm hash algorithm
  * @returns hash
  */
-const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
+export const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
   const utf8 = encoder.encode(str);
   const digest = await crypto.subtle.digest(algorithm, utf8);
   return new Uint8Array(digest);
@@ -186,12 +189,19 @@ const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
  * whether the environment is Node.js
  * @returns
  */
-const isNode = () =>
+export const isNode = () =>
   globalThis.process &&
   typeof process.version !== 'undefined' &&
   typeof process.versions.node !== 'undefined';
 
-const encodeRFC3986URIComponent = (URIComponent: string | number | boolean) => {
+/**
+ * Encodes a text string as a valid component of a URI and compatible with RFC3986.
+ * @param URIComponent
+ * @returns
+ */
+export const encodeRFC3986URIComponent = (
+  URIComponent: string | number | boolean
+) => {
   const pre = encodeURIComponent(URIComponent);
 
   return pre.replace(
@@ -200,22 +210,33 @@ const encodeRFC3986URIComponent = (URIComponent: string | number | boolean) => {
   );
 };
 
-const decodeRFC3986URIComponent = (encodedURIComponent: string) => {
+/**
+ * Gets the unencoded version of an RFC3986-compatible encoded component of a URI.
+ * @param encodedURIComponent
+ * @throws An input string has '+'
+ * @returns
+ */
+export const decodeRFC3986URIComponent = (encodedURIComponent: string) => {
   if (encodedURIComponent.includes('+')) {
     throw Error(`An input string has '+'`);
   }
   return decodeURIComponent(encodedURIComponent);
 };
 
-export {
-  isEqual,
-  sleep,
-  lazify,
-  parseCSV,
-  getHash,
-  isNode,
-  sameValueZero,
-  promiseWithResolvers,
-  encodeRFC3986URIComponent,
-  decodeRFC3986URIComponent,
+export const compress = async (
+  bin: Uint8Array<ArrayBuffer>,
+  format: CompressionFormat
+) => {
+  const rs = new Blob([bin]).stream();
+  const rs2 = rs.pipeThrough(new CompressionStream(format));
+  return new Response(rs2).bytes();
+};
+
+export const decompress = async (
+  comp: Uint8Array<ArrayBuffer>,
+  format: CompressionFormat
+) => {
+  const rs = new Blob([comp]).stream();
+  const rs2 = rs.pipeThrough(new DecompressionStream(format));
+  return new Response(rs2).bytes();
 };

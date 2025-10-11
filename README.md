@@ -2,7 +2,7 @@
 
 Utility functions for personal use
 
-ESM only
+This is an ESM-only package.
 
 Available in both a browser and Node.js environment.
 

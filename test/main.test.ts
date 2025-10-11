@@ -1,7 +1,7 @@
 import { it, expect, describe } from 'vitest';
 import {
   Rational,
-  isEqual,
+  isDeepStrictEqual,
   PCGMinimal,
   bailliePSW,
   Queue,
@@ -9,13 +9,18 @@ import {
   getRandPrimeByBitLength,
   modPow,
   NamedError,
+  FloatRand,
+  fromString,
+  toString,
+  compress,
+  decompress
 } from '@tktb-tess/util-fns';
 
-describe('the function `isEqual` judges type correctly ...', () => {
+describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   it('distinguish null from object', () => {
     const obj1 = {};
     const obj2 = null;
-    const equality = isEqual(obj1, obj2);
+    const equality = isDeepStrictEqual(obj1, obj2);
     // console.log(euality);
     expect(equality).toBe(false);
   });
@@ -23,7 +28,7 @@ describe('the function `isEqual` judges type correctly ...', () => {
   it('each NaN are the same', () => {
     const obj1 = NaN;
     const obj2 = NaN;
-    const equality = isEqual(obj1, obj2);
+    const equality = isDeepStrictEqual(obj1, obj2);
     // console.log(euality);
     expect(equality).toBe(true);
   });
@@ -35,7 +40,7 @@ describe('the function `isEqual` judges type correctly ...', () => {
     );
     const obj2 = structuredClone(obj1);
 
-    const equality = isEqual(obj1, obj2);
+    const equality = isDeepStrictEqual(obj1, obj2);
     // console.log(equality);
     expect(equality).toBe(true);
   });
@@ -48,7 +53,7 @@ describe('the function `isEqual` judges type correctly ...', () => {
     );
     const obj2 = structuredClone(obj1);
 
-    const equality = isEqual(obj1, obj2);
+    const equality = isDeepStrictEqual(obj1, obj2);
     // console.log(equality);
     expect(equality).toBe(true);
   });
@@ -63,9 +68,20 @@ describe('check toStringTag', () => {
     const rng = new PCGMinimal(PCGMinimal.getSeed());
     expect(Object.prototype.toString.call(rng)).toBe('[object PCGMinimal]');
   });
+
   it('Queue', () => {
     const q = new Queue(0);
     expect(Object.prototype.toString.call(q)).toBe('[object Queue]');
+  });
+
+  it('NamedError', () => {
+    const q = new NamedError('SampleError', 'Wow!');
+    expect(Object.prototype.toString.call(q)).toBe('[object NamedError]');
+  });
+
+  it('FloatRand', () => {
+    const frng = new FloatRand(new PCGMinimal(PCGMinimal.getSeed()));
+    expect(Object.prototype.toString.call(frng)).toBe('[object FloatRand]');
   });
 
   it('NamedError', () => {
@@ -117,4 +133,63 @@ describe('NamedError', async () => {
   it('message', () => {
     expect(e.message).toBe('404 Not Found');
   });
+});
+
+describe('random performance', () => {
+  const rng = new PCGMinimal(PCGMinimal.getSeed());
+  const frng = new FloatRand(rng);
+  const LIMIT = 2 ** 16;
+
+  it('PCGMinimal - uint32', () => {
+    for (let i = 0; i < LIMIT; ++i) {
+      void rng.getU32Rand();
+    }
+  });
+
+  it('PCGMinimal - float32', () => {
+    for (let i = 0; i < LIMIT; ++i) {
+      void frng.getF32Rand();
+    }
+  });
+
+  it('PCGMinimal - float64', () => {
+    for (let i = 0; i < LIMIT; ++i) {
+      void frng.getF64Rand();
+    }
+  });
+});
+
+describe('fromString', async () => {
+  // const url = 'https://tktb-tess.github.io/commas/out/commas.json';
+  const bin = new TextEncoder().encode('春眠不覺曉 處處聞啼鳥 夜來風雨聲 花落知多少');
+  it('utf-8', () => {
+    const a = fromString(toString(bin, 'utf-8'), 'utf-8');
+    expect(a).toStrictEqual(bin);
+  });
+  it('base64', () => {
+    const a = fromString(toString(bin, 'base64'), 'base64');
+    expect(a).toStrictEqual(bin);
+  });
+  it('base64url', () => {
+    const a = fromString(toString(bin, 'base64url'), 'base64url');
+    expect(a).toStrictEqual(bin);
+  });
+  it('hex', () => {
+    const a = fromString(toString(bin, 'hex'), 'hex');
+    expect(a).toStrictEqual(bin);
+  });
+  it('binary', () => {
+    const a = fromString(toString(bin, 'binary'), 'binary');
+    expect(a).toStrictEqual(bin);
+  });
+});
+
+it('compression', async () => {
+  const url = 'https://tktb-tess.github.io/commas/out/commas.json';
+  const req = await fetch(url);
+  const req2 = req.clone();
+  const bin = await req.bytes();
+  const _bin2 = await req2.bytes();
+  const bin2 = await decompress(await compress(_bin2, 'gzip'), 'gzip');
+  expect(bin).toStrictEqual(bin2);
 });

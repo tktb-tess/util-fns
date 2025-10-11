@@ -1,6 +1,6 @@
 {
   "name": "@tktb-tess/util-fns",
-  "version": "0.7.0",
+  "version": "0.8.0-alpha.0",
   "description": "Utility functions for personal use",
   "files": [
     "dist"
@@ -12,7 +12,8 @@
   "types": "./dist/main.d.ts",
   "exports": {
     "types": "./dist/main.d.ts",
-    "import": "./dist/bundle.js"
+    "import": "./dist/bundle.js",
+    "require": null
   },
   "engines": {
     "node": "^22",

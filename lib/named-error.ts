@@ -4,12 +4,10 @@ interface NamedError<EName extends string> {
   readonly cause?: unknown;
 }
 
-const name_ = 'NamedError';
-
 class NamedError<EName extends string> extends Error {
   override readonly name: EName;
-  static override readonly name = name_;
-  readonly [Symbol.toStringTag] = name_;
+  static override readonly name = 'NamedError';
+  readonly [Symbol.toStringTag] = NamedError.name;
 
   constructor(name: EName, message: string, cause?: unknown) {
     super(message, { cause });
