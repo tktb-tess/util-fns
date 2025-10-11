@@ -194,6 +194,11 @@ export const isNode = () =>
   typeof process.version !== 'undefined' &&
   typeof process.versions.node !== 'undefined';
 
+/**
+ * Encodes a text string as a valid component of a URI and compatible with RFC3986.
+ * @param URIComponent
+ * @returns
+ */
 export const encodeRFC3986URIComponent = (
   URIComponent: string | number | boolean
 ) => {
@@ -205,6 +210,12 @@ export const encodeRFC3986URIComponent = (
   );
 };
 
+/**
+ * Gets the unencoded version of an RFC3986-compatible encoded component of a URI.
+ * @param encodedURIComponent
+ * @throws An input string has '+'
+ * @returns
+ */
 export const decodeRFC3986URIComponent = (encodedURIComponent: string) => {
   if (encodedURIComponent.includes('+')) {
     throw Error(`An input string has '+'`);
@@ -229,4 +240,3 @@ export const decompress = async (
   const rs2 = rs.pipeThrough(new DecompressionStream(format));
   return new Response(rs2).bytes();
 };
-

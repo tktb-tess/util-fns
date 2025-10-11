@@ -160,8 +160,8 @@ describe('random performance', () => {
 });
 
 describe('fromString', async () => {
-  const url = 'https://tktb-tess.github.io/commas/out/commas.json';
-  const bin = await fetch(url).then((r) => r.bytes());
+  // const url = 'https://tktb-tess.github.io/commas/out/commas.json';
+  const bin = new TextEncoder().encode('春眠不覺曉 處處聞啼鳥 夜來風雨聲 花落知多少');
   it('utf-8', () => {
     const a = fromString(toString(bin, 'utf-8'), 'utf-8');
     expect(a).toStrictEqual(bin);
