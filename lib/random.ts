@@ -43,12 +43,14 @@ const ctz_u64 = (n: bigint) => {
 
 export class FloatRand {
   readonly #rng: RandomGenerator;
+  readonly #rng2: RandomGenerator;
 
   static readonly name = 'FloatRand';
   readonly [Symbol.toStringTag] = FloatRand.name;
 
-  constructor(rng: RandomGenerator) {
+  constructor(rng: RandomGenerator, rng2: RandomGenerator) {
     this.#rng = rng;
+    this.#rng2 = rng2;
   }
 
   #_getF32Rand() {
@@ -135,7 +137,7 @@ export class FloatRand {
 
     const r1 = (() => {
       const ra = BigInt(this.#rng.getU32Rand() | 0);
-      const rb = BigInt(this.#rng.getU32Rand() | 0);
+      const rb = BigInt(this.#rng2.getU32Rand() | 0);
       return (ra << 32n) | rb;
     })();
 
@@ -144,7 +146,7 @@ export class FloatRand {
     let exponent = highExp - 1n;
 
     // 下位ビットの0の数をカウントしその数だけデクリメントし終了
-    // 0だったら8ビットデクリメント後、ループに入る
+    // 0だったら11ビットデクリメント後、ループに入る
     if (under11 === 0n) {
       exponent -= 11n;
 
@@ -160,7 +162,7 @@ export class FloatRand {
         }
         const r2 = (() => {
           const ra = BigInt(this.#rng.getU32Rand() | 0);
-          const rb = BigInt(this.#rng.getU32Rand() | 0);
+          const rb = BigInt(this.#rng2.getU32Rand() | 0);
           return (ra << 32n) | rb;
         })();
 

@@ -13,7 +13,7 @@ import {
   fromString,
   toString,
   compress,
-  decompress
+  decompress,
 } from '@tktb-tess/util-fns';
 
 describe('the function `isDeepStrictEqual` judges type correctly...', () => {
@@ -80,7 +80,10 @@ describe('check toStringTag', () => {
   });
 
   it('FloatRand', () => {
-    const frng = new FloatRand(new PCGMinimal(PCGMinimal.getSeed()));
+    const frng = new FloatRand(
+      new PCGMinimal(PCGMinimal.getSeed()),
+      new PCGMinimal(PCGMinimal.getSeed())
+    );
     expect(Object.prototype.toString.call(frng)).toBe('[object FloatRand]');
   });
 
@@ -137,7 +140,8 @@ describe('NamedError', async () => {
 
 describe('random performance', () => {
   const rng = new PCGMinimal(PCGMinimal.getSeed());
-  const frng = new FloatRand(rng);
+  const rng2 = new PCGMinimal(PCGMinimal.getSeed());
+  const frng = new FloatRand(rng, rng2);
   const LIMIT = 2 ** 16;
 
   it('PCGMinimal - uint32', () => {
@@ -161,7 +165,9 @@ describe('random performance', () => {
 
 describe('fromString', async () => {
   // const url = 'https://tktb-tess.github.io/commas/out/commas.json';
-  const bin = new TextEncoder().encode('春眠不覺曉\n處處聞啼鳥\n夜來風雨聲\n花落知多少');
+  const bin = new TextEncoder().encode(
+    '春眠不覺曉\n處處聞啼鳥\n夜來風雨聲\n花落知多少'
+  );
   it('utf-8', () => {
     const a = fromString(toString(bin, 'utf-8'), 'utf-8');
     expect(a).toStrictEqual(bin);
@@ -178,8 +184,12 @@ describe('fromString', async () => {
     const a = fromString(toString(bin, 'hex'), 'hex');
     expect(a).toStrictEqual(bin);
   });
-  it('binary', () => {
-    const a = fromString(toString(bin, 'binary'), 'binary');
+  it('oct', () => {
+    const a = fromString(toString(bin, 'oct'), 'oct');
+    expect(a).toStrictEqual(bin);
+  });
+  it('bin', () => {
+    const a = fromString(toString(bin, 'bin'), 'bin');
     expect(a).toStrictEqual(bin);
   });
 });

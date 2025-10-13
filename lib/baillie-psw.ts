@@ -63,7 +63,7 @@ const DChooser = (n: bigint): [bigint, bigint] => {
 /**
  * `n` を法として `x` を2で割った値 (`n` は奇数を想定)
  * @param x
- * @param n
+ * @param n 奇数
  * @returns
  */
 const div2Mod = (x: bigint, n: bigint) => {

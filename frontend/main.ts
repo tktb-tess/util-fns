@@ -1,14 +1,10 @@
 import * as All from '@tktb-tess/util-fns';
 
-const app = document.getElementById('app');
-
-if (!(app instanceof HTMLDivElement)) {
-  throw Error('!');
-}
+const app = document.getElementById('app')!;
 
 app.textContent = 'Hello!';
 
-Object.defineProperty(window, 'utilFns', {
+Object.defineProperty(window, 'util', {
   value: All,
   enumerable: true,
 });
