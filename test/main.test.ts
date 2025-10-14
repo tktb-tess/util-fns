@@ -1,26 +1,11 @@
 import { it, expect, describe } from 'vitest';
-import {
-  Rational,
-  isDeepStrictEqual,
-  PCGMinimal,
-  bailliePSW,
-  Queue,
-  getRandBIByBitLength,
-  getRandPrimeByBitLength,
-  modPow,
-  NamedError,
-  FloatRand,
-  fromString,
-  toString,
-  compress,
-  decompress,
-} from '@tktb-tess/util-fns';
+import * as U from '@tktb-tess/util-fns';
 
 describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   it('distinguish null from object', () => {
     const obj1 = {};
     const obj2 = null;
-    const equality = isDeepStrictEqual(obj1, obj2);
+    const equality = U.isDeepStrictEqual(obj1, obj2);
     // console.log(euality);
     expect(equality).toBe(false);
   });
@@ -28,7 +13,7 @@ describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   it('each NaN are the same', () => {
     const obj1 = NaN;
     const obj2 = NaN;
-    const equality = isDeepStrictEqual(obj1, obj2);
+    const equality = U.isDeepStrictEqual(obj1, obj2);
     // console.log(euality);
     expect(equality).toBe(true);
   });
@@ -40,7 +25,7 @@ describe('the function `isDeepStrictEqual` judges type correctly...', () => {
     );
     const obj2 = structuredClone(obj1);
 
-    const equality = isDeepStrictEqual(obj1, obj2);
+    const equality = U.isDeepStrictEqual(obj1, obj2);
     // console.log(equality);
     expect(equality).toBe(true);
   });
@@ -53,7 +38,7 @@ describe('the function `isDeepStrictEqual` judges type correctly...', () => {
     );
     const obj2 = structuredClone(obj1);
 
-    const equality = isDeepStrictEqual(obj1, obj2);
+    const equality = U.isDeepStrictEqual(obj1, obj2);
     // console.log(equality);
     expect(equality).toBe(true);
   });
@@ -61,34 +46,34 @@ describe('the function `isDeepStrictEqual` judges type correctly...', () => {
 
 describe('check toStringTag', () => {
   it('Rational', () => {
-    const half = new Rational(3n, 2n);
+    const half = new U.Rational(3n, 2n);
     expect(Object.prototype.toString.call(half)).toBe('[object Rational]');
   });
   it('PCGMinimal', () => {
-    const rng = new PCGMinimal(PCGMinimal.getSeed());
+    const rng = new U.PCGMinimal(U.PCGMinimal.getSeed());
     expect(Object.prototype.toString.call(rng)).toBe('[object PCGMinimal]');
   });
 
   it('Queue', () => {
-    const q = new Queue(0);
+    const q = new U.Queue(0);
     expect(Object.prototype.toString.call(q)).toBe('[object Queue]');
   });
 
   it('NamedError', () => {
-    const q = new NamedError('SampleError', 'Wow!');
+    const q = new U.NamedError('SampleError', 'Wow!');
     expect(Object.prototype.toString.call(q)).toBe('[object NamedError]');
   });
 
   it('FloatRand', () => {
-    const frng = new FloatRand(
-      new PCGMinimal(PCGMinimal.getSeed()),
-      new PCGMinimal(PCGMinimal.getSeed())
+    const frng = new U.FloatRand(
+      new U.PCGMinimal(U.PCGMinimal.getSeed()),
+      new U.PCGMinimal(U.PCGMinimal.getSeed())
     );
     expect(Object.prototype.toString.call(frng)).toBe('[object FloatRand]');
   });
 
   it('NamedError', () => {
-    const q = new NamedError('SampleError', 'Wow!');
+    const q = new U.NamedError('SampleError', 'Wow!');
     expect(Object.prototype.toString.call(q)).toBe('[object NamedError]');
   });
 });
@@ -100,7 +85,7 @@ describe('bailliePSW works well', () => {
       const next = chain[i] * 2n - 1n;
       chain.push(next);
     }
-    const bools = chain.map((p) => bailliePSW(p));
+    const bools = chain.map((p) => U.bailliePSW(p));
 
     expect(bools.every((b) => b)).toBe(true);
   });
@@ -108,15 +93,15 @@ describe('bailliePSW works well', () => {
 
 it(`Fermat's little theorem`, async () => {
   const bits = 256;
-  const a = getRandBIByBitLength(bits - 1, true);
-  const p = getRandPrimeByBitLength(bits, true);
+  const a = U.getRandBIByBitLength(bits - 1, true);
+  const p = U.getRandPrimeByBitLength(bits, true);
 
-  const r = modPow(a, p - 1n, p);
+  const r = U.modPow(a, p - 1n, p);
   expect(r).toBe(1n);
 });
 
 describe('NamedError', async () => {
-  const e = new NamedError('HttpError', '404 Not Found', { status: 404 });
+  const e = new U.NamedError('HttpError', '404 Not Found', { status: 404 });
 
   // console.log(e.name, '\n', e.message, '\n', e.stack, '\n', e.cause);
 
@@ -139,9 +124,9 @@ describe('NamedError', async () => {
 });
 
 describe('random performance', () => {
-  const rng = new PCGMinimal(PCGMinimal.getSeed());
-  const rng2 = new PCGMinimal(PCGMinimal.getSeed());
-  const frng = new FloatRand(rng, rng2);
+  const rng = new U.PCGMinimal(U.PCGMinimal.getSeed());
+  const rng2 = new U.PCGMinimal(U.PCGMinimal.getSeed());
+  const frng = new U.FloatRand(rng, rng2);
   const LIMIT = 2 ** 16;
 
   it('PCGMinimal - uint32', () => {
@@ -169,40 +154,47 @@ describe('fromString', async () => {
     '春眠不覺曉\n處處聞啼鳥\n夜來風雨聲\n花落知多少'
   );
   it('utf-8', () => {
-    const a = fromString(toString(bin, 'utf-8'), 'utf-8');
+    const a = U.fromString(U.toString(bin, 'utf-8'), 'utf-8');
     expect(a).toStrictEqual(bin);
   });
   it('base64', () => {
-    const a = fromString(toString(bin, 'base64'), 'base64');
+    const a = U.fromString(U.toString(bin, 'base64'), 'base64');
     expect(a).toStrictEqual(bin);
   });
   it('base64url', () => {
-    const a = fromString(toString(bin, 'base64url'), 'base64url');
+    const a = U.fromString(U.toString(bin, 'base64url'), 'base64url');
     expect(a).toStrictEqual(bin);
   });
   it('hex', () => {
-    const a = fromString(toString(bin, 'hex'), 'hex');
+    const a = U.fromString(U.toString(bin, 'hex'), 'hex');
     expect(a).toStrictEqual(bin);
   });
   it('oct', () => {
-    const a = fromString(toString(bin, 'oct'), 'oct');
+    const a = U.fromString(U.toString(bin, 'oct'), 'oct');
     expect(a).toStrictEqual(bin);
   });
   it('bin', () => {
-    const a = fromString(toString(bin, 'bin'), 'bin');
+    const a = U.fromString(U.toString(bin, 'bin'), 'bin');
     expect(a).toStrictEqual(bin);
   });
 });
 
 it('compression', async () => {
+  const decoder = new TextDecoder();
   const url = 'https://tktb-tess.github.io/commas/out/commas.json';
   const req = await fetch(url);
   const req2 = req.clone();
-  const bin = await req.bytes();
-  const _bin2 = await req2.bytes();
-  const comped = await compress(_bin2, 'gzip');
-  console.log('raw', bin.byteLength, 'bytes');
-  console.log('compressed', comped.byteLength, 'bytes');
-  const deco = await decompress(comped, 'gzip');
-  expect(bin).toStrictEqual(deco);
+  const obj = await req.json();
+  const bin2 = await req2.bytes();
+  const comped = await U.compress(bin2, 'gzip');
+  const deco = await U.decompress(comped, 'gzip');
+  const obj2 = JSON.parse(decoder.decode(deco));
+  expect(obj).toStrictEqual(obj2);
+});
+
+it('LSB128', () => {
+  const bi = U.factorial(324n) - 1n;
+  const lsb128 = U.encodeLEB128(bi);
+  const bi2 = U.decodeLEB128(lsb128);
+  expect(bi).toBe(bi2);
 });
