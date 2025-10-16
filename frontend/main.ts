@@ -24,7 +24,7 @@ const bunp = new Uint16Array(256);
 const fbunp = new Uint16Array(256);
 
 for (const v of arr) {
-  const index = Math.floor(v / 2 ** 24);
+  const index = Math.floor(v / (1 << 24));
   ++bunp[index];
 }
 

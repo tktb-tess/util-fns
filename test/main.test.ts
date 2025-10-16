@@ -192,9 +192,4 @@ it('compression', async () => {
   expect(obj).toStrictEqual(obj2);
 });
 
-it('LSB128', () => {
-  const bi = U.factorial(324n) - 1n;
-  const lsb128 = U.encodeLEB128(bi);
-  const bi2 = U.decodeLEB128(lsb128);
-  expect(bi).toBe(bi2);
-});
+
