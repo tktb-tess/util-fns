@@ -1,5 +1,5 @@
 import { it, expect, describe } from 'vitest';
-import * as U from '@tktb-tess/util-fns';
+import * as U from '../lib/main';
 
 describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   it('distinguish null from object', () => {
@@ -33,9 +33,7 @@ describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   it('sample data 2', async () => {
     const url =
       'https://tktb-tess.github.io/cotec-json-data/out/conlinguistics-wiki-list-cotec.json';
-    const obj1: { [key: string]: unknown } = await fetch(url).then((r) =>
-      r.json()
-    );
+    const obj1: unknown = await fetch(url).then((r) => r.json());
     const obj2 = structuredClone(obj1);
 
     const equality = U.isDeepStrictEqual(obj1, obj2);
@@ -191,5 +189,3 @@ it('compression', async () => {
   const obj2 = JSON.parse(decoder.decode(deco));
   expect(obj).toStrictEqual(obj2);
 });
-
-
