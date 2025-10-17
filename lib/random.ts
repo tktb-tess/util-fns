@@ -91,7 +91,7 @@ export class FloatRand<TRng extends RandomGenerator32 | RandomGenerator64> {
               return this.#rng.getU32Rand() >>> 0;
             }
             case 64: {
-              const r = this.#rng.getU64Rand() & 0xffffffffn;
+              const r = BigInt.asUintN(32, this.#rng.getU64Rand());
               return Number(r);
             }
           }

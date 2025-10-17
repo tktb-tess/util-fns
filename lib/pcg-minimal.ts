@@ -31,15 +31,15 @@ export class PCGMinimal implements RandomGenerator32 {
    * const rng = new PCGMinimal();
    *
    * // you should construct with random seeds.
-   *
-   * const betterRng = new PCGMinimal(crypto.getRandomValues(new BigUint64Array(2)));
+   * const seed = crypto.getRandomValues(new BigUint64Array(2));
+   * const betterRng = new PCGMinimal(seed);
    */
   constructor(seeds?: BigUint64Array<ArrayBuffer>) {
     if (seeds && seeds.length >= 2) {
       this.#state = new BigUint64Array(2);
       this.#state[1] = (seeds[1] << 1n) | 1n;
       this.#step();
-      this.#state[0] = seeds[0];
+      this.#state[0] += seeds[0];
       this.#step();
     } else {
       this.#state = BigUint64Array.from(pcg_initial_state);
@@ -88,7 +88,7 @@ export class PCGMinimal implements RandomGenerator32 {
       const r = this.getU32Rand();
 
       if (r >= threshold) {
-        return r % threshold;
+        return r % bound;
       }
     }
 
@@ -104,6 +104,9 @@ export class PCGMinimal implements RandomGenerator32 {
    * if `bound` is given, random integers are less than `bound`
    */
   *genU32Rands(step: number, bound?: number) {
+    if (step <= 0) {
+      throw Error(`'step' must be positive`);
+    }
     for (let i = 0; i < step; i++) {
       yield typeof bound === 'number'
         ? this.getBoundedU32Rand(bound)

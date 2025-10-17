@@ -9,11 +9,4 @@ Object.defineProperty(window, '__util', {
   enumerable: true,
 });
 
-const seed = crypto.getRandomValues(new BigUint64Array(4));
-const rng = new U.XoshiroMinimal(seed);
-const frng = new U.FloatRand(rng);
 
-Object.defineProperty(window, '__rand', {
-  value: { rng, frng },
-  enumerable: true,
-});
