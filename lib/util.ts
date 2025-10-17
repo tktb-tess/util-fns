@@ -240,3 +240,9 @@ export const decompress = async (
   const rs2 = rs.pipeThrough(new DecompressionStream(format));
   return new Response(rs2).bytes();
 };
+
+const encodeLEB128 = (bigint: bigint) => {
+
+};
+
+const decodeLEB128 = (buffer: Uint8Array<ArrayBuffer>) => {};
