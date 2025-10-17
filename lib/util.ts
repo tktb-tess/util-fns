@@ -241,8 +241,4 @@ export const decompress = async (
   return new Response(rs2).bytes();
 };
 
-const encodeLEB128 = (bigint: bigint) => {
 
-};
-
-const decodeLEB128 = (buffer: Uint8Array<ArrayBuffer>) => {};

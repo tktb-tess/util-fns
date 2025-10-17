@@ -18,9 +18,12 @@ const format = Intl.DateTimeFormat('ja-JP', {
   year: 'numeric',
   month: 'numeric',
   day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
 });
 
-console.log(format.format(Date.now()));
+Object.defineProperty(globalThis, 'jpDateFormat', {
+  value: format,
+  enumerable: true,
+});
