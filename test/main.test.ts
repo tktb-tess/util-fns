@@ -64,7 +64,6 @@ describe('check toStringTag', () => {
 
   it('FloatRand', () => {
     const frng = new U.FloatRand(
-      new U.PCGMinimal(U.PCGMinimal.getSeed()),
       new U.PCGMinimal(U.PCGMinimal.getSeed())
     );
     expect(Object.prototype.toString.call(frng)).toBe('[object FloatRand]');
@@ -123,8 +122,7 @@ describe('NamedError', async () => {
 
 describe('random performance', () => {
   const rng = new U.PCGMinimal(U.PCGMinimal.getSeed());
-  const rng2 = new U.PCGMinimal(U.PCGMinimal.getSeed());
-  const frng = new U.FloatRand(rng, rng2);
+  const frng = new U.FloatRand(rng);
   const LIMIT = 2 ** 16;
 
   it('PCGMinimal - uint32', () => {

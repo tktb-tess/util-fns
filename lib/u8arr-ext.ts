@@ -105,47 +105,4 @@ export const toString = (u8Arr: Uint8Array, encoding: Encoding) => {
   }
 };
 
-/**
- * encode a bigint as a signed LEB128 format
- * @param n
- * @returns
- */
-// const encodeLEB128 = (n: bigint) => {
-//   const isNegative = n < 0n;
-//   if (isNegative) n *= -1n;
-//   const nLen = n.toString(2).length;
-//   const digLen = Math.ceil(nLen / 7);
-//   if (isNegative) {
-//     n = BigInt.asUintN(7 * digLen, ~n + 1n);
-//   }
-// 
-//   const digits = new Uint8Array(digLen);
-// 
-//   for (let i = 0; i < digLen - 1; ++i) {
-//     const digit = Number(n & 127n) | 128;
-//     digits[i] = digit;
-//     n >>= 7n;
-//   }
-// 
-//   digits[digLen - 1] = Number(n);
-// 
-//   return digits;
-// };
 
-// const decodeLEB128 = (leb128: Uint8Array<ArrayBuffer>) => {
-//   const digLen = leb128.length;
-//   let res = 0n;
-//   for (let i = 0; i < digLen; ++i) {
-//     const digit = leb128[i] & 127;
-//     res += BigInt(digit) << BigInt(7 * i);
-//   }
-// 
-//   const msb = 1n << BigInt(7 * digLen - 1);
-//   const isNegative = (res & msb) === 1n;
-// 
-//   if (isNegative) {
-//     res = BigInt.asIntN(7 * digLen, res);
-//   }
-// 
-//   return res;
-// };

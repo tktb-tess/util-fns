@@ -43,21 +43,19 @@ const ctz_u64 = (n: bigint) => {
 
 export class FloatRand {
   readonly #rng: RandomGenerator;
-  readonly #rng2: RandomGenerator;
 
   static readonly name = 'FloatRand';
   readonly [Symbol.toStringTag] = FloatRand.name;
 
-  constructor(rng: RandomGenerator, rng2: RandomGenerator) {
+  constructor(rng: RandomGenerator) {
     this.#rng = rng;
-    this.#rng2 = rng2;
   }
 
   #_getF32Rand() {
     const lowExp = 0;
     const highExp = 127;
 
-    const r1 = this.#rng.getU32Rand() | 0;
+    const r1 = this.#rng.getU32Rand() >>> 0;
 
     // 下位8ビットを指数部の値を決定する乱数として使用する
     const under8 = r1 & 0xff;
@@ -78,7 +76,7 @@ export class FloatRand {
         if (i > LIMIT) {
           throw Error('loop exceeded limit');
         }
-        const r2 = this.#rng.getU32Rand() | 0;
+        const r2 = this.#rng.getU32Rand() >>> 0;
 
         if (r2 === 0) {
           exponent -= 32;
@@ -136,8 +134,10 @@ export class FloatRand {
     const highExp = 1023n;
 
     const r1 = (() => {
-      const ra = BigInt(this.#rng.getU32Rand() | 0);
-      const rb = BigInt(this.#rng2.getU32Rand() | 0);
+      const ra = BigInt(this.#rng.getU32Rand() >>> 0);
+      const rb = BigInt(this.#rng.getU32Rand() >>> 0);
+      // console.log('ra:', ra);
+      // console.log('rb:', rb);
       return (ra << 32n) | rb;
     })();
 
@@ -161,8 +161,8 @@ export class FloatRand {
           throw Error('loop exceeded limit');
         }
         const r2 = (() => {
-          const ra = BigInt(this.#rng.getU32Rand() | 0);
-          const rb = BigInt(this.#rng2.getU32Rand() | 0);
+          const ra = BigInt(this.#rng.getU32Rand() >>> 0);
+          const rb = BigInt(this.#rng.getU32Rand() >>> 0);
           return (ra << 32n) | rb;
         })();
 
@@ -193,6 +193,9 @@ export class FloatRand {
     if (mantissa === 0n && r1 >> 63n) {
       ++exponent;
     }
+
+    // console.log('exponent:', exponent.toString(2).padStart(11, '0'));
+    // console.log('mantissa:', mantissa.toString(2).padStart(52, '0'));
 
     const { buffer, byteOffset, length } = BigUint64Array.from([
       (exponent << 52n) | mantissa,

@@ -18,7 +18,7 @@ import {
  * @param n 判定する整数
  * @returns
  */
-const millerRabinAtBase2 = (n: bigint) => {
+const millerRabin = (n: bigint) => {
   if (n <= 1n) return false;
   if (n % 2n === 0n) return n === 2n;
   let d_ = n - 1n;
@@ -182,7 +182,7 @@ export const bailliePSW = (n: bigint) => {
     }
   }
 
-  if (!millerRabinAtBase2(n)) {
+  if (!millerRabin(n)) {
     // console.log(n, 'Miller-Rabin', false);
     return false;
   }
