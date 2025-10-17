@@ -7,3 +7,4 @@ export * from './queue';
 export * from './named-error';
 export * from './random';
 export * from './pcg-minimal';
+export * from './xoshiro-minimal';
