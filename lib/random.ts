@@ -1,10 +1,11 @@
-export interface RandomGenerator {
+export interface RandomGenerator32 {
+  readonly bits: 32;
   getU32Rand: () => number;
-  getBoundedU32Rand: (bound: number) => number;
-  genU32Rands: (
-    step: number,
-    bound?: number
-  ) => Generator<number, void, unknown>;
+}
+
+export interface RandomGenerator64 {
+  readonly bits: 64;
+  getU64Rand: () => bigint;
 }
 
 /**
@@ -39,13 +40,13 @@ const ctz_u64 = (n: bigint) => {
   return BigInt.asUintN(64, ans);
 };
 
-export class FloatRand {
-  readonly #rng: RandomGenerator;
+export class FloatRand<RNG extends RandomGenerator32 | RandomGenerator64> {
+  readonly #rng: RNG;
 
   static readonly name = 'FloatRand';
   readonly [Symbol.toStringTag] = FloatRand.name;
 
-  constructor(rng: RandomGenerator) {
+  constructor(rng: RNG) {
     this.#rng = rng;
   }
 
@@ -53,7 +54,17 @@ export class FloatRand {
     const lowExp = 0;
     const highExp = 127;
 
-    const r1 = this.#rng.getU32Rand() >>> 0;
+    const r1 = (() => {
+      switch (this.#rng.bits) {
+        case 32: {
+          return this.#rng.getU32Rand() >>> 0;
+        }
+        case 64: {
+          const r = this.#rng.getU64Rand() & 0xffffffffn;
+          return Number(r);
+        }
+      }
+    })();
 
     // 下位8ビットを指数部の値を決定する乱数として使用する
     const under8 = r1 & 0xff;
@@ -74,7 +85,17 @@ export class FloatRand {
         if (i > LIMIT) {
           throw Error('loop exceeded limit');
         }
-        const r2 = this.#rng.getU32Rand() >>> 0;
+        const r2 = (() => {
+          switch (this.#rng.bits) {
+            case 32: {
+              return this.#rng.getU32Rand() >>> 0;
+            }
+            case 64: {
+              const r = this.#rng.getU64Rand() & 0xffffffffn;
+              return Number(r);
+            }
+          }
+        })();
 
         if (r2 === 0) {
           exponent -= 32;
@@ -104,10 +125,8 @@ export class FloatRand {
       ++exponent;
     }
 
-    const { buffer, byteOffset, length } = Uint32Array.from([
-      (exponent << 23) | mantissa,
-    ]);
-    return new Float32Array(buffer, byteOffset, length)[0];
+    const { buffer } = Uint32Array.from([(exponent << 23) | mantissa]);
+    return new Float32Array(buffer)[0];
   }
 
   /**
@@ -132,11 +151,16 @@ export class FloatRand {
     const highExp = 1023n;
 
     const r1 = (() => {
-      const ra = BigInt(this.#rng.getU32Rand() >>> 0);
-      const rb = BigInt(this.#rng.getU32Rand() >>> 0);
-      // console.log('ra:', ra);
-      // console.log('rb:', rb);
-      return (ra << 32n) | rb;
+      switch (this.#rng.bits) {
+        case 32: {
+          const ra = BigInt(this.#rng.getU32Rand() >>> 0);
+          const rb = BigInt(this.#rng.getU32Rand() >>> 0);
+          return (ra << 32n) | rb;
+        }
+        case 64: {
+          return this.#rng.getU64Rand() & 0xffffffffn;
+        }
+      }
     })();
 
     // 下位11ビットを指数部の値を決定する乱数として使用する
@@ -159,9 +183,16 @@ export class FloatRand {
           throw Error('loop exceeded limit');
         }
         const r2 = (() => {
-          const ra = BigInt(this.#rng.getU32Rand() >>> 0);
-          const rb = BigInt(this.#rng.getU32Rand() >>> 0);
-          return (ra << 32n) | rb;
+          switch (this.#rng.bits) {
+            case 32: {
+              const ra = BigInt(this.#rng.getU32Rand() >>> 0);
+              const rb = BigInt(this.#rng.getU32Rand() >>> 0);
+              return (ra << 32n) | rb;
+            }
+            case 64: {
+              return this.#rng.getU64Rand() & 0xffffffffn;
+            }
+          }
         })();
 
         if (r2 === 0n) {
@@ -195,10 +226,8 @@ export class FloatRand {
     // console.log('exponent:', exponent.toString(2).padStart(11, '0'));
     // console.log('mantissa:', mantissa.toString(2).padStart(52, '0'));
 
-    const { buffer, byteOffset, length } = BigUint64Array.from([
-      (exponent << 52n) | mantissa,
-    ]);
-    return new Float64Array(buffer, byteOffset, length)[0];
+    const { buffer } = BigUint64Array.from([(exponent << 52n) | mantissa]);
+    return new Float64Array(buffer)[0];
   }
 
   /**

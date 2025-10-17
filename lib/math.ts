@@ -200,19 +200,9 @@ export const factorial = (n: bigint) => {
 };
 
 /**
- * 32-bit rotate (bigint)
- * @param value 値
- * @param rot 回転数
- * @returns
- */
-export const rot32BI = (value: bigint, rot: bigint) => {
-  return BigInt.asUintN(32, (value >> (rot & 31n)) | (value << (-rot & 31n)));
-};
-
-/**
  * 32-bit rorate (number)
- * @param value 値
- * @param rot 回転数
+ * @param value
+ * @param rot
  * @returns
  */
 export const rot32 = (value: number, rot: number) => {
@@ -221,8 +211,8 @@ export const rot32 = (value: number, rot: number) => {
 
 /**
  * Jacobi symbol `(a/n)`
- * @param a 正の整数
- * @param n 正の奇数
+ * @param a positive integer
+ * @param n positive odd integer
  */
 export const jacobiSymbol = (a: bigint, n: bigint) => {
   if (n < 1n || n % 2n === 0n) {

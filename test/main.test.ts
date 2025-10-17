@@ -48,7 +48,8 @@ describe('check toStringTag', () => {
     expect(Object.prototype.toString.call(half)).toBe('[object Rational]');
   });
   it('PCGMinimal', () => {
-    const rng = new U.PCGMinimal(U.PCGMinimal.getSeed());
+    const seed = crypto.getRandomValues(new BigUint64Array(2));
+    const rng = new U.PCGMinimal(seed);
     expect(Object.prototype.toString.call(rng)).toBe('[object PCGMinimal]');
   });
 
@@ -63,9 +64,8 @@ describe('check toStringTag', () => {
   });
 
   it('FloatRand', () => {
-    const frng = new U.FloatRand(
-      new U.PCGMinimal(U.PCGMinimal.getSeed())
-    );
+    const seed = crypto.getRandomValues(new BigUint64Array(2));
+    const frng = new U.FloatRand(new U.PCGMinimal(seed));
     expect(Object.prototype.toString.call(frng)).toBe('[object FloatRand]');
   });
 
@@ -121,7 +121,8 @@ describe('NamedError', async () => {
 });
 
 describe('random performance', () => {
-  const rng = new U.PCGMinimal(U.PCGMinimal.getSeed());
+  const seed = crypto.getRandomValues(new BigUint64Array(2));
+  const rng = new U.PCGMinimal(seed);
   const frng = new U.FloatRand(rng);
   const LIMIT = 2 ** 16;
 
