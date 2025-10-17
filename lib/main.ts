@@ -6,3 +6,4 @@ export * from './u8arr-ext';
 export * from './queue';
 export * from './named-error';
 export * from './random';
+export * from './pcg-minimal';
