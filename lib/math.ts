@@ -210,6 +210,16 @@ export const rot32 = (value: number, rot: number) => {
 };
 
 /**
+ * 64-bit rorate (bigint)
+ * @param value
+ * @param rot
+ * @returns
+ */
+export const rot64 = (value: bigint, rot: bigint) => {
+  return BigInt.asUintN(64, (value >> (rot & 63n)) | (value << (-rot & 63n)));
+};
+
+/**
  * Jacobi symbol `(a/n)`
  * @param a positive integer
  * @param n positive odd integer

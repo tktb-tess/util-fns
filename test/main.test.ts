@@ -82,7 +82,7 @@ describe('bailliePSW works well', () => {
       const next = chain[i] * 2n - 1n;
       chain.push(next);
     }
-    const bools = chain.map((p) => U.bailliePSW(p));
+    const bools = await Promise.all(chain.map(async (p) => U.bailliePSW(p)));
 
     expect(bools.every((b) => b)).toBe(true);
   });
@@ -121,26 +121,40 @@ describe('NamedError', async () => {
 });
 
 describe('random performance', () => {
-  const seed = crypto.getRandomValues(new BigUint64Array(2));
-  const rng = new U.PCGMinimal(seed);
-  const frng = new U.FloatRand(rng);
+  const seed_p = crypto.getRandomValues(new BigUint64Array(2));
+  const seed_x = crypto.getRandomValues(new BigUint64Array(4));
+  const pcg = new U.PCGMinimal(seed_p);
+  const pcg_f = new U.FloatRand(pcg);
+  const xosh = new U.XoshiroMinimal(seed_x);
+  const xosh_f = new U.FloatRand(xosh);
   const LIMIT = 2 ** 16;
 
   it('PCGMinimal - uint32', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      void rng.getU32Rand();
+      void pcg.getU32Rand();
     }
   });
 
   it('PCGMinimal - float32', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      void frng.getF32Rand();
+      void pcg_f.getF32Rand();
     }
   });
 
   it('PCGMinimal - float64', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      void frng.getF64Rand();
+      void pcg_f.getF64Rand();
+    }
+  });
+  it('XoshiroMinimal - uint64', () => {
+    for (let i = 0; i < LIMIT; ++i) {
+      void xosh.getU64Rand();
+    }
+  });
+
+  it('XoshiroMinimal - float64', () => {
+    for (let i = 0; i < LIMIT; ++i) {
+      void xosh_f.getF64Rand();
     }
   });
 });

@@ -40,13 +40,13 @@ const ctz_u64 = (n: bigint) => {
   return BigInt.asUintN(64, ans);
 };
 
-export class FloatRand<RNG extends RandomGenerator32 | RandomGenerator64> {
-  readonly #rng: RNG;
+export class FloatRand<TRng extends RandomGenerator32 | RandomGenerator64> {
+  readonly #rng: TRng;
 
   static readonly name = 'FloatRand';
   readonly [Symbol.toStringTag] = FloatRand.name;
 
-  constructor(rng: RNG) {
+  constructor(rng: TRng) {
     this.#rng = rng;
   }
 
@@ -91,7 +91,7 @@ export class FloatRand<RNG extends RandomGenerator32 | RandomGenerator64> {
               return this.#rng.getU32Rand() >>> 0;
             }
             case 64: {
-              const r = this.#rng.getU64Rand() & 0xffffffffn;
+              const r = BigInt.asUintN(32, this.#rng.getU64Rand());
               return Number(r);
             }
           }
@@ -158,7 +158,7 @@ export class FloatRand<RNG extends RandomGenerator32 | RandomGenerator64> {
           return (ra << 32n) | rb;
         }
         case 64: {
-          return this.#rng.getU64Rand() & 0xffffffffn;
+          return BigInt.asUintN(64, this.#rng.getU64Rand());
         }
       }
     })();
@@ -190,7 +190,7 @@ export class FloatRand<RNG extends RandomGenerator32 | RandomGenerator64> {
               return (ra << 32n) | rb;
             }
             case 64: {
-              return this.#rng.getU64Rand() & 0xffffffffn;
+              return BigInt.asUintN(64, this.#rng.getU64Rand());
             }
           }
         })();
@@ -214,7 +214,7 @@ export class FloatRand<RNG extends RandomGenerator32 | RandomGenerator64> {
     }
 
     // 52ビット取り出し、仮数部の乱数にする
-    const mantissa = (r1 >> 11n) & 0xfffffffffffffn;
+    const mantissa = BigInt.asUintN(52, r1 >> 11n);
 
     // 境界値の確率を一様にするための処理
     // Allen B. Downey, Generating Pseudo-random Floating-Point Values, 2007.
