@@ -82,7 +82,7 @@ describe('bailliePSW works well', () => {
       const next = chain[i] * 2n - 1n;
       chain.push(next);
     }
-    const bools = chain.map((p) => U.bailliePSW(p));
+    const bools = await Promise.all(chain.map(async (p) => U.bailliePSW(p)));
 
     expect(bools.every((b) => b)).toBe(true);
   });

@@ -8,7 +8,7 @@ const pcg_multiplier = 0x5851f42d4c957f2dn;
 
 /**
  * PCG-XSH-RR (Permuted congruential generator) \
- * refered: https://github.com/imneme/pcg-c-basic/blob/bc39cd76ac3d541e618606bcc6e1e5ba5e5e6aa3/pcg_basic.c \
+ * reference: https://github.com/imneme/pcg-c-basic/blob/bc39cd76ac3d541e618606bcc6e1e5ba5e5e6aa3/pcg_basic.c \
  * by Melissa O'Neill
  */
 export class PCGMinimal implements RandomGenerator32 {
