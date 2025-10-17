@@ -8,10 +8,12 @@ Object.defineProperty(window, '__util', {
   value: U,
   enumerable: true,
 });
-const rng1 = new U.PCGMinimal(U.PCGMinimal.getSeed());
-const frng = new U.FloatRand(rng1);
 
-Object.defineProperty(window, '__frng', {
-  value: frng,
+const seed = crypto.getRandomValues(new BigUint64Array(4));
+const rng = new U.XoshiroMinimal(seed);
+const frng = new U.FloatRand(rng);
+
+Object.defineProperty(window, '__rand', {
+  value: { rng, frng },
   enumerable: true,
 });

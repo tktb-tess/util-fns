@@ -158,7 +158,7 @@ export class FloatRand<RNG extends RandomGenerator32 | RandomGenerator64> {
           return (ra << 32n) | rb;
         }
         case 64: {
-          return this.#rng.getU64Rand() & 0xffffffffn;
+          return this.#rng.getU64Rand() & 0xffffffffffffffffn;
         }
       }
     })();
@@ -190,7 +190,7 @@ export class FloatRand<RNG extends RandomGenerator32 | RandomGenerator64> {
               return (ra << 32n) | rb;
             }
             case 64: {
-              return this.#rng.getU64Rand() & 0xffffffffn;
+              return this.#rng.getU64Rand() & 0xffffffffffffffffn;
             }
           }
         })();

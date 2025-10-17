@@ -48,4 +48,28 @@ export class XoshiroMinimal implements RandomGenerator64 {
     this.#step();
     return prev;
   }
+
+  getBoundedU64Rand(bound: bigint) {
+    const LIMIT = 1n << 64n;
+    if (bound > LIMIT) {
+      throw Error(`'bound' exceeded limit`);
+    }
+
+    if (bound <= 0n) {
+      throw Error(`'bound' must be positive`);
+    }
+
+    const threshold = LIMIT % bound;
+
+    const CYCLE_LIMIT = 100000;
+
+    for (let i = 0; i < CYCLE_LIMIT; ++i) {
+      const r = this.getU64Rand();
+
+      if (r >= threshold) {
+        return r % threshold;
+      }
+    }
+    throw Error(`exceeded loop limit`);
+  }
 }
