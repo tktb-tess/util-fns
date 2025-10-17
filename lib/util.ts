@@ -190,7 +190,7 @@ export const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
  * @returns
  */
 export const isNode = () =>
-  globalThis.process &&
+  !!globalThis.process &&
   typeof process.version !== 'undefined' &&
   typeof process.versions.node !== 'undefined';
 
