@@ -224,21 +224,19 @@ export const decodeRFC3986URIComponent = (encodedURIComponent: string) => {
 };
 
 export const compress = async (
-  bin: Uint8Array<ArrayBuffer>,
+  raw: Uint8Array<ArrayBuffer>,
   format: CompressionFormat
 ) => {
-  const rs = new Blob([bin]).stream();
+  const rs = new Blob([raw]).stream();
   const rs2 = rs.pipeThrough(new CompressionStream(format));
   return new Response(rs2).bytes();
 };
 
 export const decompress = async (
-  comp: Uint8Array<ArrayBuffer>,
+  compressed: Uint8Array<ArrayBuffer>,
   format: CompressionFormat
 ) => {
-  const rs = new Blob([comp]).stream();
+  const rs = new Blob([compressed]).stream();
   const rs2 = rs.pipeThrough(new DecompressionStream(format));
   return new Response(rs2).bytes();
 };
-
-

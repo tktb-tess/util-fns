@@ -202,3 +202,19 @@ it('compression', async () => {
   const obj2 = JSON.parse(decoder.decode(deco));
   expect(obj).toStrictEqual(obj2);
 });
+
+it('LEB128', () => {
+  const cycle = 1000;
+
+  for (let i = 0; i < cycle; ++i) {
+    const big =
+      Math.random() < 0.5
+        ? U.getRandBIByBitLength(256, true)
+        : U.getRandBIByBitLength(256, true) * -1n;
+    const encoded = U.encodeLEB128(big);
+    const decoded = U.decodeLEB128(encoded);
+    if (big !== decoded) {
+      expect.unreachable(`mismatched\nbig: ${big}\ndecoded: ${decoded}`);
+    }
+  }
+});
