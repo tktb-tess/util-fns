@@ -8,13 +8,13 @@
   "type": "module",
   "author": "Tessyrrhaqt",
   "license": "MIT",
-  "main": "./dist/bundle.umd.cjs",
+  "main": "./dist/bundle.umd.js",
   "module": "./dist/bundle.js",
   "types": "./dist/main.d.ts",
   "exports": {
     "types": "./dist/main.d.ts",
     "import": "./dist/bundle.js",
-    "require": "./dist/bundle.umd.cjs"
+    "require": "./dist/bundle.umd.js"
   },
   "engines": {
     "node": "^22",

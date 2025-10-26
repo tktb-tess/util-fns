@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, './lib/main.ts'),
-      fileName: 'bundle',
+      fileName: (format) => `bundle${format === 'umd' ? '.umd' : ''}.js`,
       name: 'TktbTessUtilFns',
       formats: ['umd', 'es'],
     },
