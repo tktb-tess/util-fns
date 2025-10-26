@@ -1,4 +1,4 @@
-import * as U from '../lib/main';
+import * as U from '@tktb-tess/util-fns';
 
 const app = document.getElementById('app')!;
 
