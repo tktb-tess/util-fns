@@ -9,7 +9,8 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, './lib/main.ts'),
       fileName: 'bundle',
-      formats: ['es'],
+      name: 'TktbTessUtilFns',
+      formats: ['umd', 'es'],
     },
   },
   test: {
