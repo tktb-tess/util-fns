@@ -24,5 +24,13 @@ console.log(bailliePSW(4n)): // false
 
 ```
 
+### CDN
+
+You can also use CDN such as jsDelivr.
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@tktb-tess/util-fns@0.9/dist/bundle.min.js"></script>
+```
+
 
 
