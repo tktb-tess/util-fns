@@ -9,12 +9,13 @@
   "author": "Tessyrrhaqt",
   "license": "MIT",
   "main": "./dist/bundle.js",
-  "module": "./dist/bundle.esm.js",
+  "browser": "./dist/bundle.min.js",
+  "module": "./dist/bundle.js",
   "types": "./dist/main.d.ts",
   "exports": {
     "types": "./dist/main.d.ts",
-    "import": "./dist/bundle.esm.js",
-    "require": "./dist/bundle.js"
+    "import": "./dist/bundle.js",
+    "require": null
   },
   "engines": {
     "node": "^22",
