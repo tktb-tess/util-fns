@@ -65,7 +65,7 @@ describe('check toStringTag', () => {
 
   it('FloatRand', () => {
     const seed = crypto.getRandomValues(new BigUint64Array(2));
-    const frng = new U.FloatRand(new U.PCGMinimal(seed));
+    const frng = new U.FloatRng(new U.PCGMinimal(seed));
     expect(Object.prototype.toString.call(frng)).toBe('[object FloatRand]');
   });
 
@@ -124,9 +124,9 @@ describe('random performance', () => {
   const seed_p = crypto.getRandomValues(new BigUint64Array(2));
   const seed_x = crypto.getRandomValues(new BigUint64Array(4));
   const pcg = new U.PCGMinimal(seed_p);
-  const pcg_f = new U.FloatRand(pcg);
+  const pcg_f = new U.FloatRng(pcg);
   const xosh = new U.XoshiroMinimal(seed_x);
-  const xosh_f = new U.FloatRand(xosh);
+  const xosh_f = new U.FloatRng(xosh);
   const LIMIT = 2 ** 16;
 
   it('PCGMinimal - uint32', () => {

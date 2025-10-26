@@ -16,6 +16,8 @@ const xoshiro_initial_state = [
 export class XoshiroMinimal implements RandomGenerator64 {
   readonly bits = 64;
   readonly #state: BigUint64Array<ArrayBuffer>;
+  static readonly name = 'XoshiroMinimal';
+  readonly [Symbol.toStringTag] = XoshiroMinimal.name;
 
   /**
    * @param seeds

@@ -34,7 +34,7 @@ export const isDeepStrictEqual = (a: unknown, b: unknown) => {
   }
 
   if (typeof a === 'number') {
-    return (Number.isNaN(a) && Number.isNaN(b)) || a === b;
+    return (a !== a && b !== b) || a === b;
   }
 
   // Function
