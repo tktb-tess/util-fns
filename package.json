@@ -14,8 +14,7 @@
   "types": "./dist/main.d.ts",
   "exports": {
     "types": "./dist/main.d.ts",
-    "import": "./dist/bundle.js",
-    "require": null
+    "import": "./dist/bundle.js"
   },
   "engines": {
     "node": "^22",
