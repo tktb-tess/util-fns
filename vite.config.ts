@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, './lib/main.ts'),
-      fileName: (format) => `bundle${format === 'umd' ? '.min' : ''}.js`,
+      fileName: (format) => format === 'umd' ? 'bundle.min.js' : 'bundle.js',
       name: 'UtilFns',
       formats: ['umd', 'es'],
     },

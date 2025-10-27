@@ -53,6 +53,12 @@ describe('check toStringTag', () => {
     expect(Object.prototype.toString.call(rng)).toBe('[object PCGMinimal]');
   });
 
+  it('XoshiroMinimal', () => {
+    const seed = crypto.getRandomValues(new BigUint64Array(4));
+    const rng = new U.XoshiroMinimal(seed);
+    expect(Object.prototype.toString.call(rng)).toBe('[object XoshiroMinimal]');
+  });
+
   it('Queue', () => {
     const q = new U.Queue(0);
     expect(Object.prototype.toString.call(q)).toBe('[object Queue]');
@@ -66,7 +72,7 @@ describe('check toStringTag', () => {
   it('FloatRand', () => {
     const seed = crypto.getRandomValues(new BigUint64Array(2));
     const frng = new U.FloatRng(new U.PCGMinimal(seed));
-    expect(Object.prototype.toString.call(frng)).toBe('[object FloatRand]');
+    expect(Object.prototype.toString.call(frng)).toBe('[object FloatRng]');
   });
 
   it('NamedError', () => {

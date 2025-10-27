@@ -18,7 +18,6 @@ export class PCGMinimal implements RandomGenerator32 {
   readonly #state: BigUint64Array<ArrayBuffer>;
 
   static readonly name = 'PCGMinimal';
-  readonly [Symbol.toStringTag] = PCGMinimal.name;
   readonly bits = 32;
 
   /**
@@ -114,3 +113,7 @@ export class PCGMinimal implements RandomGenerator32 {
     }
   }
 }
+
+Object.defineProperty(PCGMinimal.prototype, Symbol.toStringTag, {
+  value: PCGMinimal.name,
+});

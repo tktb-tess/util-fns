@@ -3,7 +3,6 @@ export class Queue<T> {
   readonly #out: T[];
 
   static readonly name = 'Queue';
-  readonly [Symbol.toStringTag] = Queue.name;
 
   /**
    * Queue
@@ -51,3 +50,7 @@ export class Queue<T> {
     return this.toArray().toString();
   }
 }
+
+Object.defineProperty(Queue.prototype, Symbol.toStringTag, {
+  value: Queue.name,
+});

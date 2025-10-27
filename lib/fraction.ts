@@ -11,7 +11,6 @@ export class Rational {
   #denom: bigint;
 
   static readonly name = 'Rational';
-  readonly [Symbol.toStringTag] = Rational.name;
 
   /**
    * fraction (rational) class
@@ -227,3 +226,7 @@ export class Rational {
     return new Rational(BigInt(n_), BigInt(d_));
   }
 }
+
+Object.defineProperty(Rational.prototype, Symbol.toStringTag, {
+  value: Rational.name,
+});

@@ -43,8 +43,7 @@ const ctz_u64 = (n: bigint) => {
 export class FloatRng<TRng extends RandomGenerator32 | RandomGenerator64> {
   readonly #rng: TRng;
 
-  static readonly name = 'FloatRand';
-  readonly [Symbol.toStringTag] = FloatRng.name;
+  static readonly name = 'FloatRng';
 
   constructor(rng: TRng) {
     this.#rng = rng;
@@ -125,7 +124,9 @@ export class FloatRng<TRng extends RandomGenerator32 | RandomGenerator64> {
       ++exponent;
     }
 
-    const { buffer, byteOffset, length } = Uint32Array.from([(exponent << 23) | mantissa]);
+    const { buffer, byteOffset, length } = Uint32Array.from([
+      (exponent << 23) | mantissa,
+    ]);
     return new Float32Array(buffer, byteOffset, length)[0];
   }
 
@@ -226,7 +227,9 @@ export class FloatRng<TRng extends RandomGenerator32 | RandomGenerator64> {
     // console.log('exponent:', exponent.toString(2).padStart(11, '0'));
     // console.log('mantissa:', mantissa.toString(2).padStart(52, '0'));
 
-    const { buffer, byteOffset, length } = BigUint64Array.from([(exponent << 52n) | mantissa]);
+    const { buffer, byteOffset, length } = BigUint64Array.from([
+      (exponent << 52n) | mantissa,
+    ]);
     return new Float64Array(buffer, byteOffset, length)[0];
   }
 
@@ -247,3 +250,7 @@ export class FloatRng<TRng extends RandomGenerator32 | RandomGenerator64> {
     throw Error('exceeded loop limit');
   }
 }
+
+Object.defineProperty(FloatRng.prototype, Symbol.toStringTag, {
+  value: FloatRng.name,
+});
