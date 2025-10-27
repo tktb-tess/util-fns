@@ -26,10 +26,21 @@ console.log(bailliePSW(4n)): // false
 
 ### CDN
 
-You can also use CDN such as jsDelivr.
+You can also use it via CDN such as jsDelivr.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@tktb-tess/util-fns@0.9/dist/bundle.min.js"></script>
+<!-- You can import it as a global variable -->
+<script src="https://cdn.jsdelivr.net/npm/@tktb-tess/util-fns@0.9.3/dist/bundle.min.js"></script>
+<script type="module">
+    const { modPow } = UtilFns;
+    // ...
+</script>
+
+<!-- or as an ES Module -->
+<script type="module">
+    import { modPow } from 'https://cdn.jsdelivr.net/npm/@tktb-tess/util-fns@0.9.3/+esm';
+    // ...
+</script>
 ```
 
 

@@ -17,7 +17,6 @@ export class XoshiroMinimal implements RandomGenerator64 {
   readonly bits = 64;
   readonly #state: BigUint64Array<ArrayBuffer>;
   static readonly name = 'XoshiroMinimal';
-  readonly [Symbol.toStringTag] = XoshiroMinimal.name;
 
   /**
    * @param seeds
@@ -130,3 +129,7 @@ export class XoshiroMinimal implements RandomGenerator64 {
     }
   }
 }
+
+Object.defineProperty(XoshiroMinimal.prototype, Symbol.toStringTag, {
+  value: XoshiroMinimal.name,
+});
