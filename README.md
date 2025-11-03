@@ -30,7 +30,7 @@ You can also use it via CDN such as jsDelivr.
 
 ```html
 <!-- You can import it as a global variable -->
-<script src="https://cdn.jsdelivr.net/npm/@tktb-tess/util-fns@0.9.3/dist/bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tktb-tess/util-fns@0.10.0/dist/bundle.min.js"></script>
 <script type="module">
     const { modPow } = UtilFns;
     // ...
@@ -38,7 +38,7 @@ You can also use it via CDN such as jsDelivr.
 
 <!-- or as an ES Module -->
 <script type="module">
-    import { modPow } from 'https://cdn.jsdelivr.net/npm/@tktb-tess/util-fns@0.9.3/+esm';
+    import { modPow } from 'https://cdn.jsdelivr.net/npm/@tktb-tess/util-fns@0.10.0/+esm';
     // ...
 </script>
 ```
