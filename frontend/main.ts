@@ -1,4 +1,4 @@
-import * as U from '@tktb-tess/util-fns';
+import * as U from '../lib/main';
 
 const app = document.getElementById('app')!;
 
@@ -8,7 +8,7 @@ const obj = { ...U };
 
 Object.setPrototypeOf(obj, null);
 Object.defineProperty(obj, Symbol.toStringTag, {
-  value: '__util',
+  value: 'UtilFns',
 });
 Object.freeze(obj);
 

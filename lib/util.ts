@@ -122,6 +122,17 @@ export const sleep = (delay: number) => {
 };
 
 /**
+ * get a value of `Symbol.toStringTag`
+ * @param obj 
+ * @returns 
+ */
+export const getStringTag = (obj: unknown) => {
+  const str = Object.prototype.toString.call(obj);
+  const matched = str.match(/^\[Object\s(.+)\]$/)?.at(1);
+  return matched;
+};
+
+/**
  * makes a function lazy
  * @param func function
  * @returns lazified function

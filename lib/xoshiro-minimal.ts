@@ -1,7 +1,7 @@
 import { RandomGenerator64 } from './random';
 import { rot64 } from './math';
 
-const xoshiro_initial_state = [
+const XOSHIRO_INITIAL_STATE = [
   0xbe562cb412e2260en,
   0x2e4284137d641affn,
   0x4e19b36ee933e27en,
@@ -29,7 +29,7 @@ export class XoshiroMinimal implements RandomGenerator64 {
    *
    * // you should construct with random seeds.
    * const seed = crypto.getRandomValues(new BigUint64Array(4));
-   * const betterRng = new PCGMinimal(seed);
+   * const betterRng = new XoshiroMinimal(seed);
    */
   constructor(seed?: BigUint64Array<ArrayBuffer>) {
     if (seed && seed.length >= 4) {
@@ -40,7 +40,7 @@ export class XoshiroMinimal implements RandomGenerator64 {
       this.#state[2] += seed[2];
       this.#state[3] += seed[3];
     } else {
-      this.#state = BigUint64Array.from(xoshiro_initial_state);
+      this.#state = BigUint64Array.from(XOSHIRO_INITIAL_STATE);
     }
   }
 
@@ -55,7 +55,8 @@ export class XoshiroMinimal implements RandomGenerator64 {
   }
 
   get value() {
-    return rot64(this.#state[0] + this.#state[3], 23n) + this.#state[0];
+    const v = rot64(this.#state[0] + this.#state[3], 23n) + this.#state[0];
+    return BigInt.asUintN(64, v);
   }
 
   getU64Rand() {

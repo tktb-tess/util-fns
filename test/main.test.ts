@@ -59,11 +59,6 @@ describe('check toStringTag', () => {
     expect(Object.prototype.toString.call(rng)).toBe('[object XoshiroMinimal]');
   });
 
-  it('Queue', () => {
-    const q = new U.Queue(0);
-    expect(Object.prototype.toString.call(q)).toBe('[object Queue]');
-  });
-
   it('NamedError', () => {
     const q = new U.NamedError('SampleError', 'Wow!');
     expect(Object.prototype.toString.call(q)).toBe('[object NamedError]');
@@ -135,63 +130,66 @@ describe('random performance', () => {
   const xosh_f = new U.FloatRng(xosh);
   const LIMIT = 2 ** 16;
 
-  it('PCGMinimal - uint32', () => {
+  it('PCGMinimal - u32', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      void pcg.getU32Rand();
+      const r = pcg.getU32Rand();
+      if (r < 0 || r >= 2 ** 32) {
+        expect.unreachable('PCGMinimal - u32: out of range');
+      }
     }
   });
 
-  it('PCGMinimal - float32', () => {
+  it('PCGMinimal - f32', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      void pcg_f.getF32Rand();
+      const r = pcg_f.getF32Rand();
+      if (r < 0 || r >= 1) {
+        expect.unreachable('PCGMinimal - f32: out of range');
+      }
     }
   });
 
-  it('PCGMinimal - float64', () => {
+  it('PCGMinimal - f64', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      void pcg_f.getF64Rand();
+      const r = pcg_f.getF64Rand();
+      if (r < 0 || r >= 1) {
+        expect.unreachable('PCGMinimal - f64: out of range');
+      }
     }
   });
-  it('XoshiroMinimal - uint64', () => {
+  it('XoshiroMinimal - u64', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      void xosh.getU64Rand();
+      const r = xosh.getU64Rand();
+      if (r < 0n || r >= 1n << 64n) {
+        expect.unreachable(`XoshiroMinimal - u64: out of range ${r}`);
+      }
     }
   });
 
-  it('XoshiroMinimal - float64', () => {
+  it('XoshiroMinimal - f64', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      void xosh_f.getF64Rand();
+      const r = xosh_f.getF64Rand();
+      if (r < 0 || r >= 1) {
+        expect.unreachable('XoshiroMinimal - f64: out of range');
+      }
     }
   });
 });
 
-describe('fromString', async () => {
+describe('string <-> Uint8Array', async () => {
   // const url = 'https://tktb-tess.github.io/commas/out/commas.json';
   const bin = new TextEncoder().encode(
     '春眠不覺曉\n處處聞啼鳥\n夜來風雨聲\n花落知多少'
   );
-  it('utf-8', () => {
-    const a = U.fromString(U.toString(bin, 'utf-8'), 'utf-8');
-    expect(a).toStrictEqual(bin);
-  });
   it('base64', () => {
-    const a = U.fromString(U.toString(bin, 'base64'), 'base64');
+    const a = U.fromBase64(U.toBase64(bin));
     expect(a).toStrictEqual(bin);
   });
   it('base64url', () => {
-    const a = U.fromString(U.toString(bin, 'base64url'), 'base64url');
-    expect(a).toStrictEqual(bin);
-  });
-  it('hex', () => {
-    const a = U.fromString(U.toString(bin, 'hex'), 'hex');
+    const a = U.fromBase64Url(U.toBase64Url(bin));
     expect(a).toStrictEqual(bin);
   });
   it('oct', () => {
-    const a = U.fromString(U.toString(bin, 'oct'), 'oct');
-    expect(a).toStrictEqual(bin);
-  });
-  it('bin', () => {
-    const a = U.fromString(U.toString(bin, 'bin'), 'bin');
+    const a = U.fromOct(U.toOct(bin));
     expect(a).toStrictEqual(bin);
   });
 });
