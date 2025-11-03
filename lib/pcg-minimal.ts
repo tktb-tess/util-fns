@@ -2,9 +2,9 @@ import type { RandomGenerator32 } from './random';
 import { rot32 } from './math';
 
 /** シードなし時の静的初期化定数 */
-const pcg_initial_state = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
+const PCG_INITIAL_STATE = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
 
-const pcg_multiplier = 0x5851f42d4c957f2dn;
+const PCG_MULTIPLIER = 0x5851f42d4c957f2dn;
 
 /**
  * PCG-XSH-RR (Permuted congruential generator) \
@@ -41,13 +41,13 @@ export class PCGMinimal implements RandomGenerator32 {
       this.#state[0] += seeds[0];
       this.#step();
     } else {
-      this.#state = BigUint64Array.from(pcg_initial_state);
+      this.#state = BigUint64Array.from(PCG_INITIAL_STATE);
     }
   }
 
   /** step inner state */
   #step() {
-    this.#state[0] = this.#state[0] * pcg_multiplier + this.#state[1];
+    this.#state[0] = this.#state[0] * PCG_MULTIPLIER + this.#state[1];
   }
 
   /** 32bit 乱数を返す (内部状態は変わらない) */
