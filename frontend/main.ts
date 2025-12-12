@@ -4,12 +4,8 @@ const app = document.getElementById('app')!;
 
 app.textContent = 'Press F12 to open devtools console';
 
-const obj = { ...U };
+const obj = { ...U, __proto__: null, [Symbol.toStringTag]: 'UtilFns' };
 
-Object.setPrototypeOf(obj, null);
-Object.defineProperty(obj, Symbol.toStringTag, {
-  value: 'UtilFns',
-});
 Object.freeze(obj);
 
 Object.defineProperty(window, 'UtilFns', {

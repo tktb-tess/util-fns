@@ -7,7 +7,7 @@ import {
   getRandBIByRange,
 } from './math';
 
-/**
+/*
  * translated from python codes in
  * https://github.com/armchaircaver/Baillie-PSW/blob/623b2541b8c659dcb4312a3ddc6c00802e34f1a1/baillie_psw.py
  *
