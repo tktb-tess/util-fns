@@ -5,12 +5,14 @@ interface NamedError<EName extends string> {
 }
 
 class NamedError<EName extends string> extends Error {
-  override readonly name: EName;
   static override readonly name = 'NamedError';
 
-  constructor(name: EName, message: string, cause?: unknown) {
+  constructor(
+    public readonly errName: EName,
+    message: string,
+    cause?: unknown
+  ) {
     super(message, { cause });
-    this.name = name;
   }
 
   toJSON() {
@@ -33,9 +35,11 @@ class NamedError<EName extends string> extends Error {
         }
       } else return;
     })();
-    const { name, message, stack } = this;
+
+    const { errName, message, stack } = this;
+    
     return {
-      name,
+      errName,
       message,
       stack,
       cause,

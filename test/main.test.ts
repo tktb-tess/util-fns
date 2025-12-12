@@ -109,7 +109,7 @@ describe('NamedError', async () => {
   });
 
   it('name', () => {
-    expect(e.name).toBe('HttpError');
+    expect(e.errName).toBe('HttpError');
   });
 
   it('cause', () => {
@@ -156,6 +156,7 @@ describe('random performance', () => {
       }
     }
   });
+
   it('XoshiroMinimal - u64', () => {
     for (let i = 0; i < LIMIT; ++i) {
       const r = xosh.getU64Rand();
@@ -180,14 +181,17 @@ describe('string <-> Uint8Array', async () => {
   const bin = new TextEncoder().encode(
     '春眠不覺曉\n處處聞啼鳥\n夜來風雨聲\n花落知多少'
   );
+
   it('base64', () => {
     const a = U.fromBase64(U.toBase64(bin));
     expect(a).toStrictEqual(bin);
   });
+
   it('base64url', () => {
     const a = U.fromBase64Url(U.toBase64Url(bin));
     expect(a).toStrictEqual(bin);
   });
+
   it('oct', () => {
     const a = U.fromOct(U.toOct(bin));
     expect(a).toStrictEqual(bin);
