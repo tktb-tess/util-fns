@@ -1,3 +1,5 @@
+import { NamedError } from './named_error';
+
 /**
  * returns an integer of `min` or more and less than `max`
  * @param min
@@ -36,7 +38,9 @@ export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
     .join('')
     .slice(0, length);
 
-  if (fixed) result = result.replace(/^\d/, '1');
+  if (fixed) {
+    result = result.replace(/^\d/, '1');
+  }
   // console.log(result);
   return BigInt('0b' + result);
 };
@@ -48,7 +52,9 @@ export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
  * @returns
  */
 export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
-  if (min >= max) throw Error('rangeError');
+  if (min >= max) {
+    throw new NamedError('RangeError', 'min is larger than max');
+  }
   const diff = max - min;
   const bitLength = diff.toString(2).length;
 
@@ -167,9 +173,9 @@ const oddProd = (min: bigint, max: bigint): bigint => {
  * @returns 奇数部の積
  */
 const oddPart = (n: bigint) => {
-  let L_i = 3n,
-    result = 1n,
-    tmp = 1n;
+  let L_i = 3n;
+  let result = 1n;
+  let tmp = 1n;
   const m = BigInt(n.toString(2).length) - 1n;
 
   for (let i = m - 1n; i > -1n; --i) {
@@ -267,7 +273,7 @@ export const isSquare = (n: bigint) => {
   while (x + 1n < y) {
     const mid = (x + y) / 2n;
 
-    if (mid ** 2n < n) {
+    if (mid * mid < n) {
       x = mid;
     } else {
       y = mid;

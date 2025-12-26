@@ -95,11 +95,11 @@ export const isDeepStrictEqual = (a: unknown, b: unknown) => {
 /**
  * a polyfill for `Promise.withResolvers()`
  */
-export const promiseWithResolvers = <T>() => {
+export const withResolvers = <T>() => {
   let resolve!: (value: T | PromiseLike<T>) => void;
   let reject!: (reason?: unknown) => void;
-  const promise = new Promise<T>((res, rej) => {
-    resolve = res;
+  const promise = new Promise<T>((rez, rej) => {
+    resolve = rez;
     reject = rej;
   });
 
@@ -123,8 +123,8 @@ export const sleep = (delay: number) => {
 
 /**
  * get a value of `Symbol.toStringTag`
- * @param obj 
- * @returns 
+ * @param obj
+ * @returns
  */
 export const getStringTag = (obj: unknown) => {
   const str = Object.prototype.toString.call(obj);
@@ -250,4 +250,23 @@ export const decompress = async (
   const rs = new Blob([compressed]).stream();
   const rs2 = rs.pipeThrough(new DecompressionStream(format));
   return new Response(rs2).bytes();
+};
+
+/**
+ * 
+ * @param handler 
+ * @param timeout timeout
+ * @returns 
+ */
+export const setTimeoutPromise = <T>(handler: () => T, timeout?: number) => {
+  return new Promise<T>((resolve, reject) => {
+    setTimeout(async () => {
+      try {
+        const value = await handler();
+        resolve(value);
+      } catch (e) {
+        reject(e);
+      }
+    }, timeout);
+  });
 };

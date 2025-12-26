@@ -1,10 +1,27 @@
 import * as U from '../lib/main';
 
-const app = document.getElementById('app')!;
+const app = document.getElementById('app') as HTMLDivElement;
+const p = document.createElement('p');
+app.appendChild(p);
 
-app.textContent = 'Press F12 to open devtools console';
+const worker = new Worker(new URL('./my_worker.ts', import.meta.url), {
+  type: 'module',
+});
 
-const obj = { ...U, __proto__: null, [Symbol.toStringTag]: 'UtilFns' };
+const stream = new U.WorkerStream<number, number>(worker);
+
+stream.postMessage(-1);
+
+for await (const n of stream) {
+  p.textContent += `${n}, `;
+  if (p.textContent.length >= 65536) {
+    stream.close();
+  }
+}
+
+console.log('Finish');
+
+const obj = { ...U, __proto__: null, [Symbol.toStringTag]: 'UtilFns' } as const;
 
 Object.freeze(obj);
 
