@@ -10,9 +10,9 @@ class NamedError<EName extends string> extends Error {
   constructor(
     public readonly errName: EName,
     message: string,
-    cause?: unknown
+    options?: ErrorOptions
   ) {
-    super(message, { cause });
+    super(message, options);
   }
 
   toJSON() {

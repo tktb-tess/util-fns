@@ -20,9 +20,7 @@ describe('the function `isDeepStrictEqual` judges type correctly...', () => {
 
   it('sample data', async () => {
     const url = 'https://tktb-tess.github.io/commas/out/commas.json';
-    const obj1: { [key: string]: unknown } = await fetch(url).then((r) =>
-      r.json()
-    );
+    const obj1: unknown = await fetch(url).then((r) => r.json());
     const obj2 = structuredClone(obj1);
 
     const equality = U.isDeepStrictEqual(obj1, obj2);
@@ -43,36 +41,32 @@ describe('the function `isDeepStrictEqual` judges type correctly...', () => {
 });
 
 describe('check toStringTag', () => {
+  const getStringTag = (o: unknown) => Object.prototype.toString.call(o);
   it('Rational', () => {
-    const half = new U.Rational(3n, 2n);
-    expect(Object.prototype.toString.call(half)).toBe('[object Rational]');
+    expect(getStringTag(U.Rational.prototype)).toBe('[object Rational]');
   });
   it('PCGMinimal', () => {
-    const seed = crypto.getRandomValues(new BigUint64Array(2));
-    const rng = new U.PCGMinimal(seed);
-    expect(Object.prototype.toString.call(rng)).toBe('[object PCGMinimal]');
+    expect(getStringTag(U.PCGMinimal.prototype)).toBe('[object PCGMinimal]');
   });
 
   it('XoshiroMinimal', () => {
-    const seed = crypto.getRandomValues(new BigUint64Array(4));
-    const rng = new U.XoshiroMinimal(seed);
-    expect(Object.prototype.toString.call(rng)).toBe('[object XoshiroMinimal]');
+    expect(getStringTag(U.XoshiroMinimal.prototype)).toBe(
+      '[object XoshiroMinimal]'
+    );
   });
 
   it('NamedError', () => {
-    const q = new U.NamedError('SampleError', 'Wow!');
-    expect(Object.prototype.toString.call(q)).toBe('[object NamedError]');
+    expect(getStringTag(U.NamedError.prototype)).toBe('[object NamedError]');
   });
 
   it('FloatRand', () => {
-    const seed = crypto.getRandomValues(new BigUint64Array(2));
-    const frng = new U.FloatRng(new U.PCGMinimal(seed));
-    expect(Object.prototype.toString.call(frng)).toBe('[object FloatRng]');
+    expect(getStringTag(U.FloatRng.prototype)).toBe('[object FloatRng]');
   });
 
-  it('NamedError', () => {
-    const q = new U.NamedError('SampleError', 'Wow!');
-    expect(Object.prototype.toString.call(q)).toBe('[object NamedError]');
+  it('WorkerStream', () => {
+    expect(getStringTag(U.WorkerStream.prototype)).toBe(
+      '[object WorkerStream]'
+    );
   });
 });
 
@@ -99,7 +93,9 @@ it(`Fermat's little theorem`, async () => {
 });
 
 describe('NamedError', async () => {
-  const e = new U.NamedError('HttpError', '404 Not Found', { status: 404 });
+  const e = new U.NamedError('HttpError', '404 Not Found', {
+    cause: { status: 404 },
+  });
 
   // console.log(e.name, '\n', e.message, '\n', e.stack, '\n', e.cause);
 
@@ -134,7 +130,7 @@ describe('random performance', () => {
     for (let i = 0; i < LIMIT; ++i) {
       const r = pcg.getU32Rand();
       if (r < 0 || r >= 2 ** 32) {
-        expect.unreachable('PCGMinimal - u32: out of range');
+        expect.unreachable(`PCGMinimal - u32: out of range ${r}`);
       }
     }
   });
@@ -143,7 +139,7 @@ describe('random performance', () => {
     for (let i = 0; i < LIMIT; ++i) {
       const r = pcg_f.getF32Rand();
       if (r < 0 || r >= 1) {
-        expect.unreachable('PCGMinimal - f32: out of range');
+        expect.unreachable(`PCGMinimal - f32: out of range ${r}`);
       }
     }
   });
@@ -152,7 +148,7 @@ describe('random performance', () => {
     for (let i = 0; i < LIMIT; ++i) {
       const r = pcg_f.getF64Rand();
       if (r < 0 || r >= 1) {
-        expect.unreachable('PCGMinimal - f64: out of range');
+        expect.unreachable(`PCGMinimal - f64: out of range ${r}`);
       }
     }
   });
@@ -170,7 +166,7 @@ describe('random performance', () => {
     for (let i = 0; i < LIMIT; ++i) {
       const r = xosh_f.getF64Rand();
       if (r < 0 || r >= 1) {
-        expect.unreachable('XoshiroMinimal - f64: out of range');
+        expect.unreachable(`XoshiroMinimal - f64: out of range ${r}`);
       }
     }
   });
