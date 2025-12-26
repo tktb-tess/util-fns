@@ -6,11 +6,13 @@ export type RationalData = {
   value: [string, string];
 };
 
+const NAME = 'Rational';
+
 export class Rational {
   #num: bigint;
   #denom: bigint;
 
-  static readonly name = 'Rational';
+  static readonly name = NAME;
 
   /**
    * fraction (rational) class
@@ -228,5 +230,5 @@ export class Rational {
 }
 
 Object.defineProperty(Rational.prototype, Symbol.toStringTag, {
-  value: Rational.name,
+  value: NAME,
 });

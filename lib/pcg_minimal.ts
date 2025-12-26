@@ -6,6 +6,8 @@ const PCG_INITIAL_STATE = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
 
 const PCG_MULTIPLIER = 0x5851f42d4c957f2dn;
 
+const NAME = 'PCGMinimal';
+
 /**
  * PCG-XSH-RR (Permuted congruential generator) \
  * reference: https://github.com/imneme/pcg-c-basic/blob/bc39cd76ac3d541e618606bcc6e1e5ba5e5e6aa3/pcg_basic.c \
@@ -17,7 +19,7 @@ export class PCGMinimal implements RandomGenerator32 {
    */
   readonly #state: BigUint64Array<ArrayBuffer>;
 
-  static readonly name = 'PCGMinimal';
+  static readonly name = NAME;
   readonly bits = 32;
 
   /**
@@ -115,5 +117,5 @@ export class PCGMinimal implements RandomGenerator32 {
 }
 
 Object.defineProperty(PCGMinimal.prototype, Symbol.toStringTag, {
-  value: PCGMinimal.name,
+  value: NAME,
 });

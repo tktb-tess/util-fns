@@ -128,8 +128,7 @@ export const sleep = (delay: number) => {
  */
 export const getStringTag = (obj: unknown) => {
   const str = Object.prototype.toString.call(obj);
-  const matched = str.match(/^\[Object\s(.+)\]$/)?.at(1);
-  return matched;
+  return str.slice(8, str.length - 1);
 };
 
 /**
@@ -253,20 +252,23 @@ export const decompress = async (
 };
 
 /**
- * 
- * @param handler 
- * @param timeout timeout
- * @returns 
+ * Schedules execution of a one-time `callback` after `delay` milliseconds, and returns promise resolved by a return value of `callback`.
+ * @param callback
+ * @param delay **Default:** `1`
+ * @returns
  */
-export const setTimeoutPromise = <T>(handler: () => T, timeout?: number) => {
-  return new Promise<T>((resolve, reject) => {
+export const setTimeoutPromise = <TRtrn>(
+  callback: () => TRtrn,
+  delay?: number
+) => {
+  return new Promise<TRtrn>((resolve, reject) => {
     setTimeout(async () => {
       try {
-        const value = await handler();
+        const value = await callback();
         resolve(value);
       } catch (e) {
         reject(e);
       }
-    }, timeout);
+    }, delay);
   });
 };

@@ -108,7 +108,9 @@ const UVSubscript = (
  * @returns
  */
 const lucasSPP = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
-  if (n % 2n !== 1n) throw Error('`n` must be odd');
+  if (n % 2n !== 1n) {
+    throw Error('`n` must be odd');
+  }
   let d = n + 1n;
   let s = 0n;
 
@@ -142,7 +144,7 @@ const lucasSPP = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
  * @param n tested integer
  * @returns whether `n` is a prime
  */
-export const bailliePSW = (n: bigint) => {
+export const bailliePSW = (n: bigint): boolean => {
   if (n <= 1n) return false;
   if (n % 2n === 0n) return n === 2n;
 
@@ -205,14 +207,14 @@ export const bailliePSW = (n: bigint) => {
 export const getRandPrimeByRange = (min: bigint, max: bigint) => {
   const LIMIT = 100000;
   if (max < 2n) {
-    throw Error('noPrimesFound');
+    throw Error('NoPrimesFound');
   }
   for (let count = 0; count < LIMIT; count++) {
     const p = getRandBIByRange(min, max);
     if (bailliePSW(p)) return p;
   }
 
-  throw Error('noPrimesFound');
+  throw Error('NoPrimesFound');
 };
 
 /**
@@ -224,12 +226,12 @@ export const getRandPrimeByRange = (min: bigint, max: bigint) => {
 export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
   const LIMIT = 100000;
   if (bitLength < 2) {
-    throw Error('noPrimesFound');
+    throw Error('NoPrimesFound');
   }
   for (let count = 0; count < LIMIT; count++) {
     const p = getRandBIByBitLength(bitLength, fixed);
     if (bailliePSW(p)) return p;
   }
 
-  throw Error('noPrimesFound');
+  throw Error('NoPrimesFound');
 };
