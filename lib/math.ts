@@ -11,7 +11,7 @@ export const getRndInt = (min: number, max: number): number => {
 };
 
 /**
- * residue, but returns a positive residue even `n` is negative
+ * residue, but always a positive residue even `n` is negative
  * @param n
  * @param modulo
  * @returns

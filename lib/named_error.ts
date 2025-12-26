@@ -4,8 +4,10 @@ interface NamedError<EName extends string> {
   readonly cause?: unknown;
 }
 
+const NAME = 'NamedError';
+
 class NamedError<EName extends string> extends Error {
-  static override readonly name = 'NamedError';
+  static override readonly name = NAME;
 
   constructor(
     public readonly errName: EName,
@@ -37,7 +39,7 @@ class NamedError<EName extends string> extends Error {
     })();
 
     const { errName, message, stack } = this;
-    
+
     return {
       errName,
       message,
@@ -48,7 +50,7 @@ class NamedError<EName extends string> extends Error {
 }
 
 Object.defineProperty(NamedError.prototype, Symbol.toStringTag, {
-  value: NamedError.name,
+  value: NAME,
 });
 
 export { NamedError };
