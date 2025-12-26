@@ -10,13 +10,10 @@ const worker = new Worker(new URL('./my_worker.ts', import.meta.url), {
 
 const stream = new U.WorkerStream<number, number>(worker);
 
-stream.postMessage(-1);
+stream.postMessage(1024);
 
 for await (const n of stream) {
   p.textContent += `${n}, `;
-  if (p.textContent.length >= 65536) {
-    stream.close();
-  }
 }
 
 console.log('Finish');
