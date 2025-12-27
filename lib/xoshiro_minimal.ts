@@ -1,4 +1,3 @@
-import { RandomGenerator64 } from './random';
 import { rot64 } from './math';
 
 const XOSHIRO_INITIAL_STATE = [
@@ -13,7 +12,7 @@ const XOSHIRO_INITIAL_STATE = [
  * reference: https://prng.di.unimi.it/xoshiro256plusplus.c \
  * by David Blackman and Sebastiano Vigna
  */
-export class XoshiroMinimal implements RandomGenerator64 {
+export class XoshiroMinimal {
   readonly bits = 64;
   readonly #state: BigUint64Array<ArrayBuffer>;
   static readonly name = 'XoshiroMinimal';
@@ -59,18 +58,18 @@ export class XoshiroMinimal implements RandomGenerator64 {
     return BigInt.asUintN(64, v);
   }
 
-  getU64Rand() {
+  getRandU64() {
     const prev = this.value;
     this.#step();
     return prev;
   }
 
-  getU32Rand() {
-    const r = BigInt.asUintN(32, this.getU64Rand());
+  getRandU32() {
+    const r = BigInt.asUintN(32, this.getRandU64());
     return Number(r);
   }
 
-  getBoundedU64Rand(bound: bigint) {
+  getBoundedRandU64(bound: bigint) {
     const LIMIT = 1n << 64n;
     if (bound > LIMIT) {
       throw Error(`'bound' exceeded limit`);
@@ -85,7 +84,7 @@ export class XoshiroMinimal implements RandomGenerator64 {
     const CYCLE_LIMIT = 100000;
 
     for (let i = 0; i < CYCLE_LIMIT; ++i) {
-      const r = this.getU64Rand();
+      const r = this.getRandU64();
 
       if (r >= threshold) {
         return r % bound;
@@ -94,7 +93,7 @@ export class XoshiroMinimal implements RandomGenerator64 {
     throw Error(`exceeded loop limit`);
   }
 
-  getBoundedU32Rand(bound: number) {
+  getBoundedRandU32(bound: number) {
     const LIMIT = 2 ** 32;
     if (bound > LIMIT) {
       throw Error(`'bound' exceeded limit`);
@@ -104,29 +103,29 @@ export class XoshiroMinimal implements RandomGenerator64 {
       throw Error(`'bound' must be positive`);
     }
 
-    const r = this.getBoundedU64Rand(BigInt(bound));
+    const r = this.getBoundedRandU64(BigInt(bound));
     return Number(r);
   }
 
-  *genU64Rands(step: number, bound?: bigint) {
+  *genRandU64s(step: number, bound?: bigint) {
     if (step <= 0) {
       throw Error(`'step' must be positive`);
     }
     for (let i = 0; i < step; ++i) {
       yield bound === undefined
-        ? this.getU64Rand()
-        : this.getBoundedU64Rand(bound);
+        ? this.getRandU64()
+        : this.getBoundedRandU64(bound);
     }
   }
 
-  *genU32Rands(step: number, bound?: number) {
+  *genRandU32s(step: number, bound?: number) {
     if (step <= 0) {
       throw Error(`'step' must be positive`);
     }
     for (let i = 0; i < step; ++i) {
       yield bound === undefined
-        ? this.getU32Rand()
-        : this.getBoundedU32Rand(bound);
+        ? this.getRandU32()
+        : this.getBoundedRandU32(bound);
     }
   }
 }
