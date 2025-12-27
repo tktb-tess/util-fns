@@ -4,6 +4,7 @@
     "target": "es2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
     "skipLibCheck": true,
+    "types": ["vite/client"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",

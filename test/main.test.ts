@@ -59,10 +59,6 @@ describe('check toStringTag', () => {
     expect(getStringTag(U.NamedError.prototype)).toBe('[object NamedError]');
   });
 
-  it('FloatRand', () => {
-    expect(getStringTag(U.FloatRng.prototype)).toBe('[object FloatRng]');
-  });
-
   it('WorkerStream', () => {
     expect(getStringTag(U.WorkerStream.prototype)).toBe(
       '[object WorkerStream]'
@@ -121,32 +117,26 @@ describe('random performance', () => {
   const seed_p = crypto.getRandomValues(new BigUint64Array(2));
   const seed_x = crypto.getRandomValues(new BigUint64Array(4));
   const pcg = new U.PCGMinimal(seed_p);
-  const pcg_f = new U.FloatRng(pcg);
+  const pcg_f = U.floatRng(() => {
+    const [upper, lower] = pcg.genRandU32s(2);
+    return (BigInt(upper) << 32n) | BigInt(lower);
+  });
   const xosh = new U.XoshiroMinimal(seed_x);
-  const xosh_f = new U.FloatRng(xosh);
+  const xosh_f = U.floatRng(() => xosh.getRandU64());
   const LIMIT = 2 ** 16;
 
   it('PCGMinimal - u32', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      const r = pcg.getU32Rand();
+      const r = pcg.getRandU32();
       if (r < 0 || r >= 2 ** 32) {
         expect.unreachable(`PCGMinimal - u32: out of range ${r}`);
       }
     }
   });
 
-  it('PCGMinimal - f32', () => {
-    for (let i = 0; i < LIMIT; ++i) {
-      const r = pcg_f.getF32Rand();
-      if (r < 0 || r >= 1) {
-        expect.unreachable(`PCGMinimal - f32: out of range ${r}`);
-      }
-    }
-  });
-
   it('PCGMinimal - f64', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      const r = pcg_f.getF64Rand();
+      const r = pcg_f();
       if (r < 0 || r >= 1) {
         expect.unreachable(`PCGMinimal - f64: out of range ${r}`);
       }
@@ -155,7 +145,7 @@ describe('random performance', () => {
 
   it('XoshiroMinimal - u64', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      const r = xosh.getU64Rand();
+      const r = xosh.getRandU64();
       if (r < 0n || r >= 1n << 64n) {
         expect.unreachable(`XoshiroMinimal - u64: out of range ${r}`);
       }
@@ -164,7 +154,7 @@ describe('random performance', () => {
 
   it('XoshiroMinimal - f64', () => {
     for (let i = 0; i < LIMIT; ++i) {
-      const r = xosh_f.getF64Rand();
+      const r = xosh_f();
       if (r < 0 || r >= 1) {
         expect.unreachable(`XoshiroMinimal - f64: out of range ${r}`);
       }

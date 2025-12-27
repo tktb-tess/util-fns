@@ -1,11 +1,8 @@
-import type { RandomGenerator32 } from './random';
 import { rot32 } from './math';
 
 /** シードなし時の静的初期化定数 */
 const PCG_INITIAL_STATE = [0x853c49e6748fea9bn, 0xda3e39cb94b95bdbn] as const;
-
 const PCG_MULTIPLIER = 0x5851f42d4c957f2dn;
-
 const NAME = 'PCGMinimal';
 
 /**
@@ -13,14 +10,13 @@ const NAME = 'PCGMinimal';
  * reference: https://github.com/imneme/pcg-c-basic/blob/bc39cd76ac3d541e618606bcc6e1e5ba5e5e6aa3/pcg_basic.c \
  * by Melissa O'Neill
  */
-export class PCGMinimal implements RandomGenerator32 {
+export class PCGMinimal {
   /**
    * length = 2, `[state, increment]`
    */
   readonly #state: BigUint64Array<ArrayBuffer>;
 
   static readonly name = NAME;
-  readonly bits = 32;
 
   /**
    * @param seeds
@@ -64,7 +60,7 @@ export class PCGMinimal implements RandomGenerator32 {
    *
    * @returns a random 32-bit unsigned integer
    */
-  getU32Rand() {
+  getRandU32() {
     this.#step();
     return this.#value;
   }
@@ -72,7 +68,7 @@ export class PCGMinimal implements RandomGenerator32 {
   /**
    * @returns a random 32-bit unsigned integer less than `bound`
    */
-  getBoundedU32Rand(bound: number) {
+  getBoundedRandU32(bound: number) {
     /** 32bit 上限 */
     const limit = 0x100000000;
 
@@ -86,7 +82,7 @@ export class PCGMinimal implements RandomGenerator32 {
     const CYCLE_LIMIT = 100000;
 
     for (let i = 0; i < CYCLE_LIMIT; ++i) {
-      const r = this.getU32Rand();
+      const r = this.getRandU32();
 
       if (r >= threshold) {
         return r % bound;
@@ -104,14 +100,14 @@ export class PCGMinimal implements RandomGenerator32 {
    * the iterator that generates random 32-bit unsigned integers `step` times \
    * if `bound` is given, random integers are less than `bound`
    */
-  *genU32Rands(step: number, bound?: number) {
+  *genRandU32s(step: number, bound?: number) {
     if (step <= 0) {
       throw Error(`'step' must be positive`);
     }
     for (let i = 0; i < step; i++) {
       yield typeof bound === 'number'
-        ? this.getBoundedU32Rand(bound)
-        : this.getU32Rand();
+        ? this.getBoundedRandU32(bound)
+        : this.getRandU32();
     }
   }
 }

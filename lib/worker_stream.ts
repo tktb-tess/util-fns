@@ -2,7 +2,7 @@ import { NamedError } from './named_error';
 
 const NAME = 'WorkerStream';
 
-export class WorkerStream<TPost, TRecv> extends ReadableStream<TRecv> {
+export class WorkerStream<TPost = unknown, TRecv = unknown> extends ReadableStream<TRecv> {
   readonly close: () => void;
   readonly #worker: Worker;
   static override readonly name = NAME;

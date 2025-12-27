@@ -196,15 +196,6 @@ export const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
 };
 
 /**
- * whether the environment is Node.js
- * @returns
- */
-export const isNode = () =>
-  !!globalThis.process &&
-  typeof process.version !== 'undefined' &&
-  typeof process.versions.node !== 'undefined';
-
-/**
  * Encodes a text string as a valid component of a URI and compatible with RFC3986.
  * @param URIComponent
  * @returns
@@ -254,7 +245,7 @@ export const decompress = async (
 /**
  * Schedules execution of a one-time `callback` after `delay` milliseconds, and returns promise resolved by a return value of `callback`.
  * @param callback
- * @param delay **Default:** `1`
+ * @param delay
  * @returns
  */
 export const setTimeoutPromise = <TRtrn>(
