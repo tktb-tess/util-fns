@@ -1,5 +1,10 @@
 import { it, expect, describe } from 'vitest';
 import * as U from '../lib/main';
+import Commas from './assets/commas.json';
+import CotecJson from './assets/conlinguistics-wiki-list-cotec.json';
+
+const commasUrl = new URL('./assets/commas.json', import.meta.url);
+const ctcUrl = './assets/conlinguistics-wiki-list-cotec.json';
 
 describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   it('distinguish null from object', () => {
@@ -19,8 +24,7 @@ describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   });
 
   it('sample data', async () => {
-    const url = 'https://tktb-tess.github.io/commas/out/commas.json';
-    const obj1: unknown = await fetch(url).then((r) => r.json());
+    const obj1 = Commas;
     const obj2 = structuredClone(obj1);
 
     const equality = U.isDeepStrictEqual(obj1, obj2);
@@ -29,9 +33,7 @@ describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   });
 
   it('sample data 2', async () => {
-    const url =
-      'https://tktb-tess.github.io/cotec-json-data/out/conlinguistics-wiki-list-cotec.json';
-    const obj1: unknown = await fetch(url).then((r) => r.json());
+    const obj1 = CotecJson;
     const obj2 = structuredClone(obj1);
 
     const equality = U.isDeepStrictEqual(obj1, obj2);
@@ -163,13 +165,13 @@ describe('random performance', () => {
 });
 
 describe('string <-> Uint8Array', async () => {
-  // const url = 'https://tktb-tess.github.io/commas/out/commas.json';
   const bin = new TextEncoder().encode(
     '春眠不覺曉\n處處聞啼鳥\n夜來風雨聲\n花落知多少'
   );
 
   it('base64', () => {
     const a = U.fromBase64(U.toBase64(bin));
+    console.log(a, bin);
     expect(a).toStrictEqual(bin);
   });
 
@@ -185,12 +187,10 @@ describe('string <-> Uint8Array', async () => {
 });
 
 it('compression', async () => {
-  const decoder = new TextDecoder();
-  const url = 'https://tktb-tess.github.io/commas/out/commas.json';
-  const req = await fetch(url);
-  const req2 = req.clone();
-  const obj = await req.json();
-  const bin2 = await req2.bytes();
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder(undefined, { fatal: true });
+  const obj = Commas;
+  const bin2 = encoder.encode(JSON.stringify(structuredClone(obj)));
   const comped = await U.compress(bin2, 'gzip');
   const deco = await U.decompress(comped, 'gzip');
   const obj2 = JSON.parse(decoder.decode(deco));

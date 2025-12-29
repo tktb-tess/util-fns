@@ -185,7 +185,6 @@ export const bailliePSW = (n: bigint): boolean => {
   }
 
   if (!millerRabin(n)) {
-    // console.log(n, 'Miller-Rabin', false);
     return false;
   }
 
@@ -193,9 +192,7 @@ export const bailliePSW = (n: bigint): boolean => {
   if (j === 0n) return false;
 
   const Q = (1n - D) / 4n;
-  // console.log('n:', n, 'D:', D, 'P:', 1n, 'Q:', Q);
   return lucasSPP(n, D, 1n, Q);
-  // console.log(n, 'Lucas-Strong', res);
 };
 
 /**
