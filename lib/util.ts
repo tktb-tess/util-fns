@@ -28,7 +28,7 @@ export const isDeepStrictEqual = (a: unknown, b: unknown) => {
     typeof a === 'bigint' ||
     typeof a === 'boolean' ||
     typeof a === 'symbol' ||
-    a == undefined
+    a == null
   ) {
     return a === b;
   }
