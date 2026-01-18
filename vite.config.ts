@@ -5,6 +5,9 @@ import { resolve } from 'node:path';
 
 export default defineConfig({
   plugins: [dts()],
+  server: {
+    port: 8000,
+  },
   build: {
     lib: {
       entry: resolve(__dirname, './lib/main.ts'),

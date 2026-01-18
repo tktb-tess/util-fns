@@ -20,8 +20,8 @@ class NamedError<EName extends string> extends Error {
   toJSON() {
     const cause = (() => {
       const c = this.cause;
-
-      if (
+      if (c == null) return;
+      else if (
         typeof c === 'string' ||
         typeof c === 'number' ||
         typeof c === 'boolean'
@@ -29,7 +29,7 @@ class NamedError<EName extends string> extends Error {
         return c;
       } else if (typeof c === 'bigint') {
         return c.toString();
-      } else if (typeof c === 'object' && c !== null) {
+      } else if (typeof c === 'object') {
         if (c instanceof Set || c instanceof Map) {
           return Object.fromEntries(c);
         } else {

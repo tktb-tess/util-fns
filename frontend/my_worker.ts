@@ -2,7 +2,7 @@ const getRandom = () => {
   return Math.round(256 * Math.random());
 };
 
-onmessage = (ev: MessageEvent<unknown>) => {
+globalThis.onmessage = (ev: MessageEvent<unknown>) => {
   const max = ev.data;
   if (typeof max !== 'number' || !Number.isFinite(max)) {
     throw Error('!');
