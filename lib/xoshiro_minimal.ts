@@ -31,11 +31,22 @@ export class XoshiroMinimal {
    * const betterRng = new XoshiroMinimal(seed);
    */
   constructor(seed?: BigUint64Array<ArrayBuffer>) {
-    if (seed && seed.length >= 4) {
+    if (
+      seed &&
+      seed[0] != null &&
+      seed[1] != null &&
+      seed[2] != null &&
+      seed[3] != null
+    ) {
       this.#state = new BigUint64Array(4);
       this.#state[0] = seed[0];
       this.#state[1] = seed[1];
       this.#step();
+
+      if (this.#state[2] == null || this.#state[3] == null) {
+        throw TypeError('unexpected');
+      }
+
       this.#state[2] += seed[2];
       this.#state[3] += seed[3];
     } else {
@@ -44,6 +55,15 @@ export class XoshiroMinimal {
   }
 
   #step() {
+    if (
+      this.#state[0] == null ||
+      this.#state[1] == null ||
+      this.#state[2] == null ||
+      this.#state[3] == null
+    ) {
+      throw TypeError('unexpected');
+    }
+
     const t = this.#state[1] << 17n;
     this.#state[2] ^= this.#state[0];
     this.#state[3] ^= this.#state[1];
@@ -54,6 +74,10 @@ export class XoshiroMinimal {
   }
 
   get value() {
+    if (this.#state[0] == null || this.#state[3] == null) {
+      throw TypeError('unexpected');
+    }
+
     const v = rot64(this.#state[0] + this.#state[3], 23n) + this.#state[0];
     return BigInt.asUintN(64, v);
   }

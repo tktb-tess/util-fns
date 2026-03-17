@@ -37,8 +37,7 @@ export class WorkerStream<TPost = unknown, TRecv = unknown> extends ReadableStre
           worker.addEventListener('message', onMessageF);
           worker.addEventListener('error', onErrorF);
         },
-        cancel: (reason: unknown) => {
-          console.log('Canceled reason:', reason);
+        cancel: () => {
           worker.removeEventListener('message', onMessageF);
           worker.removeEventListener('error', onErrorF);
         },

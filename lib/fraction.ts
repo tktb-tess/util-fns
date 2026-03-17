@@ -1,10 +1,10 @@
 import { exEuclidean } from './math';
 
-export type RationalData = {
+export interface RationalData {
   type: 'Rational';
   /** `[numerator, denominator]` */
   value: [string, string];
-};
+}
 
 const NAME = 'Rational';
 

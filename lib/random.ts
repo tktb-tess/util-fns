@@ -80,7 +80,7 @@ export const floatRng = (getRandU64: () => bigint) => {
       : getExponent(r1, get64);
 
     const { buffer } = BigUint64Array.from([(exponent << 52n) | mantissa]);
-    return new Float64Array(buffer)[0];
+    return new Float64Array(buffer)[0]!;
   };
 
   return () => {

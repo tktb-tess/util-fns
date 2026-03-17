@@ -82,7 +82,7 @@ const UVSubscript = (
   k: bigint,
   n: bigint,
   P: bigint,
-  D: bigint
+  D: bigint,
 ): [bigint, bigint] => {
   let U = 1n;
   let V = P;

@@ -34,7 +34,7 @@ export const toOct = (bin: Uint8Array) => {
   const matches = hexStr.matchAll(/.{6}/g);
 
   const oct_ = Array.from(matches, (m) =>
-    Number.parseInt(m[0], 16).toString(8).padStart(8, '0')
+    Number.parseInt(m[0], 16).toString(8).padStart(8, '0'),
   );
 
   return oct_.join('').replace(/^0+/, '');
@@ -92,8 +92,8 @@ export const decodeLEB128 = (leb128: Uint8Array<ArrayBuffer>) => {
   const byteLen = leb128.length;
   let bi = 0n;
 
-  for (let i = 0; i < byteLen; ++i) {
-    const byte = BigInt(leb128[i] & 127);
+  for (const [i, le] of leb128.entries()) {
+    const byte = BigInt(le & 127);
     bi += byte << BigInt(7 * i);
   }
   return BigInt.asIntN(7 * byteLen, bi);
