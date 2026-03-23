@@ -1,10 +1,10 @@
 import { exEuclidean } from './math';
 
-export type RationalData = {
+export interface RationalData {
   type: 'Rational';
   /** `[numerator, denominator]` */
   value: [string, string];
-};
+}
 
 const NAME = 'Rational';
 
@@ -55,7 +55,7 @@ export class Rational {
     }
     value = 1 / fracPart;
 
-    // 漸化式
+    // 連分数展開の漸化式
     // 参考: https://tsujimotter.hatenablog.com/entry/continued-fraction
     // p_0 = 1, p_1 = a_0, p_{n+2} = a_{n+1} * p_{n+1} + p_n
     // q_0 = 0, q_1 = 1,   q_{n+2} = a_{n+1} * q_{n+1} + q_n
@@ -147,9 +147,9 @@ export class Rational {
 
   /**
    * returns mediant
-   * @param this `a/b`
-   * @param right `c/d`
-   * @returns `(a+c)/(b+d)`
+   * @param this `a / b`
+   * @param right `c / d`
+   * @returns `(a + c) / (b + d)`
    */
   mediant(right: Rational) {
     const denom = this.#denom + right.#denom;

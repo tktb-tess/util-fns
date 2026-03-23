@@ -9,12 +9,11 @@ const NAME = 'NamedError';
 class NamedError<EName extends string> extends Error {
   static override readonly name = NAME;
 
-  constructor(
-    public readonly errName: EName,
-    message: string,
-    options?: ErrorOptions
-  ) {
+  public readonly errName: EName;
+
+  constructor(errName: EName, message: string, options?: ErrorOptions) {
     super(message, options);
+    this.errName = errName;
   }
 
   toJSON() {
@@ -41,7 +40,7 @@ class NamedError<EName extends string> extends Error {
     const { errName, message, stack } = this;
 
     return {
-      errName,
+      name: errName,
       message,
       stack,
       cause,

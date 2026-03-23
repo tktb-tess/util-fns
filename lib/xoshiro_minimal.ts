@@ -7,6 +7,8 @@ const XOSHIRO_INITIAL_STATE = [
   0x7581cf8c4f4d4f7dn,
 ] as const;
 
+const NAME = 'XoshiroMinimal';
+
 /**
  * Xoshiro256++ \
  * reference: https://prng.di.unimi.it/xoshiro256plusplus.c \
@@ -15,7 +17,7 @@ const XOSHIRO_INITIAL_STATE = [
 export class XoshiroMinimal {
   readonly bits = 64;
   readonly #state: BigUint64Array<ArrayBuffer>;
-  static readonly name = 'XoshiroMinimal';
+  static readonly name = NAME;
 
   /**
    * @param seeds
@@ -31,11 +33,22 @@ export class XoshiroMinimal {
    * const betterRng = new XoshiroMinimal(seed);
    */
   constructor(seed?: BigUint64Array<ArrayBuffer>) {
-    if (seed && seed.length >= 4) {
+    if (
+      seed &&
+      seed[0] != null &&
+      seed[1] != null &&
+      seed[2] != null &&
+      seed[3] != null
+    ) {
       this.#state = new BigUint64Array(4);
       this.#state[0] = seed[0];
       this.#state[1] = seed[1];
       this.#step();
+
+      if (this.#state[2] == null || this.#state[3] == null) {
+        throw TypeError('unexpected');
+      }
+
       this.#state[2] += seed[2];
       this.#state[3] += seed[3];
     } else {
@@ -44,6 +57,15 @@ export class XoshiroMinimal {
   }
 
   #step() {
+    if (
+      this.#state[0] == null ||
+      this.#state[1] == null ||
+      this.#state[2] == null ||
+      this.#state[3] == null
+    ) {
+      throw TypeError('unexpected');
+    }
+
     const t = this.#state[1] << 17n;
     this.#state[2] ^= this.#state[0];
     this.#state[3] ^= this.#state[1];
@@ -54,6 +76,10 @@ export class XoshiroMinimal {
   }
 
   get value() {
+    if (this.#state[0] == null || this.#state[3] == null) {
+      throw TypeError('unexpected');
+    }
+
     const v = rot64(this.#state[0] + this.#state[3], 23n) + this.#state[0];
     return BigInt.asUintN(64, v);
   }
@@ -72,11 +98,11 @@ export class XoshiroMinimal {
   getBoundedRandU64(bound: bigint) {
     const LIMIT = 1n << 64n;
     if (bound > LIMIT) {
-      throw Error(`'bound' exceeded limit`);
+      throw RangeError('`bound` exceeded limit');
     }
 
     if (bound <= 0n) {
-      throw Error(`'bound' must be positive`);
+      throw RangeError('`bound` must be positive');
     }
 
     const threshold = LIMIT % bound;
@@ -90,17 +116,17 @@ export class XoshiroMinimal {
         return r % bound;
       }
     }
-    throw Error(`exceeded loop limit`);
+    throw Error('exceeded loop limit');
   }
 
   getBoundedRandU32(bound: number) {
     const LIMIT = 2 ** 32;
     if (bound > LIMIT) {
-      throw Error(`'bound' exceeded limit`);
+      throw RangeError('`bound` exceeded limit');
     }
 
     if (bound <= 0n) {
-      throw Error(`'bound' must be positive`);
+      throw RangeError('`bound` must be positive');
     }
 
     const r = this.getBoundedRandU64(BigInt(bound));
@@ -109,7 +135,7 @@ export class XoshiroMinimal {
 
   *genRandU64s(step: number, bound?: bigint) {
     if (step <= 0) {
-      throw Error(`'step' must be positive`);
+      throw RangeError('`step` must be positive');
     }
     for (let i = 0; i < step; ++i) {
       yield bound === undefined
@@ -120,7 +146,7 @@ export class XoshiroMinimal {
 
   *genRandU32s(step: number, bound?: number) {
     if (step <= 0) {
-      throw Error(`'step' must be positive`);
+      throw RangeError('`step` must be positive');
     }
     for (let i = 0; i < step; ++i) {
       yield bound === undefined
@@ -131,5 +157,5 @@ export class XoshiroMinimal {
 }
 
 Object.defineProperty(XoshiroMinimal.prototype, Symbol.toStringTag, {
-  value: XoshiroMinimal.name,
+  value: NAME,
 });

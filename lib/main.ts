@@ -8,4 +8,4 @@ export * from './random';
 export * from './pcg_minimal';
 export * from './xoshiro_minimal';
 export * from './worker_stream';
-
+export * from './leb128';

@@ -32,8 +32,11 @@ export class PCGMinimal {
    * const betterRng = new PCGMinimal(seed);
    */
   constructor(seeds?: BigUint64Array<ArrayBuffer>) {
-    if (seeds && seeds.length >= 2) {
+    if (seeds && seeds[0] != null && seeds[1] != null) {
       this.#state = new BigUint64Array(2);
+      if (this.#state[0] == null || this.#state[1] == null) {
+        throw TypeError('unexpected');
+      }
       this.#state[1] = (seeds[1] << 1n) | 1n;
       this.#step();
       this.#state[0] += seeds[0];
@@ -45,11 +48,17 @@ export class PCGMinimal {
 
   /** step inner state */
   #step() {
+    if (this.#state[0] == null || this.#state[1] == null) {
+      throw TypeError('unexpected');
+    }
     this.#state[0] = this.#state[0] * PCG_MULTIPLIER + this.#state[1];
   }
 
   /** 32bit 乱数を返す (内部状態は変わらない) */
   get #value() {
+    if (this.#state[0] == null || this.#state[1] == null) {
+      throw TypeError('unexpected');
+    }
     const prev = this.#state[0];
     const rot = Number(prev >> 59n);
     const shifted = Number(BigInt.asUintN(32, (prev ^ (prev >> 18n)) >> 27n));
@@ -72,10 +81,10 @@ export class PCGMinimal {
     /** 32bit 上限 */
     const limit = 0x100000000;
 
-    if (bound > limit) throw Error('`bound` exceeded limit (2^32)');
+    if (bound > limit) throw RangeError('`bound` exceeded limit (2^32)');
 
     if (bound <= 0) {
-      throw Error(`'bound' must be positive`);
+      throw RangeError(`'bound' must be positive`);
     }
 
     const threshold = limit % bound;
@@ -102,7 +111,7 @@ export class PCGMinimal {
    */
   *genRandU32s(step: number, bound?: number) {
     if (step <= 0) {
-      throw Error(`'step' must be positive`);
+      throw RangeError(`'step' must be positive`);
     }
     for (let i = 0; i < step; i++) {
       yield typeof bound === 'number'

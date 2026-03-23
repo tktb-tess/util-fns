@@ -1,5 +1,5 @@
 const getRandom = () => {
-  return Math.round(256 * Math.random());
+  return Math.floor(256 * Math.random());
 };
 
 globalThis.onmessage = (ev: MessageEvent<unknown>) => {
@@ -8,13 +8,13 @@ globalThis.onmessage = (ev: MessageEvent<unknown>) => {
     throw Error('!');
   }
 
-  for (let i = 0; i < max; ++i) {
-    postMessage(getRandom());
-  }
-
   if (max === -1) {
     setInterval(() => {
       postMessage(getRandom());
     }, 0);
+  } else if (max > -1) {
+    for (let i = 0; i < max; ++i) {
+      postMessage(getRandom());
+    }
   }
 };
