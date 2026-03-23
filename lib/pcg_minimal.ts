@@ -111,7 +111,7 @@ export class PCGMinimal {
    */
   *genRandU32s(step: number, bound?: number) {
     if (step <= 0) {
-      throw Error(`'step' must be positive`);
+      throw RangeError(`'step' must be positive`);
     }
     for (let i = 0; i < step; i++) {
       yield typeof bound === 'number'

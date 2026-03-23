@@ -43,8 +43,7 @@ export const fromOct = (oct: string) => {
   const matches = padded.matchAll(/.{8}/g);
 
   const str2 = Array.from(matches, (match) => {
-    const st = match[0];
-    return Number.parseInt(st, 8).toString(16).padStart(6, '0');
+    return Number.parseInt(match[0], 8).toString(16).padStart(6, '0');
   }).join('');
 
   const matches2 = str2.matchAll(/.{2}/g);

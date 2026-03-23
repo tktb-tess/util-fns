@@ -84,7 +84,7 @@ export const isDeepStrictEqual = (a: unknown, b: unknown) => {
   }
 
   // still unavailable
-  throw Error(`comparing these objects is unavailable: ${a}, ${b}`, {
+  throw TypeError(`comparing these objects is unavailable: ${a}, ${b}`, {
     cause: [a, b],
   });
 };
