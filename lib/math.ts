@@ -1,5 +1,3 @@
-import { NamedError } from './named_error';
-
 /**
  * returns an integer of `min` or more and less than `max`
  * @param min
@@ -29,8 +27,9 @@ export const residue = (n: bigint, modulo: bigint): bigint => {
  *
  */
 export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
-  if (!Number.isFinite(length)) throw Error('`length` is not a valid number');
-  if (length <= 0) throw Error('`length` must be positive');
+  if (!Number.isFinite(length))
+    throw RangeError('`length` is not a valid number');
+  if (length <= 0) throw RangeError('`length` must be positive');
 
   const byteLen = Math.ceil(length / 8);
   const buf = crypto.getRandomValues(new Uint8Array(byteLen));
@@ -53,7 +52,7 @@ export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
  */
 export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
   if (min >= max) {
-    throw new NamedError('RangeError', 'min is larger than max');
+    throw RangeError('`min` must be smaller than `max`');
   }
   const diff = max - min;
   const bitLength = diff.toString(2).length;
@@ -81,8 +80,8 @@ export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
  *
  */
 export const modPow = (base: bigint, power: bigint, mod: bigint) => {
-  if (mod < 1n) throw Error('`mod` must be positive');
-  if (power < 0n) throw Error('`power` must not be negative');
+  if (mod < 1n) throw RangeError('`mod` must be positive');
+  if (power < 0n) throw RangeError('`power` must not be negative');
 
   base = residue(base, mod);
 
@@ -192,11 +191,11 @@ const oddPart = (n: bigint) => {
 /**
  * returns factorial of an input \
  * ref: https://qiita.com/AkariLuminous/items/1b2e964ebabde9419224
- * @param n 整数
- * @returns 引数の階乗
+ * @param n integer
+ * @returns factorial of `n`
  */
 export const factorial = (n: bigint) => {
-  if (n < 0n) throw Error(`'n' must be non-negative`);
+  if (n < 0n) throw RangeError(`'n' must be non-negative`);
   if (n === 0n) return 1n;
 
   const twoExp = n - BigInt(n.toString(2).match(/1/g)?.length ?? 0);
@@ -232,7 +231,7 @@ export const rot64 = (value: bigint, rot: bigint) => {
  */
 export const jacobiSymbol = (a: bigint, n: bigint) => {
   if (n < 1n || n % 2n === 0n) {
-    throw Error('`n` is invalid');
+    throw RangeError('`n` is out of range');
   }
 
   while (a < 0n) {

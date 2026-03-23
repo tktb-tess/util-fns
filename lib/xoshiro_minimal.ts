@@ -96,7 +96,7 @@ export class XoshiroMinimal {
   getBoundedRandU64(bound: bigint) {
     const LIMIT = 1n << 64n;
     if (bound > LIMIT) {
-      throw Error(`'bound' exceeded limit`);
+      throw RangeError(`'bound' exceeded limit`);
     }
 
     if (bound <= 0n) {

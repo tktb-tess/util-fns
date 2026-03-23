@@ -81,10 +81,10 @@ export class PCGMinimal {
     /** 32bit 上限 */
     const limit = 0x100000000;
 
-    if (bound > limit) throw Error('`bound` exceeded limit (2^32)');
+    if (bound > limit) throw RangeError('`bound` exceeded limit (2^32)');
 
     if (bound <= 0) {
-      throw Error(`'bound' must be positive`);
+      throw RangeError(`'bound' must be positive`);
     }
 
     const threshold = limit % bound;

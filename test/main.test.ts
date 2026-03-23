@@ -3,9 +3,6 @@ import * as U from '../lib/main';
 import Commas from './assets/commas.json';
 import CotecJson from './assets/conlinguistics-wiki-list-cotec.json';
 
-const commasUrl = new URL('./assets/commas.json', import.meta.url);
-const ctcUrl = './assets/conlinguistics-wiki-list-cotec.json';
-
 describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   it('distinguish null from object', () => {
     const obj1 = {};

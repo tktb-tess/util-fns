@@ -1,8 +1,9 @@
-import { NamedError } from './named_error';
-
 const NAME = 'WorkerStream';
 
-export class WorkerStream<TPost = unknown, TRecv = unknown> extends ReadableStream<TRecv> {
+export class WorkerStream<
+  TPost = unknown,
+  TRecv = unknown,
+> extends ReadableStream<TRecv> {
   readonly close: () => void;
   readonly #worker: Worker;
   static override readonly name = NAME;
@@ -22,10 +23,7 @@ export class WorkerStream<TPost = unknown, TRecv = unknown> extends ReadableStre
           onErrorF = (ev) => {
             worker.removeEventListener('message', onMessageF);
             worker.removeEventListener('error', onErrorF);
-            const e = new NamedError('WorkerStreamError', ev.message, {
-              cause: ev.error,
-            });
-            controller.error(e);
+            controller.error(Error(ev.message, { cause: ev.error }));
           };
 
           close = () => {
@@ -42,16 +40,16 @@ export class WorkerStream<TPost = unknown, TRecv = unknown> extends ReadableStre
           worker.removeEventListener('error', onErrorF);
         },
       },
-      strategy
+      strategy,
     );
 
     this.close = close;
     this.#worker = worker;
   }
 
-  postMessage(message: TPost, options?: StructuredSerializeOptions) {
+  postMessage = (message: TPost, options?: StructuredSerializeOptions) => {
     this.#worker.postMessage(message, options);
-  }
+  };
 }
 
 Object.defineProperty(WorkerStream.prototype, Symbol.toStringTag, {

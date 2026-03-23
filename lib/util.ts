@@ -1,6 +1,3 @@
-const encoder = new TextEncoder();
-// const decoder = new TextDecoder();
-
 /**
  * compare two objects with SameValueZero method
  * @param a
@@ -117,7 +114,7 @@ export const withResolvers = <T>() => {
  */
 export const sleep = (delay: number) => {
   return new Promise<void>((resolve) => {
-    setTimeout(() => resolve(), delay);
+    setTimeout(resolve, delay);
   });
 };
 
@@ -128,7 +125,7 @@ export const sleep = (delay: number) => {
  */
 export const getStringTag = (obj: unknown) => {
   const str = Object.prototype.toString.call(obj);
-  return str.slice(8, str.length - 1);
+  return str.slice(8, -1);
 };
 
 /**
@@ -190,7 +187,7 @@ export const parseCSV = (csv: string) => {
  * @returns hash
  */
 export const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
-  const utf8 = encoder.encode(str);
+  const utf8 = new TextEncoder().encode(str);
   const digest = await crypto.subtle.digest(algorithm, utf8);
   return new Uint8Array(digest);
 };
@@ -201,13 +198,13 @@ export const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
  * @returns
  */
 export const encodeRFC3986URIComponent = (
-  URIComponent: string | number | boolean
+  URIComponent: string | number | boolean,
 ) => {
   const pre = encodeURIComponent(URIComponent);
 
   return pre.replace(
     /[!'()*]/g,
-    (letter) => `%${letter.charCodeAt(0).toString(16).toUpperCase()}`
+    (letter) => `%${letter.charCodeAt(0).toString(16).toUpperCase()}`,
   );
 };
 
@@ -219,27 +216,29 @@ export const encodeRFC3986URIComponent = (
  */
 export const decodeRFC3986URIComponent = (encodedURIComponent: string) => {
   if (encodedURIComponent.includes('+')) {
-    throw Error(`An input string has '+'`);
+    throw URIError('an input string must not include `+`');
   }
   return decodeURIComponent(encodedURIComponent);
 };
 
-export const compress = async (
+export const compress = (
   raw: Uint8Array<ArrayBuffer>,
-  format: CompressionFormat
+  format: CompressionFormat,
 ) => {
-  const rs = new Blob([raw]).stream();
-  const rs2 = rs.pipeThrough(new CompressionStream(format));
-  return new Response(rs2).bytes();
+  const rs = new Blob([raw])
+    .stream()
+    .pipeThrough(new CompressionStream(format));
+  return new Response(rs).bytes();
 };
 
-export const decompress = async (
+export const decompress = (
   compressed: Uint8Array<ArrayBuffer>,
-  format: CompressionFormat
+  format: CompressionFormat,
 ) => {
-  const rs = new Blob([compressed]).stream();
-  const rs2 = rs.pipeThrough(new DecompressionStream(format));
-  return new Response(rs2).bytes();
+  const rs = new Blob([compressed])
+    .stream()
+    .pipeThrough(new DecompressionStream(format));
+  return new Response(rs).bytes();
 };
 
 /**
@@ -250,7 +249,7 @@ export const decompress = async (
  */
 export const setTimeoutPromise = <TRtrn>(
   callback: () => TRtrn,
-  delay?: number
+  delay?: number,
 ) => {
   return new Promise<TRtrn>((resolve, reject) => {
     setTimeout(async () => {

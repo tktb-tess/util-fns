@@ -40,7 +40,7 @@ class NamedError<EName extends string> extends Error {
     const { errName, message, stack } = this;
 
     return {
-      errName,
+      name: errName,
       message,
       stack,
       cause,

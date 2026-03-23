@@ -109,7 +109,7 @@ const UVSubscript = (
  */
 const lucasSPP = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
   if (n % 2n !== 1n) {
-    throw Error('`n` must be odd');
+    throw RangeError('`n` must be odd');
   }
   let d = n + 1n;
   let s = 0n;
@@ -204,14 +204,14 @@ export const bailliePSW = (n: bigint): boolean => {
 export const getRandPrimeByRange = (min: bigint, max: bigint) => {
   const LIMIT = 100000;
   if (max < 2n) {
-    throw Error('NoPrimesFound');
+    throw RangeError('`max` must be 2 or larger');
   }
   for (let count = 0; count < LIMIT; count++) {
     const p = getRandBIByRange(min, max);
     if (bailliePSW(p)) return p;
   }
 
-  throw Error('NoPrimesFound');
+  throw Error('No primes were found');
 };
 
 /**
@@ -223,7 +223,7 @@ export const getRandPrimeByRange = (min: bigint, max: bigint) => {
 export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
   const LIMIT = 100000;
   if (bitLength < 2) {
-    throw Error('NoPrimesFound');
+    throw RangeError('`bitLength` must be 2 or larger');
   }
   for (let count = 0; count < LIMIT; count++) {
     const p = getRandBIByBitLength(bitLength, fixed);
