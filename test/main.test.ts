@@ -57,12 +57,6 @@ describe('check toStringTag', () => {
   it('NamedError', () => {
     expect(getStringTag(U.NamedError.prototype)).toBe('[object NamedError]');
   });
-
-  it('WorkerStream', () => {
-    expect(getStringTag(U.WorkerStream.prototype)).toBe(
-      '[object WorkerStream]',
-    );
-  });
 });
 
 describe('bailliePSW works well', () => {

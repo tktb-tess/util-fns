@@ -93,57 +93,57 @@ export class Rational {
    * returns a fraction multiplied by -1
    * @returns
    */
-  minus() {
+  readonly minus = () => {
     return new Rational(-this.#num, this.#denom);
-  }
+  };
 
   /**
    * returns inverse of this fraction
    * @returns
    */
-  inverse() {
+  readonly inverse = () => {
     return new Rational(this.#denom, this.#num);
-  }
+  };
 
   /**
    * returns `this + right`
    * @param right
    * @returns
    */
-  add(right: Rational) {
+  readonly add = (right: Rational) => {
     const denom = this.#denom * right.#denom;
     const num = this.#num * right.#denom + right.#num * this.#denom;
     return new Rational(num, denom);
-  }
+  };
 
   /**
    * returns `this - right`
    * @param right
    * @returns
    */
-  substr(right: Rational) {
+  readonly substr = (right: Rational) => {
     return this.add(right.minus());
-  }
+  };
 
   /**
    * returns `this * right`
    * @param right
    * @returns
    */
-  multiply(right: Rational) {
+  readonly multiply = (right: Rational) => {
     const denom = this.#denom * right.#denom;
     const num = this.#num * right.#num;
     return new Rational(num, denom);
-  }
+  };
 
   /**
    * returns `this / right`
    * @param right
    * @returns
    */
-  divide(right: Rational) {
+  readonly divide = (right: Rational) => {
     return this.multiply(right.inverse());
-  }
+  };
 
   /**
    * returns mediant
@@ -151,25 +151,25 @@ export class Rational {
    * @param right `c / d`
    * @returns `(a + c) / (b + d)`
    */
-  mediant(right: Rational) {
+  readonly mediant = (right: Rational) => {
     const denom = this.#denom + right.#denom;
     const num = this.#num + right.#num;
     return new Rational(num, denom);
-  }
+  };
 
   /**
    * returns `number` type decimal
    * @returns decimal
    */
-  toDecimal() {
+  readonly toDecimal = () => {
     return Number(this.#num) / Number(this.#denom);
-  }
+  };
 
   /**
    * returns `'numerator/denominator'`
    * @returns string form
    */
-  toString() {
+  readonly toString = () => {
     if (this.#num === 0n && this.#denom === 0n) {
       return `NaN`;
     } else if (this.#num === 0n) {
@@ -181,18 +181,18 @@ export class Rational {
     } else {
       return `${this.#num}/${this.#denom}`;
     }
-  }
+  };
 
-  valueOf() {
+  readonly valueOf = () => {
     return this.toDecimal();
-  }
+  };
 
-  toJSON(): RationalData {
+  readonly toJSON = (): RationalData => {
     return {
       type: 'Rational',
       value: ['0x' + this.#num.toString(16), '0x' + this.#denom.toString(16)],
     };
-  }
+  };
 
   /**
    * makes instance from RationalData

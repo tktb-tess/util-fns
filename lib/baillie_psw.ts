@@ -1,12 +1,5 @@
-import {
-  modPow,
-  jacobiSymbol,
-  isSquare,
-  residue,
-  getRandBIByBitLength,
-  getRandBIByRange,
-} from './math';
-import { WorkerMessage, WorkerResult } from './types';
+import * as M from './math';
+import { AsyncWorker } from './async_worker';
 
 /*
  * translated from python codes in
@@ -32,7 +25,7 @@ const millerRabin = (n: bigint) => {
   const [d, s] = [d_, s_];
 
   const a = 2n;
-  let y = modPow(a, d, n);
+  let y = M.modPow(a, d, n);
 
   if (y === 1n) return true;
 
@@ -45,18 +38,18 @@ const millerRabin = (n: bigint) => {
 
 const DChooser = (n: bigint): [bigint, bigint] => {
   let D = 5n;
-  let j = jacobiSymbol(D, n);
+  let j = M.jacobiSymbol(D, n);
 
   while (j > 0n) {
     D = D > 0n ? D + 2n : D - 2n;
     D *= -1n;
 
-    if (D === -15n && isSquare(n)) {
+    if (D === -15n && M.isSquare(n)) {
       // The value of D isn't 0, but we are just communicating
       // that we have found a square
       return [0n, 0n];
     }
-    j = jacobiSymbol(D, n);
+    j = M.jacobiSymbol(D, n);
   }
   return [D, j];
 };
@@ -68,7 +61,7 @@ const DChooser = (n: bigint): [bigint, bigint] => {
  * @returns
  */
 const div2Mod = (x: bigint, n: bigint) => {
-  return (x & 1n) === 1n ? residue((x + n) >> 1n, n) : residue(x >> 1n, n);
+  return (x & 1n) === 1n ? M.residue((x + n) >> 1n, n) : M.residue(x >> 1n, n);
 };
 
 /**
@@ -90,7 +83,7 @@ const UVSubscript = (
   const digits = k.toString(2).slice(1);
 
   for (const digit of digits) {
-    [U, V] = [residue(U * V, n), div2Mod(V * V + D * U * U, n)];
+    [U, V] = [M.residue(U * V, n), div2Mod(V * V + D * U * U, n)];
 
     if (digit === '1') {
       [U, V] = [div2Mod(P * U + V, n), div2Mod(D * U + P * V, n)];
@@ -128,14 +121,14 @@ const lucasSPP = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
 
   if (U === 0n) return true;
 
-  Q = modPow(Q, d, n);
+  Q = M.modPow(Q, d, n);
 
   for (let i = 0n; i < s; i++) {
     //console.log(i, V, Q);
     if (V === 0n) return true;
 
-    V = residue(V * V - 2n * Q, n);
-    Q = modPow(Q, 2n, n);
+    V = M.residue(V * V - 2n * Q, n);
+    Q = M.modPow(Q, 2n, n);
   }
   return false;
 };
@@ -277,7 +270,7 @@ export const getRandPrimeByRange = (min: bigint, max: bigint) => {
     throw RangeError('`max` must be 2 or larger');
   }
   for (let count = 0; count < LIMIT; count++) {
-    const p = getRandBIByRange(min, max);
+    const p = M.getRandBIByRange(min, max);
     if (bailliePSW(p)) return p;
   }
 
@@ -296,62 +289,31 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
     throw RangeError('`bitLength` must be 2 or larger');
   }
   for (let count = 0; count < LIMIT; count++) {
-    const p = getRandBIByBitLength(bitLength, fixed);
+    const p = M.getRandBIByBitLength(bitLength, fixed);
     if (bailliePSW(p)) return p;
   }
 
   throw Error('NoPrimesFound');
 };
 
-let worker: Worker | null;
+let _bpsw_worker: AsyncWorker<bigint, boolean> | null;
 
 const getWorker = () => {
-  if (!worker) {
-    worker = new Worker(new URL('./bpsw_worker.ts', import.meta.url), {
+  if (!_bpsw_worker) {
+    const w = new Worker(new URL('./bpsw_worker.ts', import.meta.url), {
       type: 'module',
     });
+    _bpsw_worker = new AsyncWorker<bigint, boolean>(w);
   }
 
-  return worker;
+  return _bpsw_worker;
 };
 
 /**
  * worker async version of `bailliePSW()`
  * @param n
  */
-export const bailliePSWAsync = async (n: bigint) => {
-  return new Promise<boolean>((resolve, reject) => {
-    const worker = getWorker();
-    const id = crypto.randomUUID();
-
-    const handleMessage = (ev: MessageEvent<WorkerResult<boolean>>) => {
-      const res = ev.data;
-      if (res.id !== id) return;
-
-      worker.removeEventListener('error', handleError);
-      worker.removeEventListener('message', handleMessage);
-
-      if (res.success) {
-        resolve(res.value);
-      } else {
-        reject(res.error);
-      }
-    };
-
-    const handleError = (ev: ErrorEvent) => {
-      worker.removeEventListener('error', handleError);
-      worker.removeEventListener('message', handleMessage);
-      reject(ev);
-    };
-
-    worker.addEventListener('message', handleMessage);
-    worker.addEventListener('error', handleError);
-
-    const msg: WorkerMessage<bigint> = {
-      id,
-      value: n,
-    };
-
-    worker.postMessage(msg);
-  });
+export const bailliePSWAsync = (n: bigint) => {
+  const worker = getWorker();
+  return worker.postMessage(n);
 };

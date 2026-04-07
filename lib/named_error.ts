@@ -16,7 +16,7 @@ class NamedError<EName extends string> extends Error {
     this.errName = errName;
   }
 
-  toJSON() {
+  readonly toJSON = () => {
     const cause = (() => {
       const c = this.cause;
       if (c == null) return;
@@ -45,7 +45,7 @@ class NamedError<EName extends string> extends Error {
       stack,
       cause,
     };
-  }
+  };
 }
 
 Object.defineProperty(NamedError.prototype, Symbol.toStringTag, {
