@@ -58,6 +58,11 @@ const getExponent = (r: bigint, get64: () => bigint) => {
   throw Error('loop exceeded limit');
 };
 
+/**
+ * Generates 64-bit float RNG from 64-bit unsigned int RNG
+ * @param getRandU64 function that returns a random 64-bit unsigned int
+ * @returns function that returns a random 64-bit float
+ */
 export const floatRng = (getRandU64: () => bigint) => {
   const get64 = () => {
     return BigInt.asUintN(64, getRandU64());

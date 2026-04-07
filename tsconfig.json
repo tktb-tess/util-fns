@@ -5,6 +5,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
     "skipLibCheck": true,
     "types": ["vite/client"],
+    "rootDir": "./lib",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -25,5 +26,5 @@
     "erasableSyntaxOnly": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["lib"]
+  "include": ["./lib"]
 }

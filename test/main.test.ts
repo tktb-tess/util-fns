@@ -50,7 +50,7 @@ describe('check toStringTag', () => {
 
   it('XoshiroMinimal', () => {
     expect(getStringTag(U.XoshiroMinimal.prototype)).toBe(
-      '[object XoshiroMinimal]'
+      '[object XoshiroMinimal]',
     );
   });
 
@@ -60,7 +60,7 @@ describe('check toStringTag', () => {
 
   it('WorkerStream', () => {
     expect(getStringTag(U.WorkerStream.prototype)).toBe(
-      '[object WorkerStream]'
+      '[object WorkerStream]',
     );
   });
 });
@@ -163,7 +163,7 @@ describe('random performance', () => {
 
 describe('string <-> Uint8Array', async () => {
   const bin = new TextEncoder().encode(
-    '春眠不覺曉\n處處聞啼鳥\n夜來風雨聲\n花落知多少'
+    '春眠不覺曉\n處處聞啼鳥\n夜來風雨聲\n花落知多少',
   );
 
   it('base64', () => {
@@ -173,7 +173,7 @@ describe('string <-> Uint8Array', async () => {
   });
 
   it('base64url', () => {
-    const a = U.fromBase64Url(U.toBase64Url(bin));
+    const a = U.fromBase64URL(U.toBase64URL(bin));
     expect(a).toStrictEqual(bin);
   });
 
