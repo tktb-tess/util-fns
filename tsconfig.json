@@ -26,5 +26,5 @@
     "erasableSyntaxOnly": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["lib"]
+  "include": ["./lib"]
 }
