@@ -1,9 +1,19 @@
 import * as U from '../lib/main';
 
-const obj = { ...U, [Symbol.toStringTag]: 'UtilFns', __proto__: null } as const;
+const app = document.getElementById('app');
 
-Object.freeze(obj);
-Object.defineProperty(window, 'UtilFns', {
-  value: obj,
-  enumerable: true,
-});
+if (!(app instanceof HTMLDivElement)) {
+  throw TypeError('!');
+}
+
+const pre = document.createElement('pre');
+app.replaceChildren(pre);
+
+const w = new Worker(new URL('./my_worker.ts', import.meta.url), { type: 'module' });
+
+const worker = new U.AsyncWorker<number, string>(w);
+
+for (const i of Array(100).keys()) {
+  const b = await worker.postMessage(i);
+  pre.textContent += `task${i}: ${b}\n`;
+}
