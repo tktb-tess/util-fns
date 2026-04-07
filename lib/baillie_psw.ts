@@ -296,17 +296,17 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
   throw Error('NoPrimesFound');
 };
 
-let _bpsw_worker: AsyncWorker<bigint, boolean> | null;
+let __bpsw_worker__: AsyncWorker<bigint, boolean> | null;
 
 const getWorker = () => {
-  if (!_bpsw_worker) {
+  if (!__bpsw_worker__) {
     const w = new Worker(new URL('./bpsw_worker.ts', import.meta.url), {
       type: 'module',
     });
-    _bpsw_worker = new AsyncWorker<bigint, boolean>(w);
+    __bpsw_worker__ = new AsyncWorker<bigint, boolean>(w);
   }
 
-  return _bpsw_worker;
+  return __bpsw_worker__;
 };
 
 /**

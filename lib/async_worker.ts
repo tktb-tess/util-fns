@@ -1,4 +1,6 @@
-type ID = ReturnType<typeof crypto.randomUUID>;
+declare const __BRAND_ID__: unique symbol;
+
+type ID = ReturnType<typeof crypto.randomUUID> & { [__BRAND_ID__]: unknown };
 
 export interface WorkerMessage<T> {
   readonly value: T;
@@ -39,7 +41,8 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
   ) => {
     await new Promise<void>((r) => setTimeout(r, 0));
     return new Promise<TRecv>(async (resolve, reject) => {
-      const id = crypto.randomUUID();
+      const id = crypto.randomUUID() as ID;
+
       const messageHandler = (ev: MessageEvent<WorkerResult<TRecv>>) => {
         const res = ev.data;
         if (res.id !== id) return;
