@@ -6,6 +6,7 @@ import {
   getRandBIByBitLength,
   getRandBIByRange,
 } from './math';
+import { WorkerMessage, WorkerResult } from './types';
 
 /*
  * translated from python codes in
@@ -176,6 +177,75 @@ export const bailliePSW = (n: bigint): boolean => {
     89n,
     97n,
     101n,
+    103n,
+    107n,
+    109n,
+    113n,
+    127n,
+    131n,
+    137n,
+    139n,
+    149n,
+    151n,
+    157n,
+    163n,
+    167n,
+    173n,
+    179n,
+    181n,
+    191n,
+    193n,
+    197n,
+    199n,
+    211n,
+    223n,
+    227n,
+    229n,
+    233n,
+    239n,
+    241n,
+    251n,
+    257n,
+    263n,
+    269n,
+    271n,
+    277n,
+    281n,
+    283n,
+    293n,
+    307n,
+    311n,
+    313n,
+    317n,
+    331n,
+    337n,
+    347n,
+    349n,
+    353n,
+    359n,
+    367n,
+    373n,
+    379n,
+    383n,
+    389n,
+    397n,
+    401n,
+    409n,
+    419n,
+    421n,
+    431n,
+    433n,
+    439n,
+    443n,
+    449n,
+    457n,
+    461n,
+    463n,
+    467n,
+    479n,
+    487n,
+    491n,
+    499n,
   ];
 
   for (const p of smallPrimes) {
@@ -231,4 +301,57 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
   }
 
   throw Error('NoPrimesFound');
+};
+
+let worker: Worker | null;
+
+const getWorker = () => {
+  if (!worker) {
+    worker = new Worker(new URL('./bpsw_worker.ts', import.meta.url), {
+      type: 'module',
+    });
+  }
+
+  return worker;
+};
+
+/**
+ * worker async version of `bailliePSW()`
+ * @param n
+ */
+export const bailliePSWAsync = async (n: bigint) => {
+  return new Promise<boolean>((resolve, reject) => {
+    const worker = getWorker();
+    const id = crypto.randomUUID();
+
+    const handleMessage = (ev: MessageEvent<WorkerResult<boolean>>) => {
+      const res = ev.data;
+      if (res.id !== id) return;
+
+      worker.removeEventListener('error', handleError);
+      worker.removeEventListener('message', handleMessage);
+
+      if (res.success) {
+        resolve(res.value);
+      } else {
+        reject(res.error);
+      }
+    };
+
+    const handleError = (ev: ErrorEvent) => {
+      worker.removeEventListener('error', handleError);
+      worker.removeEventListener('message', handleMessage);
+      reject(ev);
+    };
+
+    worker.addEventListener('message', handleMessage);
+    worker.addEventListener('error', handleError);
+
+    const msg: WorkerMessage<bigint> = {
+      id,
+      value: n,
+    };
+
+    worker.postMessage(msg);
+  });
 };

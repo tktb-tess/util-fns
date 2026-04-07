@@ -1,8 +1,7 @@
 import * as U from '../lib/main';
 
-const obj = { ...U, [Symbol.toStringTag]: 'UtilFns' } as const;
+const obj = { ...U, [Symbol.toStringTag]: 'UtilFns', __proto__: null } as const;
 
-Object.setPrototypeOf(obj, null);
 Object.freeze(obj);
 Object.defineProperty(window, 'UtilFns', {
   value: obj,
