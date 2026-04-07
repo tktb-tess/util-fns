@@ -1,3 +1,5 @@
+import { fromBase64URL, toBase64URL } from './u8arr_ext';
+
 /**
  * compare two objects with SameValueZero method
  * @param a
@@ -241,6 +243,28 @@ export const decompress = (
   return new Response(rs).bytes();
 };
 
+export const compressString = async (
+  str: string,
+  format: CompressionFormat,
+) => {
+  const st = new Blob([str])
+    .stream()
+    .pipeThrough(new CompressionStream(format));
+  const bin = await new Response(st).bytes();
+  return toBase64URL(bin);
+};
+
+export const decompressString = (
+  compressedBase64URL: string,
+  format: CompressionFormat,
+) => {
+  const bin = fromBase64URL(compressedBase64URL);
+  const st = new Blob([bin])
+    .stream()
+    .pipeThrough(new DecompressionStream(format));
+  return new Response(st).text();
+};
+
 /**
  * Schedules execution of a one-time `callback` after `delay` milliseconds, and returns promise resolved by a return value of `callback`.
  * @param callback
@@ -261,4 +285,35 @@ export const setTimeoutPromise = <TRtrn>(
       }
     }, delay);
   });
+};
+
+/**
+ * `Array.prototype.at()` with boundary check, nullable value is acceptable
+ * @param array
+ * @param index
+ * @returns
+ */
+export const nullableStrictAt = <T>(array: T[], index: number) => {
+  if (index < -array.length || index >= array.length) {
+    throw RangeError('`index` is out of range');
+  }
+
+  const v = array.at(index);
+  return v;
+};
+
+/**
+ * `Array.prototype.at()` with boundary check and non-nullable check
+ * @param array
+ * @param index
+ * @returns
+ */
+export const strictAt = <T extends {}>(array: T[], index: number) => {
+  const v = nullableStrictAt(array, index);
+
+  if (v == null) {
+    throw TypeError('value is nullable');
+  }
+
+  return v;
 };
