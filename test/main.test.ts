@@ -90,7 +90,6 @@ describe('NamedError', async () => {
 
   it('stringify', () => {
     const str = JSON.stringify(e);
-    console.log(str);
     expect(str).includes('HttpError');
   });
 
