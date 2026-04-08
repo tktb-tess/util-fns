@@ -90,6 +90,7 @@ describe('NamedError', async () => {
 
   it('stringify', () => {
     const str = JSON.stringify(e);
+    console.log(str);
     expect(str).includes('HttpError');
   });
 
@@ -180,7 +181,7 @@ describe('string <-> Uint8Array', async () => {
 it('compression', async () => {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder(undefined, { fatal: true });
-  const obj = Commas;
+  const obj = [...Array(256)].map(() => Math.floor(65536 * Math.random()));
   const bin2 = encoder.encode(JSON.stringify(structuredClone(obj)));
   const comped = await U.compress(bin2, 'gzip');
   const deco = await U.decompress(comped, 'gzip');

@@ -20,7 +20,7 @@ for (const i of Array(100).keys()) {
   pre.textContent += `task${i}: ${b}\n`;
 }
 
-const o = { ...U, [Symbol.toStringTag]: 'UtilFns', __proto__: null };
+const o = { [Symbol.toStringTag]: 'UtilFns', __proto__: null, ...U };
 Object.freeze(o);
 
 Object.defineProperty(window, 'UtilFns', {

@@ -274,7 +274,7 @@ export const getRandPrimeByRange = (min: bigint, max: bigint) => {
     if (bailliePSW(p)) return p;
   }
 
-  throw Error('No primes were found');
+  throw Error('no primes were found');
 };
 
 /**
@@ -293,7 +293,7 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
     if (bailliePSW(p)) return p;
   }
 
-  throw Error('NoPrimesFound');
+  throw Error('no primes were found');
 };
 
 let __bpsw_worker__: AsyncWorker<bigint, boolean> | null;

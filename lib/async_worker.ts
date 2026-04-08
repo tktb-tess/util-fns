@@ -1,6 +1,6 @@
-declare const __BRAND_ID__: unique symbol;
+declare const __ID_BRAND__: unique symbol;
 
-type ID = ReturnType<typeof crypto.randomUUID> & { [__BRAND_ID__]: unknown };
+type ID = ReturnType<typeof crypto.randomUUID> & { [__ID_BRAND__]: unknown };
 
 export interface WorkerMessage<T> {
   readonly value: T;
@@ -31,16 +31,15 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
   }
 
   /**
-   * sends a message to the worker
+   * sends a message to the worker, and returns promise resolved by message from worker
    * @param message
    * @param options
    */
-  readonly postMessage = async (
+  readonly postMessage = (
     message: TPost,
     options?: StructuredSerializeOptions,
   ) => {
-    await new Promise<void>((r) => setTimeout(r, 0));
-    return new Promise<TRecv>(async (resolve, reject) => {
+    return new Promise<TRecv>((resolve, reject) => {
       const id = crypto.randomUUID() as ID;
 
       const messageHandler = (ev: MessageEvent<WorkerResult<TRecv>>) => {
