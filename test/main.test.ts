@@ -57,12 +57,6 @@ describe('check toStringTag', () => {
   it('NamedError', () => {
     expect(getStringTag(U.NamedError.prototype)).toBe('[object NamedError]');
   });
-
-  it('WorkerStream', () => {
-    expect(getStringTag(U.WorkerStream.prototype)).toBe(
-      '[object WorkerStream]',
-    );
-  });
 });
 
 describe('bailliePSW works well', () => {
@@ -72,9 +66,9 @@ describe('bailliePSW works well', () => {
       const next = chain[i] * 2n - 1n;
       chain.push(next);
     }
-    const bools = await Promise.all(chain.map(async (p) => U.bailliePSW(p)));
+    const bool = chain.map((p) => U.bailliePSW(p)).every((b) => b);
 
-    expect(bools.every((b) => b)).toBe(true);
+    expect(bool).toBe(true);
   });
 });
 
@@ -168,7 +162,7 @@ describe('string <-> Uint8Array', async () => {
 
   it('base64', () => {
     const a = U.fromBase64(U.toBase64(bin));
-    console.log(a, bin);
+    // console.log(a, bin);
     expect(a).toStrictEqual(bin);
   });
 
@@ -186,7 +180,7 @@ describe('string <-> Uint8Array', async () => {
 it('compression', async () => {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder(undefined, { fatal: true });
-  const obj = Commas;
+  const obj = [...Array(256)].map(() => Math.floor(65536 * Math.random()));
   const bin2 = encoder.encode(JSON.stringify(structuredClone(obj)));
   const comped = await U.compress(bin2, 'gzip');
   const deco = await U.decompress(comped, 'gzip');

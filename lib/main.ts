@@ -7,5 +7,5 @@ export * from './named_error';
 export * from './random';
 export * from './pcg_minimal';
 export * from './xoshiro_minimal';
-export * from './worker_stream';
+export * from './async_worker';
 export * from './leb128';

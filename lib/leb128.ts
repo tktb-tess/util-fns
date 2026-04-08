@@ -27,11 +27,11 @@ export const encodeLEB128 = (bigint: bigint) => {
   return buff;
 };
 
-export const decodeLEB128 = (leb128: Uint8Array<ArrayBuffer>) => {
-  const byteLen = leb128.length;
+export const decodeLEB128 = (LEB128: Uint8Array<ArrayBuffer>) => {
+  const byteLen = LEB128.length;
   let bi = 0n;
 
-  for (const [i, le] of leb128.entries()) {
+  for (const [i, le] of LEB128.entries()) {
     const byte = BigInt(le & 127);
     bi += byte << BigInt(7 * i);
   }

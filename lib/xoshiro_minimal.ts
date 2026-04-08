@@ -84,18 +84,18 @@ export class XoshiroMinimal {
     return BigInt.asUintN(64, v);
   }
 
-  getRandU64() {
+  readonly getRandU64 = () => {
     const prev = this.value;
     this.#step();
     return prev;
-  }
+  };
 
-  getRandU32() {
+  readonly getRandU32 = () => {
     const r = BigInt.asUintN(32, this.getRandU64());
     return Number(r);
-  }
+  };
 
-  getBoundedRandU64(bound: bigint) {
+  readonly getBoundedRandU64 = (bound: bigint) => {
     const LIMIT = 1n << 64n;
     if (bound > LIMIT) {
       throw RangeError('`bound` exceeded limit');
@@ -117,9 +117,9 @@ export class XoshiroMinimal {
       }
     }
     throw Error('exceeded loop limit');
-  }
+  };
 
-  getBoundedRandU32(bound: number) {
+  readonly getBoundedRandU32 = (bound: number) => {
     const LIMIT = 2 ** 32;
     if (bound > LIMIT) {
       throw RangeError('`bound` exceeded limit');
@@ -131,7 +131,7 @@ export class XoshiroMinimal {
 
     const r = this.getBoundedRandU64(BigInt(bound));
     return Number(r);
-  }
+  };
 
   *genRandU64s(step: number, bound?: bigint) {
     if (step <= 0) {

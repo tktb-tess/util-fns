@@ -69,15 +69,15 @@ export class PCGMinimal {
    *
    * @returns a random 32-bit unsigned integer
    */
-  getRandU32() {
+  readonly getRandU32 = () => {
     this.#step();
     return this.#value;
-  }
+  };
 
   /**
    * @returns a random 32-bit unsigned integer less than `bound`
    */
-  getBoundedRandU32(bound: number) {
+  readonly getBoundedRandU32 = (bound: number) => {
     /** 32bit 上限 */
     const limit = 0x100000000;
 

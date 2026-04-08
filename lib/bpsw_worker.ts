@@ -1,25 +1,14 @@
 import { bailliePSW } from './baillie_psw';
-import type { WorkerMessage, WorkerResult } from './types';
+import { postSuccess, postFailed } from './async_worker';
+import type { WorkerMessage } from './async_worker';
 
 globalThis.onmessage = (ev: MessageEvent<WorkerMessage<bigint>>) => {
-  const input = ev.data;
+  const { value: input, id } = ev.data;
   try {
-    const value = bailliePSW(input.value);
+    const value = bailliePSW(input);
 
-    const msg: WorkerResult<boolean> = {
-      success: true,
-      value,
-      id: input.id,
-    };
-
-    postMessage(msg);
-  } catch (error) {
-    const msg: WorkerResult<boolean> = {
-      success: false,
-      error,
-      id: input.id,
-    };
-    
-    postMessage(msg);
+    postSuccess(value, id);
+  } catch (e) {
+    postFailed(e, id);
   }
 };

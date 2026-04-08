@@ -16,25 +16,12 @@ class NamedError<EName extends string> extends Error {
     this.errName = errName;
   }
 
-  toJSON() {
+  readonly toJSON = () => {
     const cause = (() => {
       const c = this.cause;
-      if (c == null) return;
-      else if (
-        typeof c === 'string' ||
-        typeof c === 'number' ||
-        typeof c === 'boolean'
-      ) {
-        return c;
-      } else if (typeof c === 'bigint') {
-        return c.toString();
-      } else if (typeof c === 'object') {
-        if (c instanceof Set || c instanceof Map) {
-          return Object.fromEntries(c);
-        } else {
-          return c;
-        }
-      } else return;
+      if (c == null) return c;
+      const s = c.toString();
+      return s === '[object Object]' ? JSON.stringify(c) : s;
     })();
 
     const { errName, message, stack } = this;
@@ -45,7 +32,7 @@ class NamedError<EName extends string> extends Error {
       stack,
       cause,
     };
-  }
+  };
 }
 
 Object.defineProperty(NamedError.prototype, Symbol.toStringTag, {

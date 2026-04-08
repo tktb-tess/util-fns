@@ -1,20 +1,14 @@
-const getRandom = () => {
-  return Math.floor(256 * Math.random());
+import { postSuccess, type WorkerMessage } from '../lib/main';
+
+const getDelay = () => {
+  return Math.floor(Math.random() * 200);
 };
 
-globalThis.onmessage = (ev: MessageEvent<unknown>) => {
-  const max = ev.data;
-  if (typeof max !== 'number' || !Number.isFinite(max)) {
-    throw Error('!');
-  }
+globalThis.onmessage = (ev: MessageEvent<WorkerMessage<number>>) => {
+  const { value, id } = ev.data;
 
-  if (max === -1) {
-    setInterval(() => {
-      postMessage(getRandom());
-    }, 0);
-  } else if (max > -1) {
-    for (let i = 0; i < max; ++i) {
-      postMessage(getRandom());
-    }
-  }
+  const ans = 4 * value;
+  const delay = getDelay();
+
+  setTimeout(() => postSuccess(`ans: ${ans}, delay: ${delay}`, id), delay);
 };
