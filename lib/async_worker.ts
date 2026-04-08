@@ -1,6 +1,8 @@
 declare const __ID_BRAND__: unique symbol;
 
-type ID = ReturnType<typeof crypto.randomUUID> & { [__ID_BRAND__]: unknown };
+type ID = ReturnType<typeof crypto.randomUUID> & {
+  readonly [__ID_BRAND__]: unknown;
+};
 
 export interface WorkerMessage<T> {
   readonly value: T;

@@ -115,9 +115,7 @@ export const withResolvers = <T>() => {
  * @returns
  */
 export const sleep = (delay: number) => {
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, delay);
-  });
+  return new Promise<void>((r) => setTimeout(r, delay));
 };
 
 /**

@@ -62,7 +62,7 @@ export class Rational {
     let [p_n, p_n1] = [1n, a_0];
     let [q_n, q_n1] = [0n, 1n];
 
-    while (`${q_n1}`.length < denominatorDigits + 1) {
+    while (`${q_n1}`.length <= denominatorDigits) {
       const a_n1 = BigInt(Math.floor(value));
       const fracPart = value - Number(a_n1);
 
