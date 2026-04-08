@@ -3,5 +3,3 @@ node_modules
 dist
 oo.ts
 
-# Added by cargo
-wasmproj/target
