@@ -162,7 +162,7 @@ describe('string <-> Uint8Array', async () => {
 
   it('base64', () => {
     const a = U.fromBase64(U.toBase64(bin));
-    console.log(a, bin);
+    // console.log(a, bin);
     expect(a).toStrictEqual(bin);
   });
 
