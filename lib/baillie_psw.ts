@@ -310,7 +310,8 @@ const getWorker = () => {
 };
 
 /**
- * worker async version of `bailliePSW()`
+ * worker async version of `bailliePSW()` \
+ * not available in global context
  * @param n
  */
 export const bailliePSWAsync = (n: bigint) => {
