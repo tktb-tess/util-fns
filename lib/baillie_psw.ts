@@ -311,7 +311,7 @@ const getWorker = () => {
 
 /**
  * worker async version of `bailliePSW()` \
- * not available in global context
+ * only available in esm context
  * @param n
  */
 export const bailliePSWAsync = (n: bigint) => {
