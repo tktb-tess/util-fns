@@ -8,14 +8,14 @@
   "type": "module",
   "author": "Tessyrrhaqt",
   "license": "MIT",
-  "main": "./dist/esm/bundle.js",
-  "browser": "./dist/iife/bundle.min.js",
-  "module": "./dist/esm/bundle.js",
-  "types": "./dist/esm/main.d.ts",
+  "main": "./dist/bundle.js",
+  "browser": "./dist/bundle.min.js",
+  "module": "./dist/bundle.js",
+  "types": "./dist/main.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/esm/main.d.ts",
-      "import": "./dist/esm/bundle.js"
+      "types": "./dist/main.d.ts",
+      "import": "./dist/bundle.js"
     }
   },
   "engines": {
