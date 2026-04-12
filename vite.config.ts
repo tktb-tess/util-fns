@@ -11,7 +11,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, './lib/main.ts'),
-      fileName: (f) => (f === 'es' ? 'bundle.js' : 'bundle.min.js'),
+      fileName: (format) => (format === 'es' ? 'bundle.js' : 'bundle.min.js'),
       formats: ['es', 'iife'],
       name: 'UtilFns',
     }
