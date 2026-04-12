@@ -29,7 +29,7 @@
   "homepage": "https://github.com/tktb-tess/util-fns/blob/main/README.md",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build --config vite.iife-config.ts && vite build",
+    "build": "tsc && vite build",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

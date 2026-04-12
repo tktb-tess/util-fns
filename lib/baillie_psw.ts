@@ -296,17 +296,13 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
   throw Error('no primes were found');
 };
 
-let __bpsw_worker__: AsyncWorker<bigint, boolean> | null;
+let __WORKER__: AsyncWorker<bigint, boolean> | undefined;
 
-const getWorker = () => {
-  if (!__bpsw_worker__) {
-    const w = new Worker(new URL('./bpsw_worker.ts', import.meta.url), {
-      type: 'module',
-    });
-    __bpsw_worker__ = new AsyncWorker<bigint, boolean>(w);
+const getWorker = async () => {
+  if (!__WORKER__) {
+    __WORKER__ = (await import('./bpsw_worker_wrap')).worker;
   }
-
-  return __bpsw_worker__;
+  return __WORKER__;
 };
 
 /**
@@ -314,7 +310,7 @@ const getWorker = () => {
  * only available in esm context
  * @param n
  */
-export const bailliePSWAsync = (n: bigint) => {
-  const worker = getWorker();
+export const bailliePSWAsync = async (n: bigint) => {
+  const worker = await getWorker();
   return worker.postMessage(n);
 };

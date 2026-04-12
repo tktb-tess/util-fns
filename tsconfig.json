@@ -11,7 +11,7 @@
     "moduleResolution": "bundler",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "declarationDir": "./dist/esm",
+    "declarationDir": "./dist",
     "isolatedModules": true,
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
