@@ -35,8 +35,8 @@
     "@types/node": "^25.5.2",
     "typescript": "^6.0.2",
     "unplugin-dts": "1.0.0-beta.6",
-    "vite": "^8.0.4",
-    "vitest": "^4.1.2"
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4"
   },
   "packageManager": "pnpm@10.33.0"
 }
