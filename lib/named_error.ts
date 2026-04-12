@@ -8,8 +8,7 @@ const NAME = 'NamedError';
 
 class NamedError<EName extends string> extends Error {
   static override readonly name = NAME;
-
-  public readonly errName: EName;
+  readonly errName: EName;
 
   constructor(errName: EName, message: string, options?: ErrorOptions) {
     super(message, options);

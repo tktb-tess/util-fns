@@ -99,7 +99,7 @@ export class PCGMinimal {
     }
 
     throw Error(`exceeded loop limit`);
-  }
+  };
 
   /**
    *

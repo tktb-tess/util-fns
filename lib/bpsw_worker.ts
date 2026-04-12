@@ -6,7 +6,6 @@ globalThis.onmessage = (ev: MessageEvent<WorkerMessage<bigint>>) => {
   const { value: input, id } = ev.data;
   try {
     const value = bailliePSW(input);
-
     postSuccess(value, id);
   } catch (e) {
     postFailed(e, id);
