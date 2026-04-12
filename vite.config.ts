@@ -11,10 +11,10 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, './lib/main.ts'),
-      fileName: (format) => (format === 'iife' ? 'bundle.min.js' : 'bundle.js'),
-      name: 'UtilFns',
-      formats: ['iife', 'es'],
+      fileName: 'bundle',
+      formats: ['es'],
     },
+    outDir: './dist/esm',
   },
   test: {
     testTimeout: 30000,

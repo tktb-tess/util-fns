@@ -8,13 +8,15 @@
   "type": "module",
   "author": "Tessyrrhaqt",
   "license": "MIT",
-  "main": "./dist/bundle.js",
-  "browser": "./dist/bundle.min.js",
-  "module": "./dist/bundle.js",
-  "types": "./dist/main.d.ts",
+  "main": "./dist/esm/bundle.js",
+  "browser": "./dist/iife/bundle.min.js",
+  "module": "./dist/esm/bundle.js",
+  "types": "./dist/esm/main.d.ts",
   "exports": {
-    "types": "./dist/main.d.ts",
-    "import": "./dist/bundle.js"
+    ".": {
+      "types": "./dist/esm/main.d.ts",
+      "import": "./dist/esm/bundle.js"
+    }
   },
   "engines": {
     "node": ">=22",
@@ -27,7 +29,7 @@
   "homepage": "https://github.com/tktb-tess/util-fns/blob/main/README.md",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --config vite.iife-config.ts && vite build",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
