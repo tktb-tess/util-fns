@@ -16,7 +16,7 @@ const fileNames = [
   'util',
   'xoshiro_minimal',
   'index',
-] as const;
+];
 
 export default defineConfig({
   plugins: [dts()],
