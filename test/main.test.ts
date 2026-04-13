@@ -1,5 +1,5 @@
 import { it, expect, describe } from 'vitest';
-import * as U from '../lib/main';
+import * as U from '../lib/index';
 import Commas from './assets/commas.json';
 import CotecJson from './assets/conlinguistics-wiki-list-cotec.json';
 
@@ -56,6 +56,10 @@ describe('check toStringTag', () => {
 
   it('NamedError', () => {
     expect(getStringTag(U.NamedError.prototype)).toBe('[object NamedError]');
+  });
+
+  it('AsyncWorker', () => {
+    expect(getStringTag(U.AsyncWorker.prototype)).toBe('[object AsyncWorker]');
   });
 });
 

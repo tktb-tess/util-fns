@@ -8,14 +8,55 @@
   "type": "module",
   "author": "Tessyrrhaqt",
   "license": "MIT",
-  "main": "./dist/bundle.js",
   "browser": "./dist/bundle.min.js",
-  "module": "./dist/bundle.js",
-  "types": "./dist/main.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/main.d.ts",
-      "import": "./dist/bundle.js"
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js"
+    },
+    "./async_worker": {
+      "types": "./dist/esm/async_worker.d.ts",
+      "import": "./dist/esm/async_worker.js"
+    },
+    "./baillie_psw": {
+      "types": "./dist/esm/baillie_psw.d.ts",
+      "import": "./dist/esm/baillie_psw.js"
+    },
+    "./fraction": {
+      "types": "./dist/esm/fraction.d.ts",
+      "import": "./dist/esm/fraction.js"
+    },
+    "./leb128": {
+      "types": "./dist/esm/leb128.d.ts",
+      "import": "./dist/esm/leb128.js"
+    },
+    "./math": {
+      "types": "./dist/esm/math.d.ts",
+      "import": "./dist/esm/math.js"
+    },
+    "./named_error": {
+      "types": "./dist/esm/named_error.d.ts",
+      "import": "./dist/esm/named_error.js"
+    },
+    "./pcg_minimal": {
+      "types": "./dist/esm/pcg_minimal.d.ts",
+      "import": "./dist/esm/pcg_minimal.js"
+    },
+    "./random": {
+      "types": "./dist/esm/random.d.ts",
+      "import": "./dist/esm/random.js"
+    },
+    "./u8arr_ext": {
+      "types": "./dist/esm/u8arr_ext.d.ts",
+      "import": "./dist/esm/u8arr_ext.js"
+    },
+    "./util": {
+      "types": "./dist/esm/util.d.ts",
+      "import": "./dist/esm/util.js"
+    },
+    "./xoshiro_minimal": {
+      "types": "./dist/esm/xoshiro_minimal.d.ts",
+      "import": "./dist/esm/xoshiro_minimal.js"
     }
   },
   "engines": {
@@ -29,7 +70,9 @@
   "homepage": "https://github.com/tktb-tess/util-fns/blob/main/README.md",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build:esm": "vite build",
+    "build:iife": "vite build --config vite.config.iife.ts",
+    "build": "pnpm build:esm && pnpm build:iife",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

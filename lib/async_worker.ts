@@ -25,7 +25,10 @@ interface WorkerFailedResult extends WorkerResultBase {
 
 export type WorkerResult<T> = WorkerSucceededResult<T> | WorkerFailedResult;
 
+const NAME = 'AsyncWorker';
+
 export class AsyncWorker<TPost = unknown, TRecv = unknown> {
+  static readonly name = NAME;
   readonly #worker: Worker;
 
   constructor(w: Worker) {
@@ -76,6 +79,11 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
     });
   };
 }
+
+Object.defineProperty(AsyncWorker.prototype, Symbol.toStringTag, {
+  value: NAME,
+  enumerable: true,
+});
 
 const isInsideOfWorker = () =>
   typeof window === 'undefined' &&

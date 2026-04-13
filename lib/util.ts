@@ -317,11 +317,20 @@ export const strictAt = <T extends {}>(array: T[], index: number) => {
 };
 
 export const sleepSort = async (array: number[]) => {
-  const promises = array.map((n) => {
-    return new Promise<number>((resolve) => {
-      setTimeout(() => resolve(n), n);
+  const sorted: number[] = [];
+  const promises: Promise<void>[] = [];
+
+  array.forEach((n) => {
+    const promise = new Promise<void>((res) => {
+      setTimeout(() => {
+        sorted.push(n);
+        res();
+      }, n);
     });
+
+    promises.push(promise);
   });
 
-  return Promise.all(promises);
+  await Promise.all(promises);
+  return sorted;
 };
