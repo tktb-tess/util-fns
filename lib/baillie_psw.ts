@@ -1,5 +1,5 @@
 import * as M from './math';
-import { AsyncWorker } from './async_worker';
+import { getWorker } from './bpsw_worker_wrap';
 
 /*
  * translated from python codes in
@@ -296,21 +296,12 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
   throw Error('no primes were found');
 };
 
-let __WORKER__: AsyncWorker<bigint, boolean> | undefined;
-
-const getWorker = async () => {
-  if (!__WORKER__) {
-    __WORKER__ = (await import('./bpsw_worker_wrap')).worker;
-  }
-  return __WORKER__;
-};
-
 /**
  * worker async version of `bailliePSW()` \
  * only available in esm context
  * @param n
  */
 export const bailliePSWAsync = async (n: bigint) => {
-  const worker = await getWorker();
+  const worker = getWorker();
   return worker.postMessage(n);
 };

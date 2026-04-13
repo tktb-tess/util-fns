@@ -14,7 +14,7 @@ export default defineConfig({
       fileName: (format) => (format === 'es' ? 'bundle.js' : 'bundle.min.js'),
       formats: ['es', 'iife'],
       name: 'UtilFns',
-    }
+    },
   },
   test: {
     testTimeout: 30000,
