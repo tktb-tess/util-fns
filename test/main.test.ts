@@ -209,3 +209,12 @@ it('LEB128', () => {
     }
   }
 });
+
+describe('sleep sort', () => {
+  it('sort correctly', async () => {
+    const arr = [700, 18, 1200, 2];
+    const sorted = await U.sleepSort(arr);
+
+    expect(sorted).toStrictEqual([2, 18, 700, 1200]);
+  });
+});
