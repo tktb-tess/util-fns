@@ -1,4 +1,4 @@
-import * as U from '../lib/main';
+import * as U from '@tktb-tess/util-fns';
 
 const app = document.getElementById('app');
 
@@ -17,3 +17,12 @@ Object.defineProperty(window, 'UtilFns', {
   value: o,
   enumerable: true,
 });
+
+const w = new Worker(new URL('./my_worker.ts', import.meta.url), {
+  type: 'module',
+});
+const worker = new U.AsyncWorker<void, string>(w);
+for (const _ of Array(10).keys()) {
+  const s = await worker.postMessage();
+  pre.textContent += `${s}\n`;
+}

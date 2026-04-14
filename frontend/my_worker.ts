@@ -1,14 +1,8 @@
-import { postSuccess, type WorkerMessage } from '../lib/main';
+import { postSuccess, type WorkerMessage } from '@tktb-tess/util-fns/async_worker';
 
-const getDelay = () => {
-  return Math.floor(Math.random() * 200);
-};
+globalThis.onmessage = (ev: MessageEvent<WorkerMessage<void>>) => {
+  const { id } = ev.data;
+  const delay = Math.floor(Math.random() * 200);
 
-globalThis.onmessage = (ev: MessageEvent<WorkerMessage<number>>) => {
-  const { value, id } = ev.data;
-
-  const ans = 4 * value;
-  const delay = getDelay();
-
-  setTimeout(() => postSuccess(`ans: ${ans}, delay: ${delay}`, id), delay);
+  setTimeout(() => postSuccess(`${delay} ms`, id), delay);
 };
