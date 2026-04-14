@@ -5,20 +5,16 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
     "skipLibCheck": true,
     "types": ["vite/client"],
-    "rootDir": "./lib",
+    "rootDir": "./test",
 
-    /* Bundler mode */
     "moduleResolution": "bundler",
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "declarationDir": "./dist/esm",
+    "noEmit": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "allowJs": true,
     "verbatimModuleSyntax": true,
 
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -27,5 +23,5 @@
     "erasableSyntaxOnly": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["./lib"]
+  "include": ["test/**/*.test.ts"]
 }

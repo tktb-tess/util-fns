@@ -1,6 +1,6 @@
 declare const __ID_BRAND__: unique symbol;
 
-type ID = ReturnType<typeof crypto.randomUUID> & {
+type ID = bigint & {
   readonly [__ID_BRAND__]: unknown;
 };
 
@@ -9,23 +9,37 @@ export interface WorkerMessage<T> {
   readonly id: ID;
 }
 
-interface WorkerResultBase {
+interface WorkerID {
   readonly id: ID;
 }
 
-interface WorkerSucceededResult<T> extends WorkerResultBase {
+interface WorkerSucceededResult<T> extends WorkerID {
   readonly success: true;
   readonly value: T;
 }
 
-interface WorkerFailedResult extends WorkerResultBase {
+interface WorkerFailedResult<E = unknown> extends WorkerID {
   readonly success: false;
-  readonly error: unknown;
+  readonly error: E;
 }
 
-export type WorkerResult<T> = WorkerSucceededResult<T> | WorkerFailedResult;
+type WorkerResult<T, E = unknown> =
+  | WorkerSucceededResult<T>
+  | WorkerFailedResult<E>;
 
-export class AsyncWorker<TPost = unknown, TRecv = unknown> {
+const NAME = 'AsyncWorker';
+
+let count = 0n;
+
+const getID = () => {
+  if (count === 2n ** 128n) {
+    count = 0n;
+  }
+  return count++ as ID;
+};
+
+export class AsyncWorker<TPost = unknown, TRecv = unknown, TErr = unknown> {
+  static readonly name = NAME;
   readonly #worker: Worker;
 
   constructor(w: Worker) {
@@ -42,9 +56,11 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
     options?: StructuredSerializeOptions,
   ) => {
     return new Promise<TRecv>((resolve, reject) => {
-      const id = crypto.randomUUID() as ID;
+      const id = getID();
 
-      const messageHandler = (ev: MessageEvent<WorkerResult<TRecv>>) => {
+      const messageHandler = (
+        ev: MessageEvent<WorkerResult<TRecv, TErr>>,
+      ) => {
         const res = ev.data;
         if (res.id !== id) return;
 
@@ -77,6 +93,11 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
   };
 }
 
+Object.defineProperty(AsyncWorker.prototype, Symbol.toStringTag, {
+  value: NAME,
+  enumerable: true,
+});
+
 const isInsideOfWorker = () =>
   typeof window === 'undefined' &&
   typeof self !== 'undefined' &&
@@ -96,12 +117,12 @@ export const postSuccess = <TRecv>(value: TRecv, id: ID) => {
   self.postMessage(p);
 };
 
-export const postFailed = (error: unknown, id: ID) => {
+export const postFailed = <TErr>(error: TErr, id: ID) => {
   if (!isInsideOfWorker()) {
     throw Error('this function must be used in Worker');
   }
 
-  const p: WorkerFailedResult = {
+  const p: WorkerFailedResult<TErr> = {
     success: false,
     error,
     id,

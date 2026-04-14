@@ -1,5 +1,5 @@
 import { it, expect, describe } from 'vitest';
-import * as U from '../lib/main';
+import * as U from '../lib/index';
 import Commas from './assets/commas.json';
 import CotecJson from './assets/conlinguistics-wiki-list-cotec.json';
 
@@ -44,6 +44,7 @@ describe('check toStringTag', () => {
   it('Rational', () => {
     expect(getStringTag(U.Rational.prototype)).toBe('[object Rational]');
   });
+
   it('PCGMinimal', () => {
     expect(getStringTag(U.PCGMinimal.prototype)).toBe('[object PCGMinimal]');
   });
@@ -57,6 +58,10 @@ describe('check toStringTag', () => {
   it('NamedError', () => {
     expect(getStringTag(U.NamedError.prototype)).toBe('[object NamedError]');
   });
+
+  it('AsyncWorker', () => {
+    expect(getStringTag(U.AsyncWorker.prototype)).toBe('[object AsyncWorker]');
+  });
 });
 
 describe('bailliePSW works well', () => {
@@ -66,6 +71,7 @@ describe('bailliePSW works well', () => {
       const next = chain[i] * 2n - 1n;
       chain.push(next);
     }
+
     const bool = chain.map((p) => U.bailliePSW(p)).every((b) => b);
 
     expect(bool).toBe(true);
@@ -202,4 +208,13 @@ it('LEB128', () => {
       expect.unreachable(`mismatched\nbig: ${big}\ndecoded: ${decoded}`);
     }
   }
+});
+
+describe('sleep sort', () => {
+  it('sort correctly', async () => {
+    const arr = [700, 18, 1200, 2];
+    const sorted = await U.sleepSort(arr);
+
+    expect(sorted).toStrictEqual([2, 18, 700, 1200]);
+  });
 });

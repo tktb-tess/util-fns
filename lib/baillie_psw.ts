@@ -1,5 +1,5 @@
 import * as M from './math';
-import { AsyncWorker } from './async_worker';
+import { getWorker } from './bpsw_worker_wrap';
 
 /*
  * translated from python codes in
@@ -294,15 +294,6 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
   }
 
   throw Error('no primes were found');
-};
-
-let __WORKER__: AsyncWorker<bigint, boolean> | undefined;
-
-const getWorker = async () => {
-  if (!__WORKER__) {
-    __WORKER__ = (await import('./bpsw_worker_wrap')).worker;
-  }
-  return __WORKER__;
 };
 
 /**
