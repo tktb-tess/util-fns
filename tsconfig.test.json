@@ -9,9 +9,7 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "declarationDir": "./dist/esm",
+    "noEmit": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
@@ -27,5 +25,5 @@
     "erasableSyntaxOnly": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["./lib"]
+  "include": ["./test/**/*.test.ts"]
 }

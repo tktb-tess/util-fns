@@ -302,6 +302,6 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
  * @param n
  */
 export const bailliePSWAsync = async (n: bigint) => {
-  const worker = getWorker();
+  const worker = await getWorker();
   return worker.postMessage(n);
 };

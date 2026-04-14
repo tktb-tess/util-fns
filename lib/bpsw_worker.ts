@@ -8,6 +8,32 @@ globalThis.onmessage = (ev: MessageEvent<WorkerMessage<bigint>>) => {
     const value = bailliePSW(input);
     postSuccess(value, id);
   } catch (e) {
-    postFailed(e, id);
+    const getCause = (cause: unknown) => {
+      if (cause == null) return;
+      const str = `${cause}`;
+
+      if (str === '[Object object]') {
+        return JSON.stringify(cause);
+      } else return str;
+    };
+
+    if (e instanceof Error) {
+      const { name, message, stack, cause } = e;
+
+      const err = {
+        name,
+        message,
+        stack,
+        cause: getCause(cause),
+      };
+      postFailed(err, id);
+    } else {
+      const err = {
+        name: 'BPSWError',
+        message: 'unidentified error',
+        cause: getCause(e),
+      };
+      postFailed(err, id);
+    }
   }
 };

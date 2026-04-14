@@ -44,6 +44,7 @@ describe('check toStringTag', () => {
   it('Rational', () => {
     expect(getStringTag(U.Rational.prototype)).toBe('[object Rational]');
   });
+
   it('PCGMinimal', () => {
     expect(getStringTag(U.PCGMinimal.prototype)).toBe('[object PCGMinimal]');
   });
@@ -70,6 +71,7 @@ describe('bailliePSW works well', () => {
       const next = chain[i] * 2n - 1n;
       chain.push(next);
     }
+
     const bool = chain.map((p) => U.bailliePSW(p)).every((b) => b);
 
     expect(bool).toBe(true);
