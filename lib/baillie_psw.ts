@@ -1,4 +1,5 @@
-import * as M from './math';
+import { isSquare, modPow, residue, jacobiSymbol } from './math';
+import { getRandBIByBitLength, getRandBIByRange } from './random';
 import { getWorker } from './bpsw_worker_wrap';
 
 /*
@@ -25,7 +26,7 @@ const millerRabin = (n: bigint) => {
   const [d, s] = [d_, s_];
 
   const a = 2n;
-  let y = M.modPow(a, d, n);
+  let y = modPow(a, d, n);
 
   if (y === 1n) return true;
 
@@ -36,22 +37,27 @@ const millerRabin = (n: bigint) => {
   return false;
 };
 
-const DChooser = (n: bigint): [bigint, bigint] => {
+/**
+ * `(D / n) = -1` になるような `D` を求める \
+ * ない場合、または `D` と `n` が互いに素ではない場合、`null` を返す
+ * @param n
+ * @returns
+ */
+const DChooser = (n: bigint): bigint | null => {
+  /** `5, -7, 9, -11...` */
   let D = 5n;
-  let j = M.jacobiSymbol(D, n);
 
-  while (j > 0n) {
-    D = D > 0n ? D + 2n : D - 2n;
-    D *= -1n;
+  while (true) {
+    const j = jacobiSymbol(D, n);
+    if (j === -1n) return D;
+    if (j === 0n) return null;
 
-    if (D === -15n && M.isSquare(n)) {
-      // The value of D isn't 0, but we are just communicating
-      // that we have found a square
-      return [0n, 0n];
+    D = D > 0n ? -(D + 2n) : -(D - 2n);
+
+    if (D === -15n && isSquare(n)) {
+      return null;
     }
-    j = M.jacobiSymbol(D, n);
   }
-  return [D, j];
 };
 
 /**
@@ -61,11 +67,15 @@ const DChooser = (n: bigint): [bigint, bigint] => {
  * @returns
  */
 const div2Mod = (x: bigint, n: bigint) => {
-  return (x & 1n) === 1n ? M.residue((x + n) >> 1n, n) : M.residue(x >> 1n, n);
+  return (x & 1n) === 1n ? residue((x + n) >> 1n, n) : residue(x >> 1n, n);
 };
 
 /**
- * ここ何してるのかわからん
+ * `U_k, V_k` の値を求める \
+ * `U_{2i}    = U_i * V_i` \
+ * `V_{2i}    = (V_i^2 + D * U_i^2) / 2` \
+ * `U_{i + 1} = (P * U_i * V_i) / 2` \
+ * `V_{i + 1} = (D * U_i + P * V_i) / 2`
  * @param k
  * @param n
  * @param P
@@ -77,13 +87,13 @@ const UVSubscript = (
   n: bigint,
   P: bigint,
   D: bigint,
-): [bigint, bigint] => {
+): [U: bigint, V: bigint] => {
   let U = 1n;
   let V = P;
   const digits = k.toString(2).slice(1);
 
   for (const digit of digits) {
-    [U, V] = [M.residue(U * V, n), div2Mod(V * V + D * U * U, n)];
+    [U, V] = [residue(U * V, n), div2Mod(V * V + D * U * U, n)];
 
     if (digit === '1') {
       [U, V] = [div2Mod(P * U + V, n), div2Mod(D * U + P * V, n)];
@@ -94,14 +104,14 @@ const UVSubscript = (
 };
 
 /**
- * Lucas strong probably-prime test
+ * strong Lucas probable prime test
  * @param n
  * @param D
  * @param P
  * @param Q
  * @returns
  */
-const lucasSPP = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
+const strongLucas = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
   if (n % 2n !== 1n) {
     throw RangeError('`n` must be odd');
   }
@@ -112,23 +122,19 @@ const lucasSPP = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
     d >>= 1n;
     s += 1n;
   }
-  //console.log('d:', d, 's:', s);
 
   const [U, V_] = UVSubscript(d, n, P, D);
   let V = V_;
 
-  //console.log('U:', U, 'V:', V);
-
   if (U === 0n) return true;
 
-  Q = M.modPow(Q, d, n);
+  Q = modPow(Q, d, n);
 
   for (let i = 0n; i < s; i++) {
-    //console.log(i, V, Q);
     if (V === 0n) return true;
-
-    V = M.residue(V * V - 2n * Q, n);
-    Q = M.modPow(Q, 2n, n);
+    // V_{2i} = V_i^2 - 2Q^i
+    V = residue(V * V - 2n * Q, n);
+    Q = modPow(Q, 2n, n);
   }
   return false;
 };
@@ -251,11 +257,11 @@ export const bailliePSW = (n: bigint): boolean => {
     return false;
   }
 
-  const [D, j] = DChooser(n);
-  if (j === 0n) return false;
+  const D = DChooser(n);
+  if (D == null) return false;
 
   const Q = (1n - D) / 4n;
-  return lucasSPP(n, D, 1n, Q);
+  return strongLucas(n, D, 1n, Q);
 };
 
 /**
@@ -270,7 +276,7 @@ export const getRandPrimeByRange = (min: bigint, max: bigint) => {
     throw RangeError('`max` must be 2 or larger');
   }
   for (let count = 0; count < LIMIT; count++) {
-    const p = M.getRandBIByRange(min, max);
+    const p = getRandBIByRange(min, max);
     if (bailliePSW(p)) return p;
   }
 
@@ -289,7 +295,7 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
     throw RangeError('`bitLength` must be 2 or larger');
   }
   for (let count = 0; count < LIMIT; count++) {
-    const p = M.getRandBIByBitLength(bitLength, fixed);
+    const p = getRandBIByBitLength(bitLength, fixed);
     if (bailliePSW(p)) return p;
   }
 
