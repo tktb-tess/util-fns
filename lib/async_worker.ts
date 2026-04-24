@@ -18,14 +18,12 @@ interface WorkerSucceededResult<T> extends WorkerID {
   readonly value: T;
 }
 
-interface WorkerFailedResult<E = unknown> extends WorkerID {
+interface WorkerFailedResult extends WorkerID {
   readonly success: false;
-  readonly error: E;
+  readonly error: unknown;
 }
 
-type WorkerResult<T, E = unknown> =
-  | WorkerSucceededResult<T>
-  | WorkerFailedResult<E>;
+type WorkerResult<T> = WorkerSucceededResult<T> | WorkerFailedResult;
 
 const NAME = 'AsyncWorker';
 
@@ -38,7 +36,7 @@ const getID = () => {
   return count++ as ID;
 };
 
-export class AsyncWorker<TPost = unknown, TRecv = unknown, TErr = unknown> {
+export class AsyncWorker<TPost = unknown, TRecv = unknown> {
   static readonly name = NAME;
   readonly #worker: Worker;
 
@@ -57,15 +55,14 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown, TErr = unknown> {
   ) => {
     return new Promise<TRecv>((resolve, reject) => {
       const id = getID();
+      const controller = new AbortController();
+      const { signal } = controller;
 
-      const messageHandler = (
-        ev: MessageEvent<WorkerResult<TRecv, TErr>>,
-      ) => {
+      const onMessage = (ev: MessageEvent<WorkerResult<TRecv>>) => {
         const res = ev.data;
         if (res.id !== id) return;
 
-        this.#worker.removeEventListener('message', messageHandler);
-        this.#worker.removeEventListener('error', errorHandler);
+        controller.abort();
 
         if (res.success) {
           resolve(res.value);
@@ -74,14 +71,13 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown, TErr = unknown> {
         }
       };
 
-      const errorHandler = (ev: ErrorEvent) => {
-        this.#worker.removeEventListener('message', messageHandler);
-        this.#worker.removeEventListener('error', errorHandler);
+      const onError = (ev: ErrorEvent) => {
+        controller.abort();
         reject(ev.error);
       };
 
-      this.#worker.addEventListener('message', messageHandler);
-      this.#worker.addEventListener('error', errorHandler);
+      this.#worker.addEventListener('message', onMessage, { signal });
+      this.#worker.addEventListener('error', onError, { signal });
 
       const msg = {
         value: message,
@@ -117,12 +113,12 @@ export const postSuccess = <TRecv>(value: TRecv, id: ID) => {
   self.postMessage(p);
 };
 
-export const postFailed = <TErr>(error: TErr, id: ID) => {
+export const postFailed = (error: unknown, id: ID) => {
   if (!isInsideOfWorker()) {
     throw Error('this function must be used in Worker');
   }
 
-  const p: WorkerFailedResult<TErr> = {
+  const p: WorkerFailedResult = {
     success: false,
     error,
     id,

@@ -2,12 +2,10 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "es2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
+    "lib": ["ES2022", "DOM"],
     "skipLibCheck": true,
     "types": ["vite/client"],
     "rootDir": "./lib",
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "declaration": true,
     "emitDeclarationOnly": true,
@@ -16,9 +14,8 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "allowJs": true,
-    "verbatimModuleSyntax": true,
 
-    /* Linting */
+    "verbatimModuleSyntax": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
