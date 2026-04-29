@@ -116,10 +116,12 @@ describe('random performance', () => {
   const seed_p = crypto.getRandomValues(new BigUint64Array(2));
   const seed_x = crypto.getRandomValues(new BigUint64Array(4));
   const pcg = new U.PCGMinimal(seed_p);
+
   const pcg_f = U.floatRng(() => {
     const [upper, lower] = pcg.genRandU32s(2);
     return (BigInt(upper) << 32n) | BigInt(lower);
   });
+
   const xosh = new U.XoshiroMinimal(seed_x);
   const xosh_f = U.floatRng(() => xosh.getRandU64());
   const LIMIT = 2 ** 16;
@@ -168,7 +170,6 @@ describe('string <-> Uint8Array', async () => {
 
   it('base64', () => {
     const a = U.fromBase64(U.toBase64(bin));
-    // console.log(a, bin);
     expect(a).toStrictEqual(bin);
   });
 
@@ -178,8 +179,11 @@ describe('string <-> Uint8Array', async () => {
   });
 
   it('oct', () => {
-    const a = U.fromOct(U.toOct(bin));
-    expect(a).toStrictEqual(bin);
+    const len = 3 * Math.ceil(bin.length / 3);
+    const pad = new Uint8Array(len);
+    pad.set(bin, 0);
+    const a = U.fromOct(U.toOct(pad));
+    expect(a).toStrictEqual(pad);
   });
 });
 

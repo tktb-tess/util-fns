@@ -13,13 +13,14 @@ class NamedError<EName extends string> extends Error {
   constructor(errName: EName, message: string, options?: ErrorOptions) {
     super(message, options);
     this.errName = errName;
+    this.name = errName;
   }
 
   readonly toJSON = () => {
     const cause = (() => {
       const c = this.cause;
-      if (c == null) return c;
-      const s = c.toString();
+      if (c == null) return;
+      const s = `${c}`;
       return s === '[object Object]' ? JSON.stringify(c) : s;
     })();
 

@@ -26,11 +26,12 @@ interface WorkerFailedResult extends WorkerID {
 type WorkerResult<T> = WorkerSucceededResult<T> | WorkerFailedResult;
 
 const NAME = 'AsyncWorker';
+const LIMIT = 2n ** 128n;
 
 let count = 0n;
 
 const getID = () => {
-  if (count === 2n ** 128n) {
+  if (count === LIMIT) {
     count = 0n;
   }
   return count++ as ID;

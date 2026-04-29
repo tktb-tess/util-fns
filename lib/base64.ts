@@ -14,7 +14,7 @@ export const toBase64URL = (bin: Uint8Array) => {
 };
 
 export const fromBase64URL = (base64URL: string) => {
-  const len = (4 - (base64URL.length & 0b11)) & 0b11;
+  const len = (4 - (base64URL.length & 3)) & 3;
   const base64 = base64URL
     .concat('='.repeat(len))
     .replaceAll('-', '+')

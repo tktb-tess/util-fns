@@ -1,6 +1,5 @@
 import { isSquare, modPow, residue, jacobiSymbol } from './math';
 import { getRandBIByBitLength, getRandBIByRange } from './random';
-import { getWorker } from './bpsw_worker_wrap';
 
 /*
  * translated from python codes in
@@ -308,6 +307,7 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
  * @param n
  */
 export const bailliePSWAsync = async (n: bigint) => {
+  const { getWorker } = await import('./bpsw_worker_wrap');
   const worker = await getWorker();
   return worker.postMessage(n);
 };

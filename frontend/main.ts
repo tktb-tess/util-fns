@@ -1,4 +1,4 @@
-import * as U from '@tktb-tess/util-fns';
+import * as U from '../lib/index';
 
 const app = document.getElementById('app');
 
@@ -9,20 +9,13 @@ if (!(app instanceof HTMLDivElement)) {
 const pre = document.createElement('pre');
 app.replaceChildren(pre);
 
-const o = { [Symbol.toStringTag]: 'UtilFns', __proto__: null, ...U };
+const NAME = 'UtilFns';
+
+const o = { [Symbol.toStringTag]: NAME, __proto__: null, ...U };
 
 Object.freeze(o);
 
-Object.defineProperty(window, 'UtilFns', {
+Object.defineProperty(window, NAME, {
   value: o,
   enumerable: true,
 });
-
-const w = new Worker(new URL('./my_worker.ts', import.meta.url), {
-  type: 'module',
-});
-const worker = new U.AsyncWorker<void, string>(w);
-for (const _ of Array(10).keys()) {
-  const s = await worker.postMessage();
-  pre.textContent += `${s}\n`;
-}

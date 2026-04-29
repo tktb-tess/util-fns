@@ -8,6 +8,11 @@ const determineByteLength = (n: bigint) => {
   return excep ? byLen - 1 : byLen;
 };
 
+/**
+ * Encode bigint to LEB128
+ * @param bigint 
+ * @returns 
+ */
 export const encodeLEB128 = (bigint: bigint) => {
   const byteLen = determineByteLength(bigint);
 
@@ -27,6 +32,11 @@ export const encodeLEB128 = (bigint: bigint) => {
   return buff;
 };
 
+/**
+ * Decode LEB128 into bigint
+ * @param LEB128 
+ * @returns 
+ */
 export const decodeLEB128 = (LEB128: Uint8Array<ArrayBuffer>) => {
   const byteLen = LEB128.length;
   let bi = 0n;

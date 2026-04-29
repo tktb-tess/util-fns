@@ -8,6 +8,9 @@ export interface RationalData {
 
 const NAME = 'Rational';
 
+/**
+ * Fraction (rational) class
+ */
 export class Rational {
   #num: bigint;
   #denom: bigint;
@@ -15,7 +18,7 @@ export class Rational {
   static readonly name = NAME;
 
   /**
-   * fraction (rational) class
+   *
    * @param numerator
    * @param denominator
    */
@@ -35,7 +38,7 @@ export class Rational {
   }
 
   /**
-   * generates fraction from `number` decimal using continued fraction
+   * Generates fraction from `number` decimal using continued fraction
    * @param value decimal
    * @param denominatorDigits limit of digits of denominator
    */
@@ -81,34 +84,34 @@ export class Rational {
   /**
    * reduction
    */
-  #reduction() {
+  readonly #reduction = () => {
     const { gcd } = exEuclidean(this.#num, this.#denom);
     if (gcd !== 0n) {
       this.#num /= gcd;
       this.#denom /= gcd;
     }
-  }
+  };
 
   /**
-   * returns a fraction multiplied by -1
-   * @returns
+   *
+   * @returns A fraction multiplied by -1
    */
   readonly minus = () => {
     return new Rational(-this.#num, this.#denom);
   };
 
   /**
-   * returns inverse of this fraction
-   * @returns
+   * 
+   * @returns Inverse of this fraction
    */
   readonly inverse = () => {
     return new Rational(this.#denom, this.#num);
   };
 
   /**
-   * returns `this + right`
+   *
    * @param right
-   * @returns
+   * @returns `this + right`
    */
   readonly add = (right: Rational) => {
     const denom = this.#denom * right.#denom;
@@ -117,18 +120,18 @@ export class Rational {
   };
 
   /**
-   * returns `this - right`
+   *
    * @param right
-   * @returns
+   * @returns `this - right`
    */
   readonly substr = (right: Rational) => {
     return this.add(right.minus());
   };
 
   /**
-   * returns `this * right`
+   *
    * @param right
-   * @returns
+   * @returns `this * right`
    */
   readonly multiply = (right: Rational) => {
     const denom = this.#denom * right.#denom;
@@ -137,16 +140,16 @@ export class Rational {
   };
 
   /**
-   * returns `this / right`
+   *
    * @param right
-   * @returns
+   * @returns `this / right`
    */
   readonly divide = (right: Rational) => {
     return this.multiply(right.inverse());
   };
 
   /**
-   * returns mediant
+   * Returns mediant
    * @param this `a / b`
    * @param right `c / d`
    * @returns `(a + c) / (b + d)`
@@ -158,7 +161,7 @@ export class Rational {
   };
 
   /**
-   * returns `number` type decimal
+   * Returns `number` type decimal
    * @returns decimal
    */
   readonly toDecimal = () => {

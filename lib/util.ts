@@ -1,5 +1,5 @@
 /**
- * a polyfill for `Promise.withResolvers()`
+ * A polyfill for `Promise.withResolvers()`
  */
 export const withResolvers = <T>() => {
   let resolve!: (value: T | PromiseLike<T>) => void;
@@ -17,7 +17,7 @@ export const withResolvers = <T>() => {
 };
 
 /**
- * get a value of `Symbol.toStringTag`
+ * Get a value of `Symbol.toStringTag`
  * @param obj
  * @returns
  */
@@ -27,59 +27,30 @@ export const getStringTag = (obj: unknown) => {
 };
 
 /**
- * makes a function lazy
+ * Makes a function lazy
  * @param func function
  * @returns lazified function
  */
 export const lazify =
-  <TArg extends unknown[], TRet>(func: (...args: TArg) => TRet) =>
-  (...args: TArg) =>
+  <TArgs extends unknown[], TRet>(func: (...args: TArgs) => TRet) =>
+  (...args: TArgs) =>
   () =>
     func(...args);
 
-// export const parseCSV = (csv: string) => {
-//   const rows: string[][] = [];
-//   let row: string[] = [];
-//   let currentField = '';
-//   let isInsideOfQuote = false;
-//
-//   for (let i = 0; i < csv.length; i++) {
-//     const char = csv[i];
-//
-//     if (char === '"' && (i === 0 || csv[i - 1] !== '\\')) {
-//       // ダブルクォート（not エスケープ）に入った/出た時にトグル
-//       isInsideOfQuote = !isInsideOfQuote;
-//     } else if (char === ',' && !isInsideOfQuote) {
-//       // クォート内でないコンマ
-//       row.push(currentField.trim()); // フィールドを列配列に追加
-//       currentField = ''; // クリア
-//     } else if (char === '\n' && !isInsideOfQuote) {
-//       // クォート内でない改行
-//       row.push(currentField.trim()); // フィールドを列配列に追加
-//       rows.push(row); // 列配列を2次元配列に追加
-//       row = []; // 列配列, フィールドをクリア
-//       currentField = '';
-//     } else {
-//       // フィールドに文字を追加
-//       currentField += char;
-//     }
-//   }
-//
-//   // 最後のセルと行を追加
-//   row.push(currentField.trim());
-//   rows.push(row);
-//
-//   return rows;
-// };
-
 /**
- * returns hash of a string
+ * Returns hash of a string
  * @param str string
  * @param algorithm hash algorithm
+ * @param encoder text encoder, if not given, construct it internally
  * @returns hash
  */
-export const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
-  const utf8 = new TextEncoder().encode(str);
+export const getHash = async (
+  str: string,
+  algorithm: AlgorithmIdentifier,
+  encoder?: TextEncoder,
+) => {
+  const enc = encoder ?? new TextEncoder();
+  const utf8 = enc.encode(str);
   const digest = await crypto.subtle.digest(algorithm, utf8);
   return new Uint8Array(digest);
 };
@@ -166,6 +137,11 @@ export const strictAt = <T extends {}>(array: T[], index: number) => {
   return v;
 };
 
+/**
+ * The best sorting alorithm you've ever seen
+ * @param array
+ * @returns
+ */
 export const sleepSort = async (array: number[]) => {
   const sorted: number[] = [];
   const promises: Promise<void>[] = [];

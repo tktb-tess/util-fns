@@ -1,5 +1,5 @@
 /**
- * compare two objects with SameValueZero method
+ * Compare two objects with SameValueZero method
  * @param a
  * @param b
  * @returns
@@ -9,8 +9,8 @@ export const sameValueZero = (a: unknown, b: unknown) => {
 };
 
 /**
- * judges whether two objects has the same (nested) properties \
- * compares with SameValueZero, ignores symbol keys in an object
+ * Judges whether two objects has the same (nested) properties \
+ * Compares with SameValueZero, ignores symbol keys in an object
  * @returns
  */
 export const isDeepStrictEqual = (a: unknown, b: unknown) => {

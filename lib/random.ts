@@ -112,9 +112,10 @@ export const floatRng = (getRandU64: () => bigint) => {
 };
 
 /**
- * `length` ビットの乱数 or `length` ビット以下の乱数を出力する
- * @param length ビット長
- * @param fixed true: 固定長, false (デフォルト値): `length` ビット以下の可変ビット長
+ * Returns random numbers with `length` bits or shorter, or just `length` bits
+ * @param length bit length
+ * @param fixed true: fixed length (just `length` bit only), \
+ * false (default): variable length with `length` bits or shorter
  *
  */
 export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
@@ -131,12 +132,12 @@ export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
   if (fixed) {
     result = result.replace(/^\d/, '1');
   }
-  // console.log(result);
+
   return BigInt('0b' + result);
 };
 
 /**
- * returns a random integer of `min` or more and less than `max`
+ * Returns a random integer of `min` or more and less than `max`
  * @param min minimum
  * @param max upper limit
  * @returns
@@ -164,10 +165,10 @@ export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
 };
 
 /**
- * returns an integer of `min` or more and less than `max`
+ * Returns an integer of `min` or more and less than `max`
  * @param min
  * @param max
- * @returns 範囲内の整数乱数
+ *
  */
 export const getRndInt = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min) + min);

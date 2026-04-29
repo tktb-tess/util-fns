@@ -1,7 +1,7 @@
 export { residue, modPow } from './mod_pow';
 
 /**
- * extended Euclidean algorithm \
+ * Extended Euclidean algorithm \
  * reference: https://qiita.com/angel_p_57/items/56a902cbd1fe519747bd
  *
  * @description `ax - by = gcd(a, b)`
@@ -90,7 +90,7 @@ const oddPart = (n: bigint) => {
 };
 
 /**
- * returns factorial of an input \
+ * Returns factorial of an input \
  * ref: https://qiita.com/AkariLuminous/items/1b2e964ebabde9419224
  * @param n integer
  * @returns factorial of `n`
@@ -161,7 +161,7 @@ export const jacobiSymbol = (a: bigint, n: bigint) => {
 };
 
 /**
- * whether an input number is square
+ * Whether an input number is square
  * @param n
  * @returns
  */

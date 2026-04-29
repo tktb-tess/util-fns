@@ -1,5 +1,5 @@
 /**
- * residue, but always a positive residue even `n` is negative
+ * Residue, but always a positive residue even `n` is negative
  * @param n
  * @param modulo
  * @returns
@@ -11,7 +11,7 @@ export const residue = (n: bigint, modulo: bigint): bigint => {
 };
 
 /**
- * calculates modpow
+ * Calculates modpow
  * @param base
  * @param power
  * @param mod
@@ -30,7 +30,10 @@ export const modPow = (base: bigint, power: bigint, mod: bigint) => {
   let result = 1n;
 
   while (power > 0n) {
-    if (power & 1n) result = (result * base) % mod;
+    if (power & 1n) {
+      result = (result * base) % mod;
+    }
+
     base = (base * base) % mod;
     power >>= 1n;
   }
