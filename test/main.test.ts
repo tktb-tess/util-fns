@@ -214,6 +214,14 @@ it('LEB128', () => {
   }
 });
 
+it('FixedUint8Array', () => {
+  const encoder = new TextEncoder();
+  const str = '天上天下唯我独尊';
+  const utf8 = encoder.encode(str);
+  const fixed = U.FixedUint8Array.fromBuffer(utf8.buffer, utf8.byteOffset, 24);
+  expect(fixed.length).equal(24);
+});
+
 describe('sleep sort', () => {
   it('sort correctly', async () => {
     const arr = [700, 18, 1200, 2];
