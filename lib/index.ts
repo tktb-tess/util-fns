@@ -12,4 +12,5 @@ export * from './random';
 export * from './pcg_minimal';
 export * from './xoshiro_minimal';
 export * from './async_worker';
+export * from './async_worker_post';
 export * from './leb128';
