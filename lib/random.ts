@@ -1,3 +1,5 @@
+import { modPow } from './mod_pow';
+
 /**
  * 最下位ビットから連続する0の数を返す (64bit)
  * @param n
@@ -96,6 +98,7 @@ export const floatRng = (getRandU64: () => bigint) => {
 
   return () => {
     const LIMIT = 100000;
+
     for (let i = 0; i < LIMIT; ++i) {
       const n = gen();
 
@@ -103,6 +106,70 @@ export const floatRng = (getRandU64: () => bigint) => {
         return n;
       }
     }
+
     throw Error('Loop limit exceeded');
   };
+};
+
+/**
+ * Returns random numbers with `length` bits or shorter, or just `length` bits
+ * @param length bit length
+ * @param fixed true: fixed length (just `length` bit only), \
+ * false (default): variable length with `length` bits or shorter
+ *
+ */
+export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
+  if (!Number.isFinite(length))
+    throw RangeError('`length` is not a valid number');
+  if (length <= 0) throw RangeError('`length` must be positive');
+
+  const byteLen = Math.ceil(length / 8);
+  const buf = crypto.getRandomValues(new Uint8Array(byteLen));
+  let result = Array.from(buf, (n) => n.toString(2).padStart(8, '0'))
+    .join('')
+    .slice(0, length);
+
+  if (fixed) {
+    result = result.replace(/^\d/, '1');
+  }
+
+  return BigInt('0b' + result);
+};
+
+/**
+ * Returns a random integer of `min` or more and less than `max`
+ * @param min minimum
+ * @param max upper limit
+ * @returns
+ */
+export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
+  if (min >= max) {
+    throw RangeError('`min` must be smaller than `max`');
+  }
+  const diff = max - min;
+  const bitLength = diff.toString(2).length;
+
+  const res = (() => {
+    const LIMIT = 100000;
+    for (let i = 0; i < LIMIT; i++) {
+      const res = getRandBIByBitLength(bitLength);
+
+      if (res >= modPow(2n, BigInt(bitLength), diff)) {
+        return res % diff;
+      }
+    }
+    throw Error('Failed to generate a random bigint');
+  })();
+
+  return min + res;
+};
+
+/**
+ * Returns an integer of `min` or more and less than `max`
+ * @param min
+ * @param max
+ *
+ */
+export const getRndInt = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min) + min);
 };

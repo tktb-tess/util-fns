@@ -1,98 +1,5 @@
-import { fromBase64URL, toBase64URL } from './u8arr_ext';
-
 /**
- * compare two objects with SameValueZero method
- * @param a
- * @param b
- * @returns
- */
-export const sameValueZero = (a: unknown, b: unknown) => {
-  return [a].includes(b);
-};
-
-/**
- * judges whether two objects has the same (nested) properties \
- * compares with SameValueZero, ignores symbol keys in an object
- * @returns
- */
-export const isDeepStrictEqual = (a: unknown, b: unknown) => {
-  if (typeof a !== typeof b) return false;
-
-  const aName = Object.prototype.toString.call(a);
-  const bName = Object.prototype.toString.call(b);
-  if (aName !== bName) return false;
-
-  if (
-    typeof a === 'string' ||
-    typeof a === 'bigint' ||
-    typeof a === 'boolean' ||
-    typeof a === 'symbol' ||
-    a == null
-  ) {
-    return a === b;
-  }
-
-  if (typeof a === 'number') {
-    return (a !== a && b !== b) || a === b;
-  }
-
-  // Function
-  if (typeof a === 'function') {
-    return false;
-  }
-
-  // Array
-  if (Array.isArray(a) && Array.isArray(b)) {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-      if (!isDeepStrictEqual(a[i], b[i])) return false;
-    }
-    return true;
-  }
-
-  // Set
-  if (a instanceof Set && b instanceof Set) {
-    const aVals = [...a.values()];
-    const bVals = [...b.values()];
-    if (!isDeepStrictEqual(aVals, bVals)) return false;
-    return true;
-  }
-
-  // Map
-  if (a instanceof Map && b instanceof Map) {
-    const aKeys = [...a.keys()];
-    const bKeys = [...b.keys()];
-    if (!isDeepStrictEqual(aKeys, bKeys)) return false;
-    const aVals = [...a.values()];
-    const bVals = [...b.values()];
-    if (!isDeepStrictEqual(aVals, bVals)) return false;
-    return true;
-  }
-
-  // normal Object
-  if (aName === '[object Object]') {
-    const a_ = a as Record<string, unknown>;
-    const b_ = b as Record<string, unknown>;
-    const aKeys: readonly string[] = Object.keys(a_);
-    const bKeys: readonly string[] = Object.keys(b_);
-
-    for (const aKey of aKeys) {
-      const bKey = bKeys.find((bKey) => bKey === aKey);
-      if (bKey === undefined) return false;
-      const [aVal, bVal] = [a_[aKey], b_[bKey]];
-      if (!isDeepStrictEqual(aVal, bVal)) return false;
-    }
-    return true;
-  }
-
-  // still unavailable
-  throw TypeError(`comparing these objects is unavailable: ${a}, ${b}`, {
-    cause: [a, b],
-  });
-};
-
-/**
- * a polyfill for `Promise.withResolvers()`
+ * A polyfill for `Promise.withResolvers()`
  */
 export const withResolvers = <T>() => {
   let resolve!: (value: T | PromiseLike<T>) => void;
@@ -110,16 +17,7 @@ export const withResolvers = <T>() => {
 };
 
 /**
- * sleep
- * @param delay milliseconds
- * @returns
- */
-export const sleep = (delay: number) => {
-  return new Promise<void>((r) => setTimeout(r, delay));
-};
-
-/**
- * get a value of `Symbol.toStringTag`
+ * Get a value of `Symbol.toStringTag`
  * @param obj
  * @returns
  */
@@ -129,65 +27,30 @@ export const getStringTag = (obj: unknown) => {
 };
 
 /**
- * makes a function lazy
+ * Makes a function lazy
  * @param func function
  * @returns lazified function
  */
 export const lazify =
-  <TArg extends unknown[], TRet>(func: (...args: TArg) => TRet) =>
-  (...args: TArg) =>
+  <TArgs extends unknown[], TRet>(func: (...args: TArgs) => TRet) =>
+  (...args: TArgs) =>
   () =>
     func(...args);
 
 /**
- * parses CSV string \
- * able to deal with CSV with escaping doublequote
- * @param csv CSV
- * @returns parsed 2D array of string
- */
-export const parseCSV = (csv: string) => {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let currentField = '';
-  let isInsideOfQuote = false;
-
-  for (let i = 0; i < csv.length; i++) {
-    const char = csv[i];
-
-    if (char === '"' && (i === 0 || csv[i - 1] !== '\\')) {
-      // ダブルクォート（not エスケープ）に入った/出た時にトグル
-      isInsideOfQuote = !isInsideOfQuote;
-    } else if (char === ',' && !isInsideOfQuote) {
-      // クォート内でないコンマ
-      row.push(currentField.trim()); // フィールドを列配列に追加
-      currentField = ''; // クリア
-    } else if (char === '\n' && !isInsideOfQuote) {
-      // クォート内でない改行
-      row.push(currentField.trim()); // フィールドを列配列に追加
-      rows.push(row); // 列配列を2次元配列に追加
-      row = []; // 列配列, フィールドをクリア
-      currentField = '';
-    } else {
-      // フィールドに文字を追加
-      currentField += char;
-    }
-  }
-
-  // 最後のセルと行を追加
-  row.push(currentField.trim());
-  rows.push(row);
-
-  return rows;
-};
-
-/**
- * returns hash of a string
+ * Returns hash of a string
  * @param str string
  * @param algorithm hash algorithm
+ * @param encoder text encoder, if not given, construct it internally
  * @returns hash
  */
-export const getHash = async (str: string, algorithm: AlgorithmIdentifier) => {
-  const utf8 = new TextEncoder().encode(str);
+export const getHash = async (
+  str: string,
+  algorithm: AlgorithmIdentifier,
+  encoder?: TextEncoder,
+) => {
+  const enc = encoder ?? new TextEncoder();
+  const utf8 = enc.encode(str);
   const digest = await crypto.subtle.digest(algorithm, utf8);
   return new Uint8Array(digest);
 };
@@ -219,48 +82,6 @@ export const decodeRFC3986URIComponent = (encodedURIComponent: string) => {
     throw URIError('an input string must not include `+`');
   }
   return decodeURIComponent(encodedURIComponent);
-};
-
-export const compress = (
-  raw: Uint8Array<ArrayBuffer>,
-  format: CompressionFormat,
-) => {
-  const rs = new Blob([raw])
-    .stream()
-    .pipeThrough(new CompressionStream(format));
-  return new Response(rs).bytes();
-};
-
-export const decompress = (
-  compressed: Uint8Array<ArrayBuffer>,
-  format: CompressionFormat,
-) => {
-  const rs = new Blob([compressed])
-    .stream()
-    .pipeThrough(new DecompressionStream(format));
-  return new Response(rs).bytes();
-};
-
-export const compressString = async (
-  str: string,
-  format: CompressionFormat,
-) => {
-  const st = new Blob([str])
-    .stream()
-    .pipeThrough(new CompressionStream(format));
-  const bin = await new Response(st).bytes();
-  return toBase64URL(bin);
-};
-
-export const decompressString = (
-  compressedBase64URL: string,
-  format: CompressionFormat,
-) => {
-  const bin = fromBase64URL(compressedBase64URL);
-  const st = new Blob([bin])
-    .stream()
-    .pipeThrough(new DecompressionStream(format));
-  return new Response(st).text();
 };
 
 /**
@@ -316,6 +137,11 @@ export const strictAt = <T extends {}>(array: T[], index: number) => {
   return v;
 };
 
+/**
+ * The best sorting alorithm you've ever seen
+ * @param array
+ * @returns
+ */
 export const sleepSort = async (array: number[]) => {
   const sorted: number[] = [];
   const promises: Promise<void>[] = [];

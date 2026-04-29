@@ -1,106 +1,7 @@
-/**
- * returns an integer of `min` or more and less than `max`
- * @param min
- * @param max
- * @returns 範囲内の整数乱数
- */
-export const getRndInt = (min: number, max: number): number => {
-  return Math.floor(Math.random() * (max - min) + min);
-};
+export { residue, modPow } from './mod_pow';
 
 /**
- * residue, but always a positive residue even `n` is negative
- * @param n
- * @param modulo
- * @returns
- */
-export const residue = (n: bigint, modulo: bigint): bigint => {
-  if (modulo < 0n) modulo *= -1n;
-  const ans = n % modulo;
-  return ans < 0n ? ans + modulo : ans;
-};
-
-/**
- * `length` ビットの乱数 or `length` ビット以下の乱数を出力する
- * @param length ビット長
- * @param fixed true: 固定長, false (デフォルト値): `length` ビット以下の可変ビット長
- *
- */
-export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
-  if (!Number.isFinite(length))
-    throw RangeError('`length` is not a valid number');
-  if (length <= 0) throw RangeError('`length` must be positive');
-
-  const byteLen = Math.ceil(length / 8);
-  const buf = crypto.getRandomValues(new Uint8Array(byteLen));
-  let result = Array.from(buf, (n) => n.toString(2).padStart(8, '0'))
-    .join('')
-    .slice(0, length);
-
-  if (fixed) {
-    result = result.replace(/^\d/, '1');
-  }
-  // console.log(result);
-  return BigInt('0b' + result);
-};
-
-/**
- * returns a random integer of `min` or more and less than `max`
- * @param min minimum
- * @param max upper limit
- * @returns
- */
-export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
-  if (min >= max) {
-    throw RangeError('`min` must be smaller than `max`');
-  }
-  const diff = max - min;
-  const bitLength = diff.toString(2).length;
-
-  const res = (() => {
-    const LIMIT = 100000;
-    for (let i = 0; i < LIMIT; i++) {
-      const res = getRandBIByBitLength(bitLength);
-
-      if (res >= modPow(2n, BigInt(bitLength), diff)) {
-        return res % diff;
-      }
-    }
-    throw Error('Failed to generate a random bigint');
-  })();
-
-  return min + res;
-};
-
-/**
- * calculates modpow
- * @param base
- * @param power
- * @param mod
- *
- */
-export const modPow = (base: bigint, power: bigint, mod: bigint) => {
-  if (mod < 1n) throw RangeError('`mod` must be positive');
-  if (power < 0n) throw RangeError('`power` must not be negative');
-
-  base = residue(base, mod);
-
-  if (mod === 1n) return 0n;
-  if (base % mod === 1n || base % mod === 0n) return base;
-  if (base === mod - 1n) return power & 1n ? mod - 1n : 1n;
-
-  let result = 1n;
-
-  while (power > 0n) {
-    if (power & 1n) result = (result * base) % mod;
-    base = (base * base) % mod;
-    power >>= 1n;
-  }
-  return result;
-};
-
-/**
- * extended Euclidean algorithm \
+ * Extended Euclidean algorithm \
  * reference: https://qiita.com/angel_p_57/items/56a902cbd1fe519747bd
  *
  * @description `ax - by = gcd(a, b)`
@@ -189,7 +90,7 @@ const oddPart = (n: bigint) => {
 };
 
 /**
- * returns factorial of an input \
+ * Returns factorial of an input \
  * ref: https://qiita.com/AkariLuminous/items/1b2e964ebabde9419224
  * @param n integer
  * @returns factorial of `n`
@@ -260,7 +161,7 @@ export const jacobiSymbol = (a: bigint, n: bigint) => {
 };
 
 /**
- * whether an input number is square
+ * Whether an input number is square
  * @param n
  * @returns
  */

@@ -3,16 +3,19 @@ import { defineConfig } from 'vite';
 import dts from 'unplugin-dts/vite';
 import { resolve } from 'node:path';
 
-const fileNames = [
+const fileNames: readonly string[] = [
   'async_worker',
   'baillie_psw',
+  'base64',
+  'compression',
+  'equality',
   'fraction',
   'leb128',
   'math',
   'named_error',
+  'oct',
   'pcg_minimal',
   'random',
-  'u8arr_ext',
   'util',
   'xoshiro_minimal',
   'index',
