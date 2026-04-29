@@ -36,26 +36,23 @@ export const decompress = (
  * Compress string into Base64(URL)-encoded string
  * @param str
  * @param format
- * @param encoding
+ * @param encoding default: `base64url`
  * @returns
  */
 export const compressString = async (
   str: string,
   format: CompressionFormat,
-  encoding: 'base64' | 'base64url',
+  encoding: 'base64' | 'base64url' = 'base64url',
 ) => {
   const st = new Blob([str])
     .stream()
     .pipeThrough(new CompressionStream(format));
   const bin = await new Response(st).bytes();
 
-  switch (encoding) {
-    case 'base64': {
-      return toBase64(bin);
-    }
-    case 'base64url': {
-      return toBase64URL(bin);
-    }
+  if (encoding === 'base64') {
+    return toBase64(bin);
+  } else {
+    return toBase64URL(bin);
   }
 };
 
@@ -63,22 +60,19 @@ export const compressString = async (
  * Decompress Base64(URL)-encoded data
  * @param compressedString
  * @param format
- * @param encoding
+ * @param encoding default: `base64url`
  * @returns
  */
 export const decompressString = (
   compressedString: string,
   format: CompressionFormat,
-  encoding: 'base64' | 'base64url',
+  encoding: 'base64' | 'base64url' = 'base64url',
 ) => {
   const bin = (() => {
-    switch (encoding) {
-      case 'base64': {
-        return fromBase64(compressedString);
-      }
-      case 'base64url': {
-        return fromBase64URL(compressedString);
-      }
+    if (encoding === 'base64') {
+      return fromBase64(compressedString);
+    } else {
+      return fromBase64URL(compressedString);
     }
   })();
 

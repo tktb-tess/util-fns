@@ -7,137 +7,6 @@ import { getRandBIByBitLength, getRandBIByRange } from './random';
  *
  */
 
-/**
- * Miller-Rabin テスト (底2)
- * @param n 判定する整数
- * @returns
- */
-const millerRabin = (n: bigint) => {
-  if (n <= 1n) return false;
-  if (n % 2n === 0n) return n === 2n;
-  let d_ = n - 1n;
-  let s_ = 0n;
-
-  while (d_ % 2n === 0n) {
-    d_ >>= 1n;
-    s_ += 1n;
-  }
-  const [d, s] = [d_, s_];
-
-  const a = 2n;
-  let y = modPow(a, d, n);
-
-  if (y === 1n) return true;
-
-  for (let i = 0n; i < s; i++) {
-    if (y === n - 1n) return true;
-    y = (y * y) % n;
-  }
-  return false;
-};
-
-/**
- * `(D / n) = -1` になるような `D` を求める \
- * ない場合、または `D` と `n` が互いに素ではない場合、`null` を返す
- * @param n
- * @returns
- */
-const DChooser = (n: bigint): bigint | null => {
-  /** `5, -7, 9, -11...` */
-  let D = 5n;
-
-  while (true) {
-    const j = jacobiSymbol(D, n);
-    if (j === -1n) return D;
-    if (j === 0n) return null;
-
-    D = D > 0n ? -(D + 2n) : -(D - 2n);
-
-    if (D === -15n && isSquare(n)) {
-      return null;
-    }
-  }
-};
-
-/**
- * `n` を法として `x` を2で割った値 (`n` は奇数を想定)
- * @param x
- * @param n 奇数
- * @returns
- */
-const div2Mod = (x: bigint, n: bigint) => {
-  return (x & 1n) === 1n ? residue((x + n) >> 1n, n) : residue(x >> 1n, n);
-};
-
-/**
- * `U_k, V_k` の値を求める \
- * `U_{2i}    = U_i * V_i` \
- * `V_{2i}    = (V_i^2 + D * U_i^2) / 2` \
- * `U_{i + 1} = (P * U_i * V_i) / 2` \
- * `V_{i + 1} = (D * U_i + P * V_i) / 2`
- * @param k
- * @param n
- * @param P
- * @param D
- * @returns
- */
-const UVSubscript = (
-  k: bigint,
-  n: bigint,
-  P: bigint,
-  D: bigint,
-): [U: bigint, V: bigint] => {
-  let U = 1n;
-  let V = P;
-  const digits = k.toString(2).slice(1);
-
-  for (const digit of digits) {
-    [U, V] = [residue(U * V, n), div2Mod(V * V + D * U * U, n)];
-
-    if (digit === '1') {
-      [U, V] = [div2Mod(P * U + V, n), div2Mod(D * U + P * V, n)];
-    }
-  }
-
-  return [U, V];
-};
-
-/**
- * strong Lucas probable prime test
- * @param n
- * @param D
- * @param P
- * @param Q
- * @returns
- */
-const strongLucas = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
-  if (n % 2n !== 1n) {
-    throw RangeError('`n` must be odd');
-  }
-  let d = n + 1n;
-  let s = 0n;
-
-  while (d % 2n === 0n) {
-    d >>= 1n;
-    s += 1n;
-  }
-
-  const [U, V_] = UVSubscript(d, n, P, D);
-  let V = V_;
-
-  if (U === 0n) return true;
-
-  Q = modPow(Q, d, n);
-
-  for (let i = 0n; i < s; i++) {
-    if (V === 0n) return true;
-    // V_{2i} = V_i^2 - 2Q^i
-    V = residue(V * V - 2n * Q, n);
-    Q = modPow(Q, 2n, n);
-  }
-  return false;
-};
-
 const smallPrimes: readonly bigint[] = [
   2n,
   3n,
@@ -235,6 +104,140 @@ const smallPrimes: readonly bigint[] = [
   491n,
   499n,
 ];
+
+/**
+ * Miller-Rabin テスト (底2)
+ * @param n 判定する整数
+ * @returns
+ */
+const millerRabin = (n: bigint) => {
+  if (n <= 1n) return false;
+  if (n % 2n === 0n) return n === 2n;
+  let d_ = n - 1n;
+  let s_ = 0n;
+
+  while (d_ % 2n === 0n) {
+    d_ >>= 1n;
+    s_ += 1n;
+  }
+  const [d, s] = [d_, s_];
+
+  const a = 2n;
+  let y = modPow(a, d, n);
+
+  if (y === 1n) return true;
+
+  for (let i = 0n; i < s; i++) {
+    if (y === n - 1n) return true;
+    y = (y * y) % n;
+  }
+  return false;
+};
+
+/**
+ * `(D / n) = -1` になるような `D` を求める \
+ * ない場合、または `D` と `n` が互いに素ではない場合、`null` を返す
+ * @param n
+ * @returns
+ */
+const DChooser = (n: bigint): bigint | null => {
+  /** `5, -7, 9, -11...` */
+  let D = 5n;
+
+  while (true) {
+    const j = jacobiSymbol(D, n);
+    if (j === -1n) return D;
+    if (j === 0n) return null;
+
+    D = D > 0n ? -(D + 2n) : -(D - 2n);
+
+    if (D === -15n && isSquare(n)) {
+      return null;
+    }
+  }
+};
+
+/**
+ * `n` を法として `x` を2で割った値 (`n` は奇数を想定)
+ * @param x
+ * @param n 奇数
+ * @returns
+ */
+const div2Mod = (x: bigint, n: bigint) => {
+  if ((n & 1n) === 0n) {
+    throw Error('`n` is not odd');
+  }
+  return (x & 1n) === 1n ? residue((x + n) >> 1n, n) : residue(x >> 1n, n);
+};
+
+/**
+ * `U_k, V_k` の値を求める \
+ * `U_{2i}    = U_i * V_i` \
+ * `V_{2i}    = (V_i^2 + D * U_i^2) / 2` \
+ * `U_{i + 1} = (P * U_i * V_i) / 2` \
+ * `V_{i + 1} = (D * U_i + P * V_i) / 2`
+ * @param k
+ * @param n
+ * @param P
+ * @param D
+ * @returns
+ */
+const UVSubscript = (
+  k: bigint,
+  n: bigint,
+  P: bigint,
+  D: bigint,
+): [U: bigint, V: bigint] => {
+  let U = 1n;
+  let V = P;
+  const digits = k.toString(2).slice(1);
+
+  for (const digit of digits) {
+    [U, V] = [residue(U * V, n), div2Mod(V * V + D * U * U, n)];
+
+    if (digit === '1') {
+      [U, V] = [div2Mod(P * U + V, n), div2Mod(D * U + P * V, n)];
+    }
+  }
+
+  return [U, V];
+};
+
+/**
+ * strong Lucas probable prime test
+ * @param n
+ * @param D
+ * @param P
+ * @param Q
+ * @returns
+ */
+const strongLucas = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
+  if (n % 2n !== 1n) {
+    throw RangeError('`n` must be odd');
+  }
+  let d = n + 1n;
+  let s = 0n;
+
+  while (d % 2n === 0n) {
+    d >>= 1n;
+    s += 1n;
+  }
+
+  const [U, V_] = UVSubscript(d, n, P, D);
+  let V = V_;
+
+  if (U === 0n) return true;
+
+  Q = modPow(Q, d, n);
+
+  for (let i = 0n; i < s; i++) {
+    if (V === 0n) return true;
+    // V_{2i} = V_i^2 - 2Q^i
+    V = residue(V * V - 2n * Q, n);
+    Q = modPow(Q, 2n, n);
+  }
+  return false;
+};
 
 /**
  * Baillie-PSW primality test
