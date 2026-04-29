@@ -10,6 +10,7 @@ const fileNames: readonly string[] = [
   'compression',
   'equality',
   'fraction',
+  'fixed_array',
   'leb128',
   'math',
   'named_error',

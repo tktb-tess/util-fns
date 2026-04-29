@@ -5,6 +5,7 @@ export * from './base64';
 export * from './compression';
 export * from './equality';
 export * from './fraction';
+export * from './fixed_array';
 export * from './named_error';
 export * from './oct';
 export * from './random';

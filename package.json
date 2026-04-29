@@ -34,6 +34,10 @@
       "types": "./dist/esm/equality.d.ts",
       "import": "./dist/esm/equality.js"
     },
+    "./fixed_array": {
+      "types": "./dist/esm/fixed_array.d.ts",
+      "import": "./dist/esm/fixed_array.js"
+    },
     "./fraction": {
       "types": "./dist/esm/fraction.d.ts",
       "import": "./dist/esm/fraction.js"
