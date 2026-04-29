@@ -18,6 +18,10 @@
       "types": "./dist/esm/async_worker.d.ts",
       "import": "./dist/esm/async_worker.js"
     },
+    "./async_worker/post": {
+      "types": "./dist/esm/async_worker_post.d.ts",
+      "import": "./dist/esm/async_worker_post.js"
+    },
     "./baillie_psw": {
       "types": "./dist/esm/baillie_psw.d.ts",
       "import": "./dist/esm/baillie_psw.js"

@@ -1,5 +1,5 @@
 import { bailliePSW } from './baillie_psw';
-import { postSuccess, postFailed } from './async_worker';
+import { postSuccess, postFailed } from './async_worker_post';
 import type { WorkerMessage } from './async_worker';
 
 const getCause = (cause: unknown) => {

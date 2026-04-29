@@ -1,48 +1,30 @@
-declare const __ID_BRAND__: unique symbol;
-
-type ID = bigint & {
-  readonly [__ID_BRAND__]: unknown;
-};
-
-export interface WorkerMessage<T> {
-  readonly value: T;
-  readonly id: ID;
-}
-
-interface WorkerID {
-  readonly id: ID;
-}
-
-interface WorkerSucceededResult<T> extends WorkerID {
-  readonly success: true;
-  readonly value: T;
-}
-
-interface WorkerFailedResult extends WorkerID {
-  readonly success: false;
-  readonly error: unknown;
-}
-
-type WorkerResult<T> = WorkerSucceededResult<T> | WorkerFailedResult;
+import type {
+  WorkerSucceededResult,
+  WorkerFailedResult,
+  ID,
+  WorkerMessage,
+} from './async_worker_type';
 
 const NAME = 'AsyncWorker';
-const LIMIT = 2n ** 128n;
+const LIMIT = 2n ** 128n - 1n;
 
 let count = 0n;
 
 const getID = () => {
-  if (count === LIMIT) {
-    count = 0n;
-  }
-  return count++ as ID;
+  const str = `${count++}`;
+  count &= LIMIT;
+  return str as ID;
 };
+
+export type WorkerResult<T> = WorkerSucceededResult<T> | WorkerFailedResult;
+export type { WorkerMessage };
 
 export class AsyncWorker<TPost = unknown, TRecv = unknown> {
   static readonly name = NAME;
   readonly #worker: Worker;
 
-  constructor(w: Worker) {
-    this.#worker = w;
+  constructor(worker: Worker) {
+    this.#worker = worker;
   }
 
   /**
@@ -94,36 +76,3 @@ Object.defineProperty(AsyncWorker.prototype, Symbol.toStringTag, {
   value: NAME,
   enumerable: true,
 });
-
-const isInsideOfWorker = () =>
-  typeof window === 'undefined' &&
-  typeof self !== 'undefined' &&
-  'importScripts' in self;
-
-export const postSuccess = <TRecv>(value: TRecv, id: ID) => {
-  if (!isInsideOfWorker()) {
-    throw Error('this function must be used in Worker');
-  }
-
-  const p: WorkerSucceededResult<TRecv> = {
-    success: true,
-    value,
-    id,
-  };
-
-  self.postMessage(p);
-};
-
-export const postFailed = (error: unknown, id: ID) => {
-  if (!isInsideOfWorker()) {
-    throw Error('this function must be used in Worker');
-  }
-
-  const p: WorkerFailedResult = {
-    success: false,
-    error,
-    id,
-  };
-
-  self.postMessage(p);
-};

@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 
 const fileNames: readonly string[] = [
   'async_worker',
+  'async_worker_post',
   'baillie_psw',
   'base64',
   'compression',
