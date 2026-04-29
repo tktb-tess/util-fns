@@ -34,4 +34,6 @@ jobs:
         run: pnpm test
 
       - name: Build
-        run: pnpm run build
+        run: |
+          pnpm run build
+          pnpm pack --dry-run
