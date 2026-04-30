@@ -68,13 +68,13 @@ export const decompressString = (
   format: CompressionFormat,
   encoding: 'base64' | 'base64url' = 'base64url',
 ) => {
-  const bin = (() => {
-    if (encoding === 'base64') {
-      return fromBase64(compressedString);
-    } else {
-      return fromBase64URL(compressedString);
-    }
-  })();
+  let bin: Uint8Array<ArrayBuffer>;
+
+  if (encoding === 'base64') {
+    bin = fromBase64(compressedString);
+  } else {
+    bin = fromBase64URL(compressedString);
+  }
 
   const st = new Blob([bin])
     .stream()

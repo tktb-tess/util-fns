@@ -6,13 +6,17 @@ import type {
 } from './async_worker_type';
 
 const NAME = 'AsyncWorker';
-const LIMIT = 2n ** 128n - 1n;
+const LIMIT = 1n << 128n;
 
 let count = 0n;
 
 const getID = () => {
   const str = `${count++}`;
-  count &= LIMIT;
+
+  if (count === LIMIT) {
+    count = 0n;
+  }
+
   return str as ID;
 };
 
