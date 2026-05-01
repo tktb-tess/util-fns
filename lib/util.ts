@@ -160,3 +160,14 @@ export const sleepSort = async (array: number[]) => {
   await Promise.all(promises);
   return sorted;
 };
+
+export const createWorker = (
+  onmessage: (ev: MessageEvent<unknown>) => void,
+  onerror?: (ev: ErrorEvent) => void,
+) => {
+  const strMessage = `self.onmessage=${onmessage};`;
+  const strError = onerror ? `self.onerror=${onerror};` : '';
+  const workerStr = `(()=>{${strMessage}${strError}})();`.replace(/\s+/g, ' ');
+  const dataURL = `data:text/javascript;charset=UTF-8,${encodeRFC3986URIComponent(workerStr)}`;
+  return new Worker(dataURL);
+};
