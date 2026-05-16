@@ -23,31 +23,26 @@ export class PCGMinimal {
    * `BigUint64Array` with length 2. \
    * if it is not given, initialized by default value
    * @example
-   * // the following example is always initialized by the same seeds.
+   * // The following example is always initialized by the same seeds.
    * // not recommended
    * const rng = new PCGMinimal();
    *
-   * // you should construct with random seeds.
+   * // You should construct with random seeds.
    * const seed = crypto.getRandomValues(new BigUint64Array(2));
    * const betterRng = new PCGMinimal(seed);
    */
   constructor(seeds?: BigUint64Array<ArrayBuffer>) {
     if (seeds && seeds[0] != null && seeds[1] != null) {
-      this.#state = new BigUint64Array(2);
-      if (this.#state[0] == null || this.#state[1] == null) {
-        throw TypeError('unexpected');
-      }
-      this.#state[1] = (seeds[1] << 1n) | 1n;
-      this.#step();
-      this.#state[0] += seeds[0];
-      this.#step();
+      const ini = (seeds[1] << 1n) | 1n;
+      this.#state = BigUint64Array.from([seeds[0] + ini, ini]);
+      this.#bump();
     } else {
       this.#state = BigUint64Array.from(PCG_INITIAL_STATE);
     }
   }
 
   /** step inner state */
-  #step() {
+  #bump() {
     if (this.#state[0] == null || this.#state[1] == null) {
       throw TypeError('unexpected');
     }
@@ -70,7 +65,7 @@ export class PCGMinimal {
    * @returns a random 32-bit unsigned integer
    */
   readonly getRandU32 = () => {
-    this.#step();
+    this.#bump();
     return this.#value;
   };
 

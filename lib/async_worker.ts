@@ -10,7 +10,7 @@ const LIMIT = 1n << 128n;
 
 let count = 0n;
 
-const getID = () => {
+const getId = () => {
   const str = `${count++}`;
 
   if (count === LIMIT) {
@@ -41,7 +41,7 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
     options?: StructuredSerializeOptions,
   ) => {
     return new Promise<TRecv>((resolve, reject) => {
-      const id = getID();
+      const id = getId();
       const controller = new AbortController();
       const { signal } = controller;
 

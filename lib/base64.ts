@@ -1,23 +1,20 @@
-export const toBase64 = (bin: Uint8Array) => {
-  const arr = Array.from(bin, (n) => String.fromCharCode(n));
-  return btoa(arr.join(''));
-};
+export function toBase64(bin: Uint8Array) {
+  return btoa(bin.reduce((acc, cur) => acc + String.fromCharCode(cur), ''));
+}
 
-export const fromBase64 = (base64: string) => {
-  const str = atob(base64);
-  return Uint8Array.from(str, (s) => s.charCodeAt(0));
-};
+export function fromBase64(base64: string) {
+  return Uint8Array.from(atob(base64), (s) => s.charCodeAt(0));
+}
 
-export const toBase64URL = (bin: Uint8Array) => {
-  const base64 = toBase64(bin);
-  return base64.replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '');
-};
+export function toBase64URL(bin: Uint8Array) {
+  return toBase64(bin)
+    .replaceAll('+', '-')
+    .replaceAll('/', '_')
+    .replace(/=+$/, '');
+}
 
-export const fromBase64URL = (base64URL: string) => {
-  const len = (4 - (base64URL.length & 3)) & 3;
-  const base64 = base64URL
-    .concat('='.repeat(len))
-    .replaceAll('-', '+')
-    .replaceAll('_', '/');
+export function fromBase64URL(base64URL: string) {
+  while ((base64URL.length & 3) !== 0) base64URL += '=';
+  const base64 = base64URL.replaceAll('-', '+').replaceAll('_', '/');
   return fromBase64(base64);
-};
+}

@@ -125,8 +125,8 @@ export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
 
   const byteLen = Math.ceil(length / 8);
   const buf = crypto.getRandomValues(new Uint8Array(byteLen));
-  let result = Array.from(buf, (n) => n.toString(2).padStart(8, '0'))
-    .join('')
+  let result = buf
+    .reduce((acc, cur) => acc + cur.toString(2).padStart(8, '0'), '')
     .slice(0, length);
 
   if (fixed) {
