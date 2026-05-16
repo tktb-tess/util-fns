@@ -92,11 +92,11 @@ export function decodeRFC3986URIComponent(encodedURIComponent: string) {
  * @param delay
  * @returns
  */
-export function setTimeoutPromise<TRtrn>(
-  callback: () => TRtrn,
+export function setTimeoutPromise<T>(
+  callback: () => T,
   delay?: number,
-) {
-  return new Promise<TRtrn>((resolve, reject) => {
+): Promise<T> {
+  return new Promise((resolve, reject) => {
     setTimeout(async () => {
       try {
         const value = await callback();
