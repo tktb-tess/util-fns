@@ -4,16 +4,16 @@
  * @param b
  * @returns
  */
-export const sameValueZero = (a: unknown, b: unknown) => {
+export function sameValueZero(a: unknown, b: unknown) {
   return [a].includes(b);
-};
+}
 
 /**
  * Judges whether two objects has the same (nested) properties \
  * Compares with SameValueZero, ignores symbol keys in an object
  * @returns
  */
-export const isDeepStrictEqual = (a: unknown, b: unknown) => {
+export function isDeepStrictEqual(a: unknown, b: unknown) {
   if (typeof a !== typeof b) return false;
 
   const aName = Object.prototype.toString.call(a);
@@ -87,4 +87,4 @@ export const isDeepStrictEqual = (a: unknown, b: unknown) => {
   throw TypeError(`comparing these objects is unavailable: ${a}, ${b}`, {
     cause: [a, b],
   });
-};
+}

@@ -9,7 +9,7 @@ const isInsideOfWorker = () =>
   typeof self !== 'undefined' &&
   'importScripts' in self;
 
-export const postSuccess = <TRecv>(value: TRecv, id: ID) => {
+export function postSuccess<TRecv>(value: TRecv, id: ID) {
   if (!isInsideOfWorker()) {
     throw Error('this function must be used in Worker');
   }
@@ -21,9 +21,9 @@ export const postSuccess = <TRecv>(value: TRecv, id: ID) => {
   };
 
   self.postMessage(p);
-};
+}
 
-export const postFailed = (error: unknown, id: ID) => {
+export function postFailed(error: unknown, id: ID) {
   if (!isInsideOfWorker()) {
     throw Error('this function must be used in Worker');
   }
@@ -35,4 +35,4 @@ export const postFailed = (error: unknown, id: ID) => {
   };
 
   self.postMessage(p);
-};
+}

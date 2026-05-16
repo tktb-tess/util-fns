@@ -1,4 +1,4 @@
-const determineByteLength = (n: bigint) => {
+function determineByteLength(n: bigint) {
   const isNeg = n < 0n;
   if (isNeg) n *= -1n;
   const len = n.toString(2).length;
@@ -6,14 +6,14 @@ const determineByteLength = (n: bigint) => {
   const excep = n === 1n << BigInt(len - 1) && !(len % 7) && isNeg;
   const byLen = Math.floor(len / 7) + 1;
   return excep ? byLen - 1 : byLen;
-};
+}
 
 /**
  * Encode bigint to LEB128
- * @param bigint 
- * @returns 
+ * @param bigint
+ * @returns
  */
-export const encodeLEB128 = (bigint: bigint) => {
+export function encodeLEB128(bigint: bigint) {
   const byteLen = determineByteLength(bigint);
 
   bigint = BigInt.asUintN(byteLen * 7, bigint);
@@ -30,14 +30,14 @@ export const encodeLEB128 = (bigint: bigint) => {
   bigint >>= 7n;
 
   return buff;
-};
+}
 
 /**
  * Decode LEB128 into bigint
- * @param LEB128 
- * @returns 
+ * @param LEB128
+ * @returns
  */
-export const decodeLEB128 = (LEB128: Uint8Array<ArrayBuffer>) => {
+export function decodeLEB128(LEB128: Uint8Array<ArrayBuffer>) {
   const byteLen = LEB128.length;
   let bi = 0n;
 
@@ -46,4 +46,4 @@ export const decodeLEB128 = (LEB128: Uint8Array<ArrayBuffer>) => {
     bi += byte << BigInt(7 * i);
   }
   return BigInt.asIntN(7 * byteLen, bi);
-};
+}

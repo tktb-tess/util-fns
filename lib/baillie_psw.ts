@@ -12,7 +12,7 @@ import { getRandBIByBitLength, getRandBIByRange } from './random';
  * @param n 判定する整数
  * @returns
  */
-const millerRabin = (n: bigint) => {
+function millerRabin(n: bigint) {
   if (n <= 1n) return false;
   if (n % 2n === 0n) return n === 2n;
   let d_ = n - 1n;
@@ -34,7 +34,7 @@ const millerRabin = (n: bigint) => {
     y = (y * y) % n;
   }
   return false;
-};
+}
 
 /**
  * `(D / n) = -1` になるような `D` を求める \
@@ -42,7 +42,7 @@ const millerRabin = (n: bigint) => {
  * @param n
  * @returns
  */
-const DChooser = (n: bigint): bigint | null => {
+function DChooser(n: bigint): bigint | null {
   /** `5, -7, 9, -11...` */
   let D = 5n;
 
@@ -57,7 +57,7 @@ const DChooser = (n: bigint): bigint | null => {
       return null;
     }
   }
-};
+}
 
 /**
  * `n` を法として `x` を2で割った値 (`n` は奇数を想定)
@@ -65,12 +65,12 @@ const DChooser = (n: bigint): bigint | null => {
  * @param n 奇数
  * @returns
  */
-const div2Mod = (x: bigint, n: bigint) => {
+function div2Mod(x: bigint, n: bigint) {
   if ((n & 1n) === 0n) {
     throw Error('`n` is not odd');
   }
   return (x & 1n) === 1n ? residue((x + n) >> 1n, n) : residue(x >> 1n, n);
-};
+}
 
 /**
  * `U_k, V_k` の値を求める \
@@ -84,12 +84,12 @@ const div2Mod = (x: bigint, n: bigint) => {
  * @param D
  * @returns
  */
-const UVSubscript = (
+function UVSubscript(
   k: bigint,
   n: bigint,
   P: bigint,
   D: bigint,
-): [U: bigint, V: bigint] => {
+): [U: bigint, V: bigint] {
   let U = 1n;
   let V = P;
   const digits = k.toString(2).slice(1);
@@ -103,7 +103,7 @@ const UVSubscript = (
   }
 
   return [U, V];
-};
+}
 
 /**
  * strong Lucas probable prime test
@@ -113,7 +113,7 @@ const UVSubscript = (
  * @param Q
  * @returns
  */
-const strongLucas = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
+function strongLucas(n: bigint, D: bigint, P: bigint, Q: bigint) {
   if (n % 2n !== 1n) {
     throw RangeError('`n` must be odd');
   }
@@ -139,14 +139,14 @@ const strongLucas = (n: bigint, D: bigint, P: bigint, Q: bigint) => {
     Q = modPow(Q, 2n, n);
   }
   return false;
-};
+}
 
 /**
  * Baillie-PSW primality test
  * @param n tested integer
  * @returns whether `n` is a prime
  */
-export const bailliePSW = (n: bigint): boolean => {
+export function bailliePSW(n: bigint): boolean {
   if (n <= 1n) return false;
   if (n % 2n === 0n) return n === 2n;
 
@@ -221,7 +221,7 @@ export const bailliePSW = (n: bigint): boolean => {
 
   const Q = (1n - D) / 4n;
   return strongLucas(n, D, 1n, Q);
-};
+}
 
 /**
  * returns probable prime of `min` or more and less than `max`
@@ -229,7 +229,7 @@ export const bailliePSW = (n: bigint): boolean => {
  * @param max upper limit
  * @returns
  */
-export const getRandPrimeByRange = (min: bigint, max: bigint) => {
+export function getRandPrimeByRange(min: bigint, max: bigint) {
   const LIMIT = 100000;
   if (max < 2n) {
     throw RangeError('`max` must be 2 or larger');
@@ -240,7 +240,7 @@ export const getRandPrimeByRange = (min: bigint, max: bigint) => {
   }
 
   throw Error('no primes were found');
-};
+}
 
 /**
  * returns probable prime of `bitLength` bit
@@ -248,7 +248,7 @@ export const getRandPrimeByRange = (min: bigint, max: bigint) => {
  * @param fixed `true`: fixed to `bitLength`, `false` (default): variable bit length of `bitLength` or under
  * @returns
  */
-export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
+export function getRandPrimeByBitLength(bitLength: number, fixed = false) {
   const LIMIT = 100000;
   if (bitLength < 2) {
     throw RangeError('`bitLength` must be 2 or larger');
@@ -259,15 +259,15 @@ export const getRandPrimeByBitLength = (bitLength: number, fixed = false) => {
   }
 
   throw Error('no primes were found');
-};
+}
 
 /**
  * worker async version of `bailliePSW()` \
  * only available in esm context
  * @param n
  */
-export const bailliePSWAsync = async (n: bigint) => {
+export async function bailliePSWAsync(n: bigint) {
   const { getWorker } = await import('./bpsw_worker_wrap');
-  const worker = await getWorker();
+  const worker = getWorker();
   return worker.postMessage(n);
-};
+}

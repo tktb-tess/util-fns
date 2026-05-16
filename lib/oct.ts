@@ -4,7 +4,7 @@
  * @param bin a binary array
  * @returns
  */
-export const toOct = (bin: Uint8Array) => {
+export function toOct(bin: Uint8Array) {
   if (bin.length % 3 !== 0) {
     throw Error('The array length of input must be multiples of 3');
   }
@@ -25,14 +25,14 @@ export const toOct = (bin: Uint8Array) => {
     .slice(0, strLen);
 
   return strs.join('');
-};
+}
 
 /**
  * Constructs `Uint8Array` from octal string \
  * A string length must be multiples of 8
  * @param oct octal string
  */
-export const fromOct = (oct: string) => {
+export function fromOct(oct: string) {
   if ((oct.length & 7) !== 0) {
     throw Error('A string length must be multiples of 8');
   }
@@ -55,4 +55,4 @@ export const fromOct = (oct: string) => {
     .flat();
 
   return Uint8Array.from(binArr);
-};
+}

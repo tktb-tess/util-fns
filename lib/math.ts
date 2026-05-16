@@ -9,7 +9,7 @@ export { residue, modPow } from './mod_pow';
  * @param b
  * @returns
  */
-export const exEuclidean = (a: bigint, b: bigint) => {
+export function exEuclidean(a: bigint, b: bigint) {
   // a, b に 0 がある場合の処理
   if (a === 0n && b === 0n) return { x: 0n, y: 0n, gcd: 0n };
   if (a === 0n)
@@ -39,7 +39,7 @@ export const exEuclidean = (a: bigint, b: bigint) => {
   }
 
   return { x: x_2, y: y_2, gcd: c_2 };
-};
+}
 
 /**
  * min 以上 max 「未満」 の奇数の積を返す
@@ -47,7 +47,7 @@ export const exEuclidean = (a: bigint, b: bigint) => {
  * @param max 最大値
  * @returns min 以上 max 未満 の奇数の積
  */
-const oddProd = (min: bigint, max: bigint): bigint => {
+function oddProd(min: bigint, max: bigint): bigint {
   if (min >= max) return 1n;
 
   const max_bits = BigInt((max - 2n).toString(2).length);
@@ -65,14 +65,14 @@ const oddProd = (min: bigint, max: bigint): bigint => {
   const lower = oddProd(min, mid);
   const higher = oddProd(mid, max);
   return lower * higher;
-};
+}
 
 /**
  * 階乗の奇数部分を計算する
  * @param n 整数
  * @returns 奇数部の積
  */
-const oddPart = (n: bigint) => {
+function oddPart(n: bigint) {
   let L_i = 3n;
   let result = 1n;
   let tmp = 1n;
@@ -87,7 +87,7 @@ const oddPart = (n: bigint) => {
   }
 
   return result;
-};
+}
 
 /**
  * Returns factorial of an input \
@@ -95,7 +95,7 @@ const oddPart = (n: bigint) => {
  * @param n integer
  * @returns factorial of `n`
  */
-export const factorial = (n: bigint) => {
+export function factorial(n: bigint) {
   if (n < 0n) throw RangeError(`'n' must be non-negative`);
   if (n === 0n) return 1n;
 
@@ -103,7 +103,7 @@ export const factorial = (n: bigint) => {
   const odd = oddPart(n);
 
   return odd << twoExp;
-};
+}
 
 /**
  * 32-bit rorate (number)
@@ -111,9 +111,9 @@ export const factorial = (n: bigint) => {
  * @param rot
  * @returns
  */
-export const rot32 = (value: number, rot: number) => {
+export function rot32(value: number, rot: number) {
   return ((value >>> (rot & 31)) | (value << (-rot & 31))) >>> 0;
-};
+}
 
 /**
  * 64-bit rorate (bigint)
@@ -121,16 +121,16 @@ export const rot32 = (value: number, rot: number) => {
  * @param rot
  * @returns
  */
-export const rot64 = (value: bigint, rot: bigint) => {
+export function rot64(value: bigint, rot: bigint) {
   return BigInt.asUintN(64, (value >> (rot & 63n)) | (value << (-rot & 63n)));
-};
+}
 
 /**
  * Jacobi symbol `(a/n)`
  * @param a positive integer
  * @param n positive odd integer
  */
-export const jacobiSymbol = (a: bigint, n: bigint) => {
+export function jacobiSymbol(a: bigint, n: bigint) {
   if (n < 1n || n % 2n === 0n) {
     throw RangeError('`n` is out of range');
   }
@@ -158,14 +158,14 @@ export const jacobiSymbol = (a: bigint, n: bigint) => {
   }
 
   return n === 1n ? result : 0n;
-};
+}
 
 /**
  * Whether an input number is square
  * @param n
  * @returns
  */
-export const isSquare = (n: bigint) => {
+export function isSquare(n: bigint) {
   if (n < 0n) return false;
   if (n === 0n) return true;
   let x = 1n;
@@ -180,4 +180,4 @@ export const isSquare = (n: bigint) => {
     }
   }
   return n === x ** 2n || n === (x + 1n) ** 2n;
-};
+}
