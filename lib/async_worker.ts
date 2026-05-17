@@ -42,14 +42,14 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
   ) => {
     return new Promise<TRecv>((resolve, reject) => {
       const id = getId();
-      const controller = new AbortController();
-      const { signal } = controller;
+      const ctrlr = new AbortController();
+      const { signal } = ctrlr;
 
       const onMessage = (ev: MessageEvent<WorkerResult<TRecv>>) => {
         const res = ev.data;
         if (res.id !== id) return;
 
-        controller.abort();
+        ctrlr.abort();
 
         if (res.success) {
           resolve(res.value);
@@ -59,7 +59,7 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
       };
 
       const onError = (ev: ErrorEvent) => {
-        controller.abort();
+        ctrlr.abort();
         reject(ev.error);
       };
 
