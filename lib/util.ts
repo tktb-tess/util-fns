@@ -1,3 +1,5 @@
+import { getTextEncoder } from './encoder';
+
 /**
  * A polyfill for `Promise.withResolvers()`
  */
@@ -43,16 +45,10 @@ export function lazify<TArgs extends unknown[], TRet>(
  * Returns hash of a string
  * @param str string
  * @param algorithm hash algorithm
- * @param encoder text encoder, if not given, construct it internally
  * @returns hash
  */
-export async function getHash(
-  str: string,
-  algorithm: AlgorithmIdentifier,
-  encoder?: TextEncoder,
-) {
-  const enc = encoder ?? new TextEncoder();
-  const utf8 = enc.encode(str);
+export async function getHash(str: string, algorithm: AlgorithmIdentifier) {
+  const utf8 = getTextEncoder().encode(str);
   const digest = await crypto.subtle.digest(algorithm, utf8);
   return new Uint8Array(digest);
 }
@@ -170,6 +166,8 @@ export function createWorker(
   const strMessage = `self.onmessage=${onmessage};`;
   const strError = onerror ? `self.onerror=${onerror};` : '';
   const workerStr = `(()=>{${strMessage}${strError}})();`.replace(/\s+/g, ' ');
-  const dataURL = `data:text/javascript;charset=UTF-8,${encodeRFC3986URIComponent(workerStr)}`;
-  return new Worker(dataURL);
+  const blob = new Blob([workerStr], { type: 'text/javascript;charset=UTF-8' });
+  const burl = URL.createObjectURL(blob);
+  setTimeout(() => URL.revokeObjectURL(burl), 60000);
+  return new Worker(burl);
 }

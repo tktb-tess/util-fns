@@ -41,7 +41,7 @@ export function decompress(
  */
 export async function compressString(
   str: string,
-  format: CompressionFormat,
+  format: CompressionFormat = 'deflate-raw',
   encoding: 'base64' | 'base64url' = 'base64url',
 ) {
   const st = new Blob([str])
@@ -65,7 +65,7 @@ export async function compressString(
  */
 export function decompressString(
   compressedString: string,
-  format: CompressionFormat,
+  format: CompressionFormat = 'deflate-raw',
   encoding: 'base64' | 'base64url' = 'base64url',
 ) {
   const bin =
