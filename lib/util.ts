@@ -1,7 +1,9 @@
+import { getTextEncoder } from './encoder';
+
 /**
  * A polyfill for `Promise.withResolvers()`
  */
-export const withResolvers = <T>() => {
+export function withResolvers<T>() {
   let resolve!: (value: T | PromiseLike<T>) => void;
   let reject!: (reason?: unknown) => void;
   const promise = new Promise<T>((rez, rej) => {
@@ -14,62 +16,58 @@ export const withResolvers = <T>() => {
     resolve,
     reject,
   };
-};
+}
 
 /**
  * Get a value of `Symbol.toStringTag`
  * @param obj
  * @returns
  */
-export const getStringTag = (obj: unknown) => {
+export function getStringTag(obj: unknown) {
   const str = Object.prototype.toString.call(obj);
   return str.slice(8, -1);
-};
+}
 
 /**
  * Makes a function lazy
  * @param func function
  * @returns lazified function
  */
-export const lazify =
-  <TArgs extends unknown[], TRet>(func: (...args: TArgs) => TRet) =>
-  (...args: TArgs) =>
-  () =>
-    func(...args);
+export function lazify<TArgs extends unknown[], TRet>(
+  func: (...args: TArgs) => TRet,
+) {
+  return (...args: TArgs) =>
+    () =>
+      func(...args);
+}
 
 /**
  * Returns hash of a string
  * @param str string
  * @param algorithm hash algorithm
- * @param encoder text encoder, if not given, construct it internally
  * @returns hash
  */
-export const getHash = async (
-  str: string,
-  algorithm: AlgorithmIdentifier,
-  encoder?: TextEncoder,
-) => {
-  const enc = encoder ?? new TextEncoder();
-  const utf8 = enc.encode(str);
+export async function getHash(str: string, algorithm: AlgorithmIdentifier) {
+  const utf8 = getTextEncoder().encode(str);
   const digest = await crypto.subtle.digest(algorithm, utf8);
   return new Uint8Array(digest);
-};
+}
 
 /**
  * Encodes a text string as a valid component of a URI and compatible with RFC3986.
  * @param URIComponent
  * @returns
  */
-export const encodeRFC3986URIComponent = (
+export function encodeRFC3986URIComponent(
   URIComponent: string | number | boolean,
-) => {
+) {
   const pre = encodeURIComponent(URIComponent);
 
   return pre.replace(
     /[!'()*]/g,
     (letter) => `%${letter.charCodeAt(0).toString(16).toUpperCase()}`,
   );
-};
+}
 
 /**
  * Gets the unencoded version of an RFC3986-compatible encoded component of a URI.
@@ -77,12 +75,12 @@ export const encodeRFC3986URIComponent = (
  * @throws An input string has '+'
  * @returns
  */
-export const decodeRFC3986URIComponent = (encodedURIComponent: string) => {
+export function decodeRFC3986URIComponent(encodedURIComponent: string) {
   if (encodedURIComponent.includes('+')) {
     throw URIError('an input string must not include `+`');
   }
   return decodeURIComponent(encodedURIComponent);
-};
+}
 
 /**
  * Schedules execution of a one-time `callback` after `delay` milliseconds, and returns promise resolved by a return value of `callback`.
@@ -90,11 +88,11 @@ export const decodeRFC3986URIComponent = (encodedURIComponent: string) => {
  * @param delay
  * @returns
  */
-export const setTimeoutPromise = <TRtrn>(
-  callback: () => TRtrn,
+export function setTimeoutPromise<T>(
+  callback: () => T,
   delay?: number,
-) => {
-  return new Promise<TRtrn>((resolve, reject) => {
+): Promise<T> {
+  return new Promise((resolve, reject) => {
     setTimeout(async () => {
       try {
         const value = await callback();
@@ -104,7 +102,7 @@ export const setTimeoutPromise = <TRtrn>(
       }
     }, delay);
   });
-};
+}
 
 /**
  * `Array.prototype.at()` with boundary check, nullable value is acceptable
@@ -112,14 +110,14 @@ export const setTimeoutPromise = <TRtrn>(
  * @param index
  * @returns
  */
-export const nullableStrictAt = <T>(array: T[], index: number) => {
+export function nullableStrictAt<T>(array: T[], index: number) {
   if (index < -array.length || index >= array.length) {
     throw RangeError('`index` is out of range');
   }
 
   const v = array.at(index);
   return v;
-};
+}
 
 /**
  * `Array.prototype.at()` with boundary check and non-nullable check
@@ -127,7 +125,7 @@ export const nullableStrictAt = <T>(array: T[], index: number) => {
  * @param index
  * @returns
  */
-export const strictAt = <T extends {}>(array: T[], index: number) => {
+export function strictAt<T extends {}>(array: T[], index: number) {
   const v = nullableStrictAt(array, index);
 
   if (v == null) {
@@ -135,14 +133,14 @@ export const strictAt = <T extends {}>(array: T[], index: number) => {
   }
 
   return v;
-};
+}
 
 /**
  * The best sorting alorithm you've ever seen
  * @param array
  * @returns
  */
-export const sleepSort = async (array: number[]) => {
+export async function sleepSort(array: number[]) {
   const sorted: number[] = [];
   const promises: Promise<void>[] = [];
 
@@ -159,15 +157,17 @@ export const sleepSort = async (array: number[]) => {
 
   await Promise.all(promises);
   return sorted;
-};
+}
 
-export const createWorker = (
+export function createWorker(
   onmessage: (ev: MessageEvent<unknown>) => void,
   onerror?: (ev: ErrorEvent) => void,
-) => {
+) {
   const strMessage = `self.onmessage=${onmessage};`;
   const strError = onerror ? `self.onerror=${onerror};` : '';
   const workerStr = `(()=>{${strMessage}${strError}})();`.replace(/\s+/g, ' ');
-  const dataURL = `data:text/javascript;charset=UTF-8,${encodeRFC3986URIComponent(workerStr)}`;
-  return new Worker(dataURL);
-};
+  const blob = new Blob([workerStr], { type: 'text/javascript;charset=UTF-8' });
+  const burl = URL.createObjectURL(blob);
+  setTimeout(() => URL.revokeObjectURL(burl), 1000 * 60);
+  return new Worker(burl);
+}

@@ -209,7 +209,13 @@ it('LEB128', () => {
     const encoded = U.encodeLEB128(big);
     const decoded = U.decodeLEB128(encoded);
     if (big !== decoded) {
-      expect.unreachable(`mismatched\nbig: ${big}\ndecoded: ${decoded}`);
+      const leb = encoded.reduce(
+        (acc, cur) => acc + ' ' + cur.toString(2).padStart(8, '0'),
+        '',
+      );
+      expect.unreachable(
+        `mismatched\nbig: ${big}\ndecoded: ${decoded}\nencoded: ${leb}\n`,
+      );
     }
   }
 });

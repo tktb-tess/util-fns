@@ -101,7 +101,7 @@ export class Rational {
   };
 
   /**
-   * 
+   *
    * @returns Inverse of this fraction
    */
   readonly inverse = () => {

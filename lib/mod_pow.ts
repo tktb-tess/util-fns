@@ -4,11 +4,11 @@
  * @param modulo
  * @returns
  */
-export const residue = (n: bigint, modulo: bigint): bigint => {
+export function residue(n: bigint, modulo: bigint): bigint {
   if (modulo < 0n) modulo *= -1n;
   const ans = n % modulo;
   return ans < 0n ? ans + modulo : ans;
-};
+}
 
 /**
  * Calculates modpow
@@ -17,7 +17,7 @@ export const residue = (n: bigint, modulo: bigint): bigint => {
  * @param mod
  *
  */
-export const modPow = (base: bigint, power: bigint, mod: bigint) => {
+export function modPow(base: bigint, power: bigint, mod: bigint) {
   if (mod < 1n) throw RangeError('`mod` must be positive');
   if (power < 0n) throw RangeError('`power` must not be negative');
 
@@ -38,4 +38,4 @@ export const modPow = (base: bigint, power: bigint, mod: bigint) => {
     power >>= 1n;
   }
   return result;
-};
+}

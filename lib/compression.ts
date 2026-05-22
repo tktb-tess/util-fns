@@ -6,15 +6,15 @@ import { fromBase64, fromBase64URL, toBase64, toBase64URL } from './base64';
  * @param format
  * @returns
  */
-export const compress = (
+export function compress(
   raw: Uint8Array<ArrayBuffer>,
   format: CompressionFormat,
-) => {
+) {
   const rs = new Blob([raw])
     .stream()
     .pipeThrough(new CompressionStream(format));
   return new Response(rs).bytes();
-};
+}
 
 /**
  * Decompress binary data
@@ -22,15 +22,15 @@ export const compress = (
  * @param format
  * @returns
  */
-export const decompress = (
+export function decompress(
   compressed: Uint8Array<ArrayBuffer>,
   format: CompressionFormat,
-) => {
+) {
   const rs = new Blob([compressed])
     .stream()
     .pipeThrough(new DecompressionStream(format));
   return new Response(rs).bytes();
-};
+}
 
 /**
  * Compress string into Base64(URL)-encoded string
@@ -39,11 +39,11 @@ export const decompress = (
  * @param encoding default: `base64url`
  * @returns
  */
-export const compressString = async (
+export async function compressString(
   str: string,
-  format: CompressionFormat,
+  format: CompressionFormat = 'deflate-raw',
   encoding: 'base64' | 'base64url' = 'base64url',
-) => {
+) {
   const st = new Blob([str])
     .stream()
     .pipeThrough(new CompressionStream(format));
@@ -54,7 +54,7 @@ export const compressString = async (
   } else {
     return toBase64URL(bin);
   }
-};
+}
 
 /**
  * Decompress Base64(URL)-encoded data
@@ -63,21 +63,18 @@ export const compressString = async (
  * @param encoding default: `base64url`
  * @returns
  */
-export const decompressString = (
+export function decompressString(
   compressedString: string,
-  format: CompressionFormat,
+  format: CompressionFormat = 'deflate-raw',
   encoding: 'base64' | 'base64url' = 'base64url',
-) => {
-  let bin: Uint8Array<ArrayBuffer>;
-
-  if (encoding === 'base64') {
-    bin = fromBase64(compressedString);
-  } else {
-    bin = fromBase64URL(compressedString);
-  }
+) {
+  const bin =
+    encoding === 'base64'
+      ? fromBase64(compressedString)
+      : fromBase64URL(compressedString);
 
   const st = new Blob([bin])
     .stream()
     .pipeThrough(new DecompressionStream(format));
   return new Response(st).text();
-};
+}

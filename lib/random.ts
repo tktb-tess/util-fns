@@ -5,7 +5,7 @@ import { modPow } from './mod_pow';
  * @param n
  * @returns
  */
-const ctz = (n: bigint) => {
+function ctz(n: bigint) {
   if (n === 0n) return 64n;
   let ans = 0n;
   while (n > 0n && !(n & 1n)) {
@@ -13,7 +13,7 @@ const ctz = (n: bigint) => {
     n >>= 1n;
   }
   return BigInt.asUintN(64, ans);
-};
+}
 
 /**
  * `exponent` の値を決める
@@ -21,7 +21,7 @@ const ctz = (n: bigint) => {
  * @param get64
  * @returns
  */
-const getExponent = (r: bigint, get64: () => bigint) => {
+function getExponent(r: bigint, get64: () => bigint) {
   const lowExp = 0n;
   const highExp = 1023n;
 
@@ -58,14 +58,14 @@ const getExponent = (r: bigint, get64: () => bigint) => {
     }
   }
   throw Error('loop exceeded limit');
-};
+}
 
 /**
  * Generates 64-bit float RNG from 64-bit unsigned int RNG
  * @param getRandU64 function that returns a random 64-bit unsigned int
  * @returns function that returns a random 64-bit float
  */
-export const floatRng = (getRandU64: () => bigint) => {
+export function floatRng(getRandU64: () => bigint) {
   const get64 = () => {
     return BigInt.asUintN(64, getRandU64());
   };
@@ -109,7 +109,7 @@ export const floatRng = (getRandU64: () => bigint) => {
 
     throw Error('Loop limit exceeded');
   };
-};
+}
 
 /**
  * Returns random numbers with `length` bits or shorter, or just `length` bits
@@ -118,15 +118,15 @@ export const floatRng = (getRandU64: () => bigint) => {
  * false (default): variable length with `length` bits or shorter
  *
  */
-export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
+export function getRandBIByBitLength(length: number, fixed = false) {
   if (!Number.isFinite(length))
     throw RangeError('`length` is not a valid number');
   if (length <= 0) throw RangeError('`length` must be positive');
 
   const byteLen = Math.ceil(length / 8);
   const buf = crypto.getRandomValues(new Uint8Array(byteLen));
-  let result = Array.from(buf, (n) => n.toString(2).padStart(8, '0'))
-    .join('')
+  let result = buf
+    .reduce((acc, cur) => acc + cur.toString(2).padStart(8, '0'), '')
     .slice(0, length);
 
   if (fixed) {
@@ -134,7 +134,7 @@ export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
   }
 
   return BigInt('0b' + result);
-};
+}
 
 /**
  * Returns a random integer of `min` or more and less than `max`
@@ -142,7 +142,7 @@ export const getRandBIByBitLength = (length: number, fixed = false): bigint => {
  * @param max upper limit
  * @returns
  */
-export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
+export function getRandBIByRange(min: bigint, max: bigint) {
   if (min >= max) {
     throw RangeError('`min` must be smaller than `max`');
   }
@@ -162,7 +162,7 @@ export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
   })();
 
   return min + res;
-};
+}
 
 /**
  * Returns an integer of `min` or more and less than `max`
@@ -170,6 +170,6 @@ export const getRandBIByRange = (min: bigint, max: bigint): bigint => {
  * @param max
  *
  */
-export const getRndInt = (min: number, max: number): number => {
+export function getRndInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
-};
+}
