@@ -20,7 +20,7 @@ export class PCGMinimal {
 
   /**
    * @param seeds
-   * `BigUint64Array` with length 2. \
+   * `BigUint64Array` with length 2 or longer. \
    * if it is not given, initialized by default value
    * @example
    * // The following example is always initialized by the same seeds.
@@ -98,22 +98,49 @@ export class PCGMinimal {
 
   /**
    *
-   * @param step the number of needed random integers
+   * @param iterNum the number of needed random integers
    * @param bound upper limit
    * @returns
    * the iterator that generates random 32-bit unsigned integers `step` times \
    * if `bound` is given, random integers are less than `bound`
    */
-  *genRandU32s(step: number, bound?: number) {
-    if (step <= 0) {
+  *genRandU32s(iterNum: number, bound?: number) {
+    if (iterNum <= 0) {
       throw RangeError(`'step' must be positive`);
     }
-    for (let i = 0; i < step; i++) {
+    for (let i = 0; i < iterNum; i++) {
       yield typeof bound === 'number'
         ? this.getBoundedRandU32(bound)
         : this.getRandU32();
     }
   }
+
+  readonly stream = (byteLen: number) => {
+    let id: ReturnType<typeof setTimeout>;
+    let rest = byteLen;
+    return new ReadableStream<Uint8Array<ArrayBuffer>>({
+      start: (c) => {
+        const handler = () => {
+          if (rest <= 0) {
+            c.close();
+            return;
+          }
+
+          const next = Uint32Array.from([this.getRandU32()]);
+          const len = Math.min(rest, 4);
+          c.enqueue(new Uint8Array(next.buffer, 0, len));
+          rest -= len;
+          id = setTimeout(handler, 20);
+        };
+
+        id = setTimeout(handler, 10);
+      },
+      cancel: (r) => {
+        clearTimeout(id);
+        console.log('stream is cancelled: ', r);
+      },
+    });
+  };
 }
 
 Object.defineProperty(PCGMinimal.prototype, Symbol.toStringTag, {
