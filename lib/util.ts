@@ -168,6 +168,6 @@ export function createWorker(
   const workerStr = `(()=>{${strMessage}${strError}})();`.replace(/\s+/g, ' ');
   const blob = new Blob([workerStr], { type: 'text/javascript;charset=UTF-8' });
   const burl = URL.createObjectURL(blob);
-  setTimeout(() => URL.revokeObjectURL(burl), 60000);
+  setTimeout(() => URL.revokeObjectURL(burl), 1000 * 60);
   return new Worker(burl);
 }
