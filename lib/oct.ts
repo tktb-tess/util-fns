@@ -34,9 +34,7 @@ export function fromOct(oct: string) {
     throw Error('A string length must be multiples of 8');
   }
 
-  const matched = oct.matchAll(/.{8}/g);
-
-  const binArr = Array.from(matched, (m) => {
+  const binArr = Array.from(oct.matchAll(/.{8}/g), (m) => {
     const _24bit = Number.parseInt(m[0], 8);
 
     if (Number.isNaN(_24bit)) {
