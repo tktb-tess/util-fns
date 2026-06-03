@@ -118,28 +118,31 @@ export class PCGMinimal {
   readonly stream = (byteLen: number) => {
     let id: ReturnType<typeof setTimeout>;
     let rest = byteLen;
-    return new ReadableStream<Uint8Array<ArrayBuffer>>({
-      start: (c) => {
-        const handler = () => {
-          if (rest <= 0) {
-            c.close();
-            return;
-          }
+    return new ReadableStream<Uint8Array<ArrayBuffer>>(
+      {
+        start: (c) => {
+          const handler = () => {
+            if (rest <= 0) {
+              c.close();
+              return;
+            }
 
-          const next = Uint32Array.from([this.getRandU32()]);
-          const len = Math.min(rest, 4);
-          c.enqueue(new Uint8Array(next.buffer, 0, len));
-          rest -= len;
-          id = setTimeout(handler, 20);
-        };
+            const next = Uint32Array.from([this.getRandU32()]);
+            const len = Math.min(rest, 4);
+            c.enqueue(new Uint8Array(next.buffer, 0, len));
+            rest -= len;
+            id = setTimeout(handler, 10);
+          };
 
-        id = setTimeout(handler, 10);
+          id = setTimeout(handler, 10);
+        },
+        cancel: (r) => {
+          clearTimeout(id);
+          console.log('stream is cancelled: ', r);
+        },
       },
-      cancel: (r) => {
-        clearTimeout(id);
-        console.log('stream is cancelled: ', r);
-      },
-    });
+      new ByteLengthQueuingStrategy({ highWaterMark: 1024 }),
+    );
   };
 }
 

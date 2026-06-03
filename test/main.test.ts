@@ -174,7 +174,10 @@ describe('string <-> Uint8Array', async () => {
   });
 
   it('base64url', () => {
-    const a = U.fromBase64URL(U.toBase64URL(bin));
+    const a = U.fromBase64(
+      U.toBase64(bin, { alphabet: 'base64url', omitPadding: true }),
+      { alphabet: 'base64url' },
+    );
     expect(a).toStrictEqual(bin);
   });
 

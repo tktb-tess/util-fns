@@ -4,9 +4,6 @@ import W from './bpsw_worker?worker&inline';
 let __w: AsyncWorker<bigint, boolean> | null = null;
 
 export function getWorker() {
-  if (!__w) {
-    __w = new AsyncWorker(new W({ name: 'bpsw_worker' }));
-  }
-
+  __w ??= new AsyncWorker(new W({ name: 'bpsw_worker' }));
   return __w;
 }

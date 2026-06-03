@@ -94,7 +94,8 @@
     "build:iife": "vite build --config vite.config.iife.ts",
     "build": "pnpm run build:esm && pnpm run build:iife",
     "test": "vitest --run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "pack-lib": "pnpm run build && pnpm pack --out pkg/%s.tgz"
   },
   "devDependencies": {
     "@types/node": "^24.12.4",

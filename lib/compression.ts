@@ -1,4 +1,4 @@
-import { fromBase64, fromBase64URL, toBase64, toBase64URL } from './base64';
+import { fromBase64, toBase64 } from './base64';
 
 /**
  * Compress binary data
@@ -35,7 +35,7 @@ export function decompress(
 /**
  * Compress string into Base64(URL)-encoded string
  * @param str
- * @param format
+ * @param format default: `deflate-raw`
  * @param encoding default: `base64url`
  * @returns
  */
@@ -49,17 +49,16 @@ export async function compressString(
     .pipeThrough(new CompressionStream(format));
   const bin = await new Response(st).bytes();
 
-  if (encoding === 'base64') {
-    return toBase64(bin);
-  } else {
-    return toBase64URL(bin);
-  }
+  return toBase64(bin, {
+    alphabet: encoding,
+    omitPadding: encoding === 'base64url',
+  });
 }
 
 /**
  * Decompress Base64(URL)-encoded data
  * @param compressedString
- * @param format
+ * @param format default: `deflate-raw`
  * @param encoding default: `base64url`
  * @returns
  */
@@ -68,10 +67,7 @@ export function decompressString(
   format: CompressionFormat = 'deflate-raw',
   encoding: 'base64' | 'base64url' = 'base64url',
 ) {
-  const bin =
-    encoding === 'base64'
-      ? fromBase64(compressedString)
-      : fromBase64URL(compressedString);
+  const bin = fromBase64(compressedString, { alphabet: encoding });
 
   const st = new Blob([bin])
     .stream()

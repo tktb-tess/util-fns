@@ -6,17 +6,11 @@ import type {
 } from './async_worker_type';
 
 const NAME = 'AsyncWorker';
-const LIMIT = 1n << 128n;
 
 let count = 0n;
 
 const getId = () => {
   const str = `${count++}`;
-
-  if (count === LIMIT) {
-    count = 0n;
-  }
-
   return str as ID;
 };
 
@@ -42,14 +36,14 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
   ) => {
     return new Promise<TRecv>((resolve, reject) => {
       const id = getId();
-      const ctrlr = new AbortController();
-      const { signal } = ctrlr;
+      const controller = new AbortController();
+      const { signal } = controller;
 
       const onMessage = (ev: MessageEvent<WorkerResult<TRecv>>) => {
         const res = ev.data;
         if (res.id !== id) return;
 
-        ctrlr.abort();
+        controller.abort();
 
         if (res.success) {
           resolve(res.value);
@@ -59,7 +53,7 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
       };
 
       const onError = (ev: ErrorEvent) => {
-        ctrlr.abort();
+        controller.abort();
         reject(ev.error);
       };
 
