@@ -32,6 +32,10 @@ export function toBase32768(bin: Uint8Array) {
     b32768 += letr;
   }
 
+  if (u15Count < 8) {
+    b32768 += 'X';
+  }
+
   return b32768;
 }
 
@@ -43,6 +47,10 @@ export function fromBase32768(base32768: string) {
 
   // base32768 を 15 bit に変換
   for (const letr of base32768) {
+    if (letr === 'X') {
+      bin.pop();
+      continue;
+    }
     const u15 = table[letr];
     if (u15 == null) throw TypeError('unexpected');
 

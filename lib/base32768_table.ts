@@ -20,7 +20,7 @@ function genTable() {
     }
   }
 
-  return [eta, dta] as const;
+  return [Object.freeze(eta), Object.freeze(dta)] as const;
 }
 
 export function getETable() {
