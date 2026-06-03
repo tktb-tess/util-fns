@@ -1,6 +1,6 @@
 /**
  * Converts `Uint8Array` into an octal string \
- * An array length of input must be multiples of 3
+ * Array length of input must be multiples of 3
  * @param bin a binary array
  * @returns
  */
@@ -25,13 +25,14 @@ export function toOct(bin: Uint8Array) {
 
 /**
  * Constructs `Uint8Array` from octal string \
- * A string length must be multiples of 8
+ * String length must be multiples of 8
  * @param oct octal string
  */
 export function fromOct(oct: string) {
   if ((oct.length & 7) !== 0) {
     throw SyntaxError('A string length must be multiples of 8');
   }
+
   const lim = oct.length >>> 3;
   const bits = new Uint8Array(3 * lim);
 
@@ -39,7 +40,7 @@ export function fromOct(oct: string) {
     const _24bit = Number.parseInt(m[0], 8);
 
     if (!Number.isFinite(_24bit)) {
-      throw SyntaxError('Invalid input');
+      throw SyntaxError(`Invalid input: ${m[0]}`);
     }
 
     // 8bit * 3
