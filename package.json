@@ -30,6 +30,10 @@
       "types": "./dist/esm/base64.d.ts",
       "import": "./dist/esm/base64.js"
     },
+    "./base32768": {
+      "types": "./dist/esm/base32768.d.ts",
+      "import": "./dist/esm/base32768.js"
+    },
     "./compression": {
       "types": "./dist/esm/compression.d.ts",
       "import": "./dist/esm/compression.js"
