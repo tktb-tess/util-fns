@@ -25,10 +25,12 @@ export function toBase32768(bin: Uint8Array) {
   }
 
   // 残り
-  u15 <<= 15 - u15Count;
-  const letr = table[u15];
-  if (letr == null) throw TypeError('unexpected');
-  b32768 += letr;
+  if (u15Count > 0) {
+    u15 <<= 15 - u15Count;
+    const letr = table[u15];
+    if (letr == null) throw TypeError('unexpected');
+    b32768 += letr;
+  }
 
   return b32768;
 }
@@ -57,9 +59,5 @@ export function fromBase32768(base32768: string) {
       }
     }
   }
-
-  u8 <<= 8 - u8Count;
-  bin.push(u8);
-
   return Uint8Array.from(bin);
 }

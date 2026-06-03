@@ -15,8 +15,8 @@ function genTable() {
 
     for (let i = start; i <= end; i++) {
       const ch = String.fromCharCode(i);
+      dta[ch] = eta.length;
       eta.push(ch);
-      dta[ch] = i;
     }
   }
 
