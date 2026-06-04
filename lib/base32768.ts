@@ -30,10 +30,10 @@ export function toBase32768(bin: Uint8Array) {
     const letr = table[u15];
     if (letr == null) throw TypeError('unexpected');
     b32768 += letr;
-  }
 
-  if (u15Count < 8) {
-    b32768 += 'X';
+    if (u15Count < 8) {
+      b32768 += 'X';
+    }
   }
 
   return b32768;

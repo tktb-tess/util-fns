@@ -108,5 +108,11 @@
     "vite": "^8.0.14",
     "vitest": "^4.1.7"
   },
-  "packageManager": "pnpm@11.5.0"
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.5.0",
+      "onFail": "download"
+    }
+  }
 }
