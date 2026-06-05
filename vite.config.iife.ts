@@ -8,7 +8,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: resolve(__dirname, `./lib/index.ts`),
+      entry: resolve(import.meta.dirname, `./lib/index.ts`),
       fileName: () => 'bundle.min.js',
       formats: ['iife'],
       name: 'UtilFns',

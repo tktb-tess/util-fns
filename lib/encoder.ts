@@ -1,20 +1,6 @@
-let encoder: TextEncoder | null = null;
-let id: ReturnType<typeof setTimeout> | null = null;
-const delay = 1000 * 30;
+let encoder: TextEncoder | undefined;
 
 export function getTextEncoder() {
-  if (!encoder) {
-    encoder = new TextEncoder();
-  }
-
-  if (id != null) {
-    clearTimeout(id);
-  }
-
-  id = setTimeout(() => {
-    encoder = null;
-    id = null;
-  }, delay);
-
+  encoder ??= new TextEncoder();
   return encoder;
 }

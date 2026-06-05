@@ -29,19 +29,6 @@ export function getStringTag(obj: unknown) {
 }
 
 /**
- * Makes a function lazy
- * @param func function
- * @returns lazified function
- */
-export function lazify<TArgs extends unknown[], TRet>(
-  func: (...args: TArgs) => TRet,
-) {
-  return (...args: TArgs) =>
-    () =>
-      func(...args);
-}
-
-/**
  * Returns hash of a string
  * @param str string
  * @param algorithm hash algorithm

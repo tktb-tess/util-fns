@@ -22,7 +22,8 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "erasableSyntaxOnly": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true
   },
   "include": ["./lib"]
 }

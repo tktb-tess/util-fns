@@ -1,16 +1,15 @@
 /**
  * Converts `Uint8Array` into an octal string \
- * An array length of input must be multiples of 3
+ * Array length of input must be multiples of 3
  * @param bin a binary array
  * @returns
  */
 export function toOct(bin: Uint8Array) {
   if (bin.length % 3 !== 0) {
-    throw Error('The array length of input must be multiples of 3');
+    throw SyntaxError('The array length of input must be multiples of 3');
   }
-  const _24bitsLen = bin.length / 3;
 
-  const _24bits = Array.from({ length: _24bitsLen }, (_, i) => {
+  const _24bits = Uint32Array.from({ length: bin.length / 3 }, (_, i) => {
     return [0, 1, 2].reduce((prev, j) => {
       const idx = 3 * i + j;
       const cur = (bin[idx] ?? 0) << (16 - 8 * j);
@@ -26,25 +25,28 @@ export function toOct(bin: Uint8Array) {
 
 /**
  * Constructs `Uint8Array` from octal string \
- * A string length must be multiples of 8
+ * String length must be multiples of 8
  * @param oct octal string
  */
 export function fromOct(oct: string) {
   if ((oct.length & 7) !== 0) {
-    throw Error('A string length must be multiples of 8');
+    throw SyntaxError('A string length must be multiples of 8');
   }
 
-  const matched = oct.matchAll(/.{8}/g);
+  const lim = oct.length >>> 3;
+  const bits = new Uint8Array(3 * lim);
 
-  const binArr = Array.from(matched, (m) => {
+  Array.from(oct.matchAll(/.{8}/g)).forEach((m, i) => {
     const _24bit = Number.parseInt(m[0], 8);
 
-    if (Number.isNaN(_24bit)) {
-      throw TypeError('Invalid input');
+    if (!Number.isFinite(_24bit)) {
+      throw SyntaxError(`Invalid input: ${m[0]}`);
     }
 
-    return [0, 1, 2].map((i) => (_24bit >>> (16 - 8 * i)) & 255);
-  }).flat();
+    // 8bit * 3
+    const arr = [0, 1, 2].map((j) => (_24bit >>> (16 - 8 * j)) & 0xff);
+    bits.set(arr, 3 * i);
+  });
 
-  return Uint8Array.from(binArr);
+  return bits;
 }

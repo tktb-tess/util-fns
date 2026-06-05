@@ -8,6 +8,8 @@ const fileNames: readonly string[] = [
   'async_worker_post',
   'baillie_psw',
   'base64',
+  'base32768',
+  'basejuso',
   'compression',
   'equality',
   'fraction',
@@ -30,7 +32,9 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: fileNames.map((name) => resolve(__dirname, `./lib/${name}.ts`)),
+      entry: fileNames.map((name) =>
+        resolve(import.meta.dirname, `./lib/${name}.ts`),
+      ),
       fileName: (_, entryName) => `${entryName}.js`,
       formats: ['es'],
     },

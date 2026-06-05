@@ -11,7 +11,7 @@ const isInsideOfWorker = () =>
 
 export function postSuccess<TRecv>(value: TRecv, id: ID) {
   if (!isInsideOfWorker()) {
-    throw Error('this function must be used in Worker');
+    throw Error('This function must be used in Worker');
   }
 
   const p: WorkerSucceededResult<TRecv> = {
@@ -25,7 +25,7 @@ export function postSuccess<TRecv>(value: TRecv, id: ID) {
 
 export function postFailed(error: unknown, id: ID) {
   if (!isInsideOfWorker()) {
-    throw Error('this function must be used in Worker');
+    throw Error('This function must be used in Worker');
   }
 
   const p: WorkerFailedResult = {
