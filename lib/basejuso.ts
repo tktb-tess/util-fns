@@ -1,4 +1,4 @@
-import { getDTable, getETable } from './juso_table';
+import { getDTable, getETable } from './basejuso_table';
 
 const BITS_PER_CHAR = 14;
 const BITS_PER_BYTE = 8;

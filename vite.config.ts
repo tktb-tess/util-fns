@@ -9,6 +9,7 @@ const fileNames: readonly string[] = [
   'baillie_psw',
   'base64',
   'base32768',
+  'basejuso',
   'compression',
   'equality',
   'fraction',

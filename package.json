@@ -34,6 +34,10 @@
       "types": "./dist/esm/base32768.d.ts",
       "import": "./dist/esm/base32768.js"
     },
+    "./basejuso": {
+      "types": "./dist/esm/basejuso.d.ts",
+      "import": "./dist/esm/basejuso.js"
+    },
     "./compression": {
       "types": "./dist/esm/compression.d.ts",
       "import": "./dist/esm/compression.js"

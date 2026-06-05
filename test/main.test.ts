@@ -3,6 +3,9 @@ import * as U from '../lib/index';
 import Commas from './assets/commas.json';
 import CotecJson from './assets/conlinguistics-wiki-list-cotec.json';
 
+const encoder = new TextEncoder();
+const decoder = new TextDecoder(undefined, { fatal: true });
+
 describe('the function `isDeepStrictEqual` judges type correctly...', () => {
   it('distinguish null from object', (ctx) => {
     const obj1 = {};
@@ -211,8 +214,6 @@ describe('string <-> Uint8Array', async () => {
 });
 
 it('compression', async (ctx) => {
-  const encoder = new TextEncoder();
-  const decoder = new TextDecoder(undefined, { fatal: true });
   const obj = [...Array(256)].map(() => Math.floor(65536 * Math.random()));
   const bin2 = encoder.encode(JSON.stringify(structuredClone(obj)));
   const comped = await U.compress(bin2, 'gzip');
@@ -244,7 +245,6 @@ it('LEB128', (ctx) => {
 });
 
 it('FixedUint8Array', (ctx) => {
-  const encoder = new TextEncoder();
   const str = '天上天下唯我独尊';
   const utf8 = encoder.encode(str);
   const fixed = U.FixedUint8Array.fromBuffer(utf8.buffer, utf8.byteOffset, 24);
