@@ -1,5 +1,9 @@
 import { getETable, getDTable } from './base32768_table';
 
+const BITS_PER_CHAR = 15;
+const BITS_PER_BYTE = 8;
+const CHECK_CHAR = 'X';
+
 export function toBase32768(bin: Uint8Array) {
   const table = getETable();
   let u15 = 0;
@@ -8,13 +12,13 @@ export function toBase32768(bin: Uint8Array) {
 
   // 15 bit ごとにまとめる
   for (const byte of bin) {
-    for (let i = 0; i < 8; i++) {
-      const bit = (byte >>> (7 - i)) & 1;
+    for (let i = 0; i < BITS_PER_BYTE; i++) {
+      const bit = (byte >>> (BITS_PER_BYTE - 1 - i)) & 1;
       u15 = (u15 << 1) | bit;
       u15Count++;
 
       // 15 bit 揃ったらエンコードする
-      if (u15Count === 15) {
+      if (u15Count === BITS_PER_CHAR) {
         const letr = table[u15];
         if (letr == null) throw TypeError('unexpected');
         b32768 += letr;
@@ -31,8 +35,8 @@ export function toBase32768(bin: Uint8Array) {
     if (letr == null) throw TypeError('unexpected');
     b32768 += letr;
 
-    if (u15Count < 8) {
-      b32768 += 'X';
+    if (u15Count < BITS_PER_BYTE) {
+      b32768 += CHECK_CHAR;
     }
   }
 
@@ -47,20 +51,21 @@ export function fromBase32768(base32768: string) {
 
   // base32768 を 15 bit に変換
   for (const letr of base32768) {
-    if (letr === 'X') {
+    if (letr === CHECK_CHAR) {
       bin.pop();
       continue;
     }
+
     const u15 = table[letr];
     if (u15 == null) throw TypeError('unexpected');
 
-    for (let i = 0; i < 15; i++) {
-      const bit = (u15 >>> (14 - i)) & 1;
+    for (let i = 0; i < BITS_PER_CHAR; i++) {
+      const bit = (u15 >>> (BITS_PER_CHAR - 1 - i)) & 1;
       u8 = (u8 << 1) | bit;
       u8Count++;
 
       // 8 bit 揃ったらまとめる
-      if (u8Count === 8) {
+      if (u8Count === BITS_PER_BYTE) {
         bin.push(u8);
         u8 = 0;
         u8Count = 0;

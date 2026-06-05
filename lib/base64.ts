@@ -70,7 +70,7 @@ export function fromBase64(base64: string, options: FromBase64Options = {}) {
   switch (lastChunkHandling) {
     case 'loose': {
       if (padLen === 0) {
-        if ((base64.length & 3) !== 0) base64 += '=';
+        while ((base64.length & 3) !== 0) base64 += '=';
         break;
       }
 

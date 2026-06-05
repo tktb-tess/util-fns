@@ -1,24 +1,23 @@
-const ranges: string =
-  'ƀƟȴʓҊҩӺԙԱՐՠտऄणഒറกภကဟ႞ႽაჯሃቂጘፗᎠᏟᐁᙠᚠᛟកសᠠᡟᢇᢦᢰᣯ⌫⏪⓫❊❶➵⟰⥯⨍⩬⩷⫖⫝⭜⮗ⱶⱾⳝㄅㄤㆠ㇟㐀ꑿꔀꗿꚠꛟ꜀ꝟꝱꞰ';
-
 let tables:
-  | readonly [readonly string[], Readonly<Record<string, number>>]
+  | readonly [
+      eTable: readonly string[],
+      dTable: Readonly<Record<string, number>>,
+    ]
   | undefined;
 
 function genTable() {
-  const eta: string[] = [];
-  const dta: Record<string, number> = Object.create(null);
+  const ranges: string =
+    'ƀƟȴʓҊҩӺԙԱՐՠտऄणഒറกภကဟ႞ႽაჯሃቂጘፗᎠᏟᐁᙠᚠᛟកសᠠᡟᢇᢦᢰᣯ⌫⏪⓫❊❶➵⟰⥯⨍⩬⩷⫖⫝⭜⮗ⱶⱾⳝㄅㄤㆠ㇟㐀ꑿꔀꗿꚠꛟ꜀ꝟꝱꞰ';
 
-  for (const m of ranges.matchAll(/../g)) {
+  const eta = Array.from(ranges.matchAll(/../g)).flatMap((m) => {
     const start = m[0].charCodeAt(0);
     const end = m[0].charCodeAt(1);
+    const numR = [...Array(end - start + 1)].map((_, i) => start + i);
+    return [...String.fromCharCode(...numR)];
+  });
 
-    for (let i = start; i <= end; i++) {
-      const ch = String.fromCharCode(i);
-      dta[ch] = eta.length;
-      eta.push(ch);
-    }
-  }
+  const dta = Object.fromEntries(eta.map((s, i) => [s, i] as const));
+  Object.setPrototypeOf(dta, null);
 
   return [Object.freeze(eta), Object.freeze(dta)] as const;
 }
