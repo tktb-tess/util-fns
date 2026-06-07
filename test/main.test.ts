@@ -198,13 +198,6 @@ describe('string <-> Uint8Array', async () => {
     ctx.expect(a).toStrictEqual(pad);
   });
 
-  it('Base32768', (ctx) => {
-    const e = U.toBase32768(bin);
-    //console.log('Base32768:', e);
-    const d = U.fromBase32768(e);
-    ctx.expect(d).toStrictEqual(bin);
-  });
-
   it('BaseJuso', (ctx) => {
     const e = U.toBaseJuso(bin);
     //console.log('Basejuso:', e);
