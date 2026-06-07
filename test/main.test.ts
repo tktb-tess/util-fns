@@ -200,7 +200,7 @@ describe('string <-> Uint8Array', async () => {
 
   it('BaseJuso', (ctx) => {
     const e = U.toBaseJuso(bin);
-    console.log('Basejuso:', e);
+    // console.log('Basejuso:', e);
     const d = U.fromBaseJuso(e);
     ctx.expect(d).toStrictEqual(bin);
   });
