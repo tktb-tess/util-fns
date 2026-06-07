@@ -2,7 +2,7 @@ import { getDTable, getETable } from './basejuso_table';
 
 const BITS_PER_CHAR = 14;
 const BITS_PER_BYTE = 8;
-const CHECK_CHAR = '乙';
+const BITS_PER_CHAR_SHORT = 6;
 
 export function toBaseJuso(bin: Uint8Array) {
   let u14 = 0;
@@ -18,7 +18,7 @@ export function toBaseJuso(bin: Uint8Array) {
       u14Count++;
 
       if (u14Count === BITS_PER_CHAR) {
-        const letr = table.at(u14);
+        const letr = table[BITS_PER_CHAR].at(u14);
         if (letr == null) throw TypeError('unexpected');
         str += letr;
         u14 = 0;
@@ -28,16 +28,15 @@ export function toBaseJuso(bin: Uint8Array) {
   }
 
   // 残り
+  // 同じ長さの文字列になり判別できなくなる事を防ぐために、文字セットを変える
   if (u14Count > 0) {
-    u14 = u14 << (BITS_PER_CHAR - u14Count);
-    const letr = table.at(u14);
-    if (letr == null) throw TypeError('unexpected');
-    str += letr;
-
-    // 同じ長さの文字列になり判別できなくなる事を防ぐためのチェック文字
-    if (u14Count < BITS_PER_BYTE) {
-      str += CHECK_CHAR;
+    const bits = u14Count < BITS_PER_BYTE ? BITS_PER_CHAR_SHORT : BITS_PER_CHAR;
+    u14 = u14 << (bits - u14Count);
+    const letr = table[bits].at(u14);
+    if (letr == null) {
+      throw TypeError('unexpected');
     }
+    str += letr;
   }
 
   return str;
@@ -51,16 +50,26 @@ export function fromBaseJuso(baseJuso: string) {
 
   // base-juso を 15 bit に変換
   for (const letr of baseJuso) {
-    if (letr === CHECK_CHAR) {
-      bin.pop();
-      continue;
+    let u14or6: number;
+    let length: typeof BITS_PER_CHAR | typeof BITS_PER_CHAR_SHORT;
+
+    const u14 = table[BITS_PER_CHAR][letr];
+
+    if (u14 != null) {
+      length = BITS_PER_CHAR;
+      u14or6 = u14;
+    } else {
+      const u6 = table[BITS_PER_CHAR_SHORT][letr];
+
+      if (u6 == null) {
+        throw TypeError('unexpected');
+      }
+      length = BITS_PER_CHAR_SHORT;
+      u14or6 = u6;
     }
 
-    const u14 = table[letr];
-    if (u14 == null) throw TypeError('unexpected');
-
-    for (let i = 0; i < BITS_PER_CHAR; i++) {
-      const bit = (u14 >>> (BITS_PER_CHAR - 1 - i)) & 1;
+    for (let i = 0; i < length; i++) {
+      const bit = (u14or6 >>> (length - 1 - i)) & 1;
       u8 = (u8 << 1) | bit;
       u8Count++;
 

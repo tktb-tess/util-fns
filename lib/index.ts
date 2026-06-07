@@ -2,7 +2,6 @@ export * from './util';
 export * from './math';
 export * from './baillie_psw';
 export * from './base64';
-export * from './base32768';
 export * from './compression';
 export * from './equality';
 export * from './fraction';

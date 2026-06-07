@@ -8,7 +8,6 @@ const fileNames: readonly string[] = [
   'async_worker_post',
   'baillie_psw',
   'base64',
-  'base32768',
   'basejuso',
   'compression',
   'equality',

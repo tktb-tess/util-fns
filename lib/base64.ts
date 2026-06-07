@@ -9,7 +9,7 @@ export interface FromBase64Options {
 }
 
 /**
- * Polyfill of `Uint8Array.prototype.toBase64()`
+ * Polyfill for `Uint8Array.prototype.toBase64()`
  * @param bin
  * @param options
  * @returns
@@ -33,7 +33,7 @@ export function toBase64(bin: Uint8Array, options: ToBase64Options = {}) {
 }
 
 /**
- * Polyfill of `Uint8Array.fromBase64()`
+ * Polyfill for `Uint8Array.fromBase64()`
  * @param base64
  * @param options
  * @returns
