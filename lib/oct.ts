@@ -9,7 +9,7 @@ export function toOct(bin: Uint8Array) {
     throw SyntaxError('The array length of input must be multiples of 3');
   }
 
-  const _24bits = Uint32Array.from({ length: bin.length / 3 }, (_, i) => {
+  const u24bits = Uint32Array.from({ length: bin.length / 3 }, (_, i) => {
     return [0, 1, 2].reduce((prev, j) => {
       const idx = 3 * i + j;
       const cur = (bin[idx] ?? 0) << (16 - 8 * j);
@@ -17,7 +17,7 @@ export function toOct(bin: Uint8Array) {
     }, 0);
   });
 
-  return _24bits.reduce(
+  return u24bits.reduce(
     (acc, cur24bit) => acc + cur24bit.toString(8).padStart(8, '0'),
     '',
   );
@@ -37,14 +37,14 @@ export function fromOct(oct: string) {
   const bits = new Uint8Array(3 * lim);
 
   Array.from(oct.matchAll(/.{8}/g)).forEach((m, i) => {
-    const _24bit = Number.parseInt(m[0], 8);
+    const u24bit = Number.parseInt(m[0], 8);
 
-    if (!Number.isFinite(_24bit)) {
+    if (!Number.isFinite(u24bit)) {
       throw SyntaxError(`Invalid input: ${m[0]}`);
     }
 
     // 8bit * 3
-    const arr = [0, 1, 2].map((j) => (_24bit >>> (16 - 8 * j)) & 0xff);
+    const arr = [0, 1, 2].map((j) => (u24bit >>> (16 - 8 * j)) & 0xff);
     bits.set(arr, 3 * i);
   });
 

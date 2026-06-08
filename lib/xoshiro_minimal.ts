@@ -154,6 +154,36 @@ export class XoshiroMinimal {
         : this.getBoundedRandU32(bound);
     }
   }
+
+  readonly stream = (byteLen: number) => {
+    let id: ReturnType<typeof setTimeout>;
+    let rest = byteLen;
+    return new ReadableStream<Uint8Array<ArrayBuffer>>(
+      {
+        start: (c) => {
+          const handler = () => {
+            if (rest <= 0) {
+              c.close();
+              return;
+            }
+
+            const next = BigUint64Array.from([this.getRandU64()]);
+            const len = Math.min(rest, 8);
+            c.enqueue(new Uint8Array(next.buffer, 0, len));
+            rest -= len;
+            id = setTimeout(handler, 0);
+          };
+
+          id = setTimeout(handler, 0);
+        },
+        cancel: (r) => {
+          clearTimeout(id);
+          console.log('stream is cancelled: ', r);
+        },
+      },
+      new ByteLengthQueuingStrategy({ highWaterMark: 1024 }),
+    );
+  };
 }
 
 Object.defineProperty(XoshiroMinimal.prototype, Symbol.toStringTag, {

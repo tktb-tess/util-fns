@@ -158,3 +158,10 @@ export function createWorker(
   setTimeout(() => URL.revokeObjectURL(burl), 1000 * 60);
   return new Worker(burl);
 }
+
+export function createArrayLike<T>(length: number, fill?: T) {
+  const arrLike: ArrayLike<T> = { length };
+  Object.setPrototypeOf(arrLike, null);
+  Array.prototype.fill.call(arrLike, fill);
+  return arrLike;
+}

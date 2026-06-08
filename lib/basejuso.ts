@@ -1,4 +1,5 @@
 import { getDTable, getETable } from './basejuso_table';
+import type { BitLength } from './basejuso_table';
 
 const BITS_PER_CHAR = 14;
 const BITS_PER_BYTE = 8;
@@ -51,7 +52,7 @@ export function fromBaseJuso(baseJuso: string) {
   // base-juso を 15 bit に変換
   for (const letr of baseJuso) {
     let u14or6: number;
-    let length: typeof BITS_PER_CHAR | typeof BITS_PER_CHAR_SHORT;
+    let length: BitLength;
 
     const u14 = table[BITS_PER_CHAR][letr];
 
