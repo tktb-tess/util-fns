@@ -178,7 +178,7 @@ export class XoshiroMinimal {
         },
         cancel: (r) => {
           clearTimeout(id);
-          console.log('stream is cancelled: ', r);
+          console.log('stream is cancelled for reason: ', r);
         },
       },
       new ByteLengthQueuingStrategy({ highWaterMark: 1024 }),
