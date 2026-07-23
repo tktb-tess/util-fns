@@ -107,7 +107,7 @@ export function nullableStrictAt<T>(array: T[], index: number) {
 }
 
 /**
- * `Array.prototype.at()` with boundary check and non-nullable check
+ * `Array.prototype.at()` with boundary check and non-nullish check
  * @param array
  * @param index
  * @returns
@@ -116,7 +116,7 @@ export function strictAt<T extends {}>(array: T[], index: number) {
   const v = nullableStrictAt(array, index);
 
   if (v == null) {
-    throw TypeError('value is nullable');
+    throw TypeError('value is nullish');
   }
 
   return v;
