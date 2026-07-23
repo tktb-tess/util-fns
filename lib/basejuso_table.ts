@@ -25,7 +25,7 @@ function decodeBase64(base64: string) {
       throw TypeError('unexpected');
     }
     const r = [...Array(end - start + 1)].map((_, i) => start + i);
-    return [...String.fromCharCode(...r)];
+    return r.map((n) => String.fromCharCode(n));
   });
 }
 
