@@ -1,4 +1,4 @@
-import { it, expect, describe } from 'vitest';
+import { it, describe } from 'vitest';
 import * as U from '../lib/index';
 import Commas from './assets/commas.json';
 import CotecJson from './assets/conlinguistics-wiki-list-cotec.json';
