@@ -44,12 +44,13 @@ export function exEuclidean(a: bigint, b: bigint) {
 }
 
 /**
- * min 以上 max 「未満」 の奇数の積を返す
+ * `min` 以上 `max` 未満の奇数の積を返す
  * @param min 最小値
  * @param max 最大値
- * @returns min 以上 max 未満 の奇数の積
+ * @returns `min` 以上 `max` 未満 の奇数の積
  */
 function oddProd(min: bigint, max: bigint): bigint {
+  // 空積は1
   if (min >= max) return 1n;
 
   const max_bits = BigInt((max - 2n).toString(2).length);
@@ -143,13 +144,13 @@ export function jacobiSymbol(a: bigint, n: bigint) {
   }
 
   a %= n;
-
   let result = 1n;
+
   while (a !== 0n) {
     while ((a & 1n) === 0n) {
       a >>= 1n;
-      const nMod8 = n & 7n;
-      if (nMod8 === 3n || nMod8 === 5n) {
+
+      if ((n & 7n) === 3n || (n & 7n) === 5n) {
         result *= -1n;
       }
     }
@@ -175,7 +176,8 @@ export function isSquare(n: bigint) {
   if (n === 0n) return true;
   let x = 1n;
   let y = n;
-  while (x + 1n < y) {
+
+  while (y - x > 1n) {
     const mid = (x + y) >> 1n;
 
     if (mid * mid < n) {

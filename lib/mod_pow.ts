@@ -17,7 +17,7 @@ export function residue(n: bigint, modulo: bigint): bigint {
  * @param modulo
  *
  */
-export function modPow(base: bigint, exponent: bigint, modulo: bigint) {
+export function modPow(base: bigint, exponent: bigint, modulo: bigint): bigint {
   if (modulo < 1n) throw RangeError('`mod` must be positive');
   if (exponent < 0n) throw RangeError('`exponent` must not be negative');
 
