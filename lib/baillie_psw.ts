@@ -306,12 +306,17 @@ function findSquareRootOf1(mod: bigint) {
   return modPow(b, k >> 1n, mod);
 }
 
+/**
+ * Decomposes a given integer into the sum of 2 square numbers
+ * @param n
+ * @returns
+ */
 export function cornacchia(n: bigint): [a: bigint, b: bigint] | null {
   if (!bailliePSW(n) || (n & 3n) === 3n) {
     return null;
   }
-
   if (n === 2n) return [1n, 1n];
+
   let a = n;
   let b = findSquareRootOf1(n);
 
