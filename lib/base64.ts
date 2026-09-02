@@ -55,7 +55,9 @@ export function fromBase64(base64: string, options: FromBase64Options = {}) {
   }
 
   const lastChunk = Array.from(base64.matchAll(/.{1,4}/gu), (m) => m[0]).at(-1);
-  if (lastChunk == null) throw TypeError('unexpected');
+  if (lastChunk == null) {
+    throw TypeError('unexpected: `lastChunk` is undefined');
+  }
 
   const lastLen = lastChunk.length;
 
@@ -64,7 +66,7 @@ export function fromBase64(base64: string, options: FromBase64Options = {}) {
   }
 
   if (lastLen !== 2 && lastLen !== 3 && lastLen !== 4) {
-    throw SyntaxError('unexpected');
+    throw SyntaxError('unexpected: `lastLen` is none of 2, 3 nor 4');
   }
 
   switch (lastChunkHandling) {

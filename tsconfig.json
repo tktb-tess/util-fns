@@ -12,7 +12,6 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "allowJs": true,
-
     "verbatimModuleSyntax": true,
     "strict": true,
     "noUnusedLocals": true,

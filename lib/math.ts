@@ -12,10 +12,12 @@ export { residue, modPow } from './mod_pow';
 export function exEuclidean(a: bigint, b: bigint) {
   // a, b に 0 がある場合の処理
   if (a === 0n && b === 0n) return { x: 0n, y: 0n, gcd: 0n };
-  if (a === 0n)
+  if (a === 0n) {
     return b > 0n ? { x: 0n, y: -1n, gcd: b } : { x: 0n, y: 1n, gcd: -b };
-  if (b === 0n)
+  }
+  if (b === 0n) {
     return a > 0n ? { x: 1n, y: 0n, gcd: a } : { x: -1n, y: 0n, gcd: -a };
+  }
 
   let [x_1, y_1, c_1] = [1n, 0n, a];
   let [x_2, y_2, c_2] = [0n, -1n, b];
@@ -42,12 +44,13 @@ export function exEuclidean(a: bigint, b: bigint) {
 }
 
 /**
- * min 以上 max 「未満」 の奇数の積を返す
+ * `min` 以上 `max` 未満の奇数の積を返す
  * @param min 最小値
  * @param max 最大値
- * @returns min 以上 max 未満 の奇数の積
+ * @returns `min` 以上 `max` 未満 の奇数の積
  */
 function oddProd(min: bigint, max: bigint): bigint {
+  // 空積は1
   if (min >= max) return 1n;
 
   const max_bits = BigInt((max - 2n).toString(2).length);
@@ -99,7 +102,8 @@ export function factorial(n: bigint) {
   if (n < 0n) throw RangeError(`'n' must be non-negative`);
   if (n === 0n) return 1n;
 
-  const twoExp = n - BigInt(n.toString(2).match(/1/g)?.length ?? 0);
+  const matched = [...n.toString(2).matchAll(/1/g)];
+  const twoExp = n - BigInt(matched.length);
   const odd = oddPart(n);
 
   return odd << twoExp;
@@ -131,27 +135,29 @@ export function rot64(value: bigint, rot: bigint) {
  * @param n positive odd integer
  */
 export function jacobiSymbol(a: bigint, n: bigint) {
-  if (n < 1n || n % 2n === 0n) {
+  if (n < 1n || (n & 1n) === 0n) {
     throw RangeError('`n` is out of range');
   }
 
   while (a < 0n) {
     a += n;
   }
-  a %= n;
 
+  a %= n;
   let result = 1n;
+
   while (a !== 0n) {
-    while (a % 2n === 0n) {
-      a /= 2n;
-      const nMod8 = n % 8n;
-      if (nMod8 === 3n || nMod8 === 5n) {
+    while ((a & 1n) === 0n) {
+      a >>= 1n;
+
+      if ((n & 7n) === 3n || (n & 7n) === 5n) {
         result *= -1n;
       }
     }
+
     [a, n] = [n, a];
 
-    if (a % 4n === 3n && n % 4n === 3n) {
+    if ((a & 3n) === 3n && (n & 3n) === 3n) {
       result *= -1n;
     }
     a %= n;
@@ -170,8 +176,9 @@ export function isSquare(n: bigint) {
   if (n === 0n) return true;
   let x = 1n;
   let y = n;
-  while (x + 1n < y) {
-    const mid = (x + y) / 2n;
+
+  while (y - x > 1n) {
+    const mid = (x + y) >> 1n;
 
     if (mid * mid < n) {
       x = mid;

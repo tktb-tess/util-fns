@@ -10,6 +10,8 @@ interface DecodeTable {
   readonly 14: Readonly<Record<string, number>>;
 }
 
+export type BitLength = keyof EncodeTable;
+
 let tables: readonly [EncodeTable, DecodeTable] | undefined;
 
 function decodeBase64(base64: string) {
@@ -23,7 +25,7 @@ function decodeBase64(base64: string) {
       throw TypeError('unexpected');
     }
     const r = [...Array(end - start + 1)].map((_, i) => start + i);
-    return [...String.fromCharCode(...r)];
+    return r.map((n) => String.fromCharCode(n));
   });
 }
 
@@ -42,13 +44,15 @@ function genTable() {
 
   const d6bit = Object.fromEntries(e6bit.map((s, i) => [s, i] as const));
   const d14bit = Object.fromEntries(e14bit.map((s, i) => [s, i] as const));
-  Object.setPrototypeOf(d6bit, null);
-  Object.setPrototypeOf(d14bit, null);
 
   const dta: DecodeTable = {
     6: d6bit,
     14: d14bit,
   };
+
+  Object.setPrototypeOf(d6bit, null);
+  Object.setPrototypeOf(d14bit, null);
+  Object.setPrototypeOf(eta, null);
   Object.setPrototypeOf(dta, null);
 
   return [eta, dta] as const;

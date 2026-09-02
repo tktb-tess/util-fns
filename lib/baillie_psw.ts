@@ -8,32 +8,37 @@ import { getRandBIByBitLength, getRandBIByRange } from './random';
  */
 
 /**
- * Miller-Rabin テスト (底2)
+ * Miller-Rabin テスト
  * @param n 判定する整数
+ * @param bases テストに使う底
  * @returns
  */
-function millerRabin(n: bigint) {
+function millerRabin(n: bigint, bases: bigint[]) {
   if (n <= 1n) return false;
-  if (n % 2n === 0n) return n === 2n;
+  if ((n & 1n) === 0n) return n === 2n;
   let d_ = n - 1n;
   let s_ = 0n;
 
-  while (d_ % 2n === 0n) {
+  while ((d_ & 1n) === 0n) {
     d_ >>= 1n;
     s_ += 1n;
   }
   const [d, s] = [d_, s_];
 
-  const a = 2n;
-  let y = modPow(a, d, n);
+  ch: for (const a of bases) {
+    let y = modPow(a, d, n);
+    if (y === 1n) continue ch;
 
-  if (y === 1n) return true;
+    for (let i = 0n; i < s; i++) {
+      if (y === n - 1n) continue ch;
+      if (y === 1n) return false;
+      y = (y * y) % n;
+    }
 
-  for (let i = 0n; i < s; i++) {
-    if (y === n - 1n) return true;
-    y = (y * y) % n;
+    return false;
   }
-  return false;
+
+  return true;
 }
 
 /**
@@ -49,7 +54,6 @@ function DChooser(n: bigint): bigint | null {
   while (true) {
     const j = jacobiSymbol(D, n);
     if (j === -1n) return D;
-    if (j === 0n) return null;
 
     D = D > 0n ? -(D + 2n) : -(D - 2n);
 
@@ -65,7 +69,7 @@ function DChooser(n: bigint): bigint | null {
  * @param n 奇数
  * @returns
  */
-function div2Mod(x: bigint, n: bigint) {
+function divBy2(x: bigint, n: bigint) {
   if ((n & 1n) === 0n) {
     throw Error('`n` is not odd');
   }
@@ -73,11 +77,16 @@ function div2Mod(x: bigint, n: bigint) {
 }
 
 /**
- * `U_k, V_k` の値を求める \
- * `U_{2i}    = U_i * V_i` \
- * `V_{2i}    = (V_i^2 + D * U_i^2) / 2` \
- * `U_{i + 1} = (P * U_i * V_i) / 2` \
- * `V_{i + 1} = (D * U_i + P * V_i) / 2`
+ * `U_k, V_k` の値を求める
+ *
+ * ### 漸化式
+ *
+ * ```math
+ * U_{2i}    = U_i * V_i
+ * V_{2i}    = (V_i^2 + D * U_i^2) / 2
+ * U_{i + 1} = (P * U_i * V_i) / 2
+ * V_{i + 1} = (D * U_i + P * V_i) / 2
+ * ```
  * @param k
  * @param n
  * @param P
@@ -95,10 +104,10 @@ function UVSubscript(
   const digits = k.toString(2).slice(1);
 
   for (const digit of digits) {
-    [U, V] = [residue(U * V, n), div2Mod(V * V + D * U * U, n)];
+    [U, V] = [residue(U * V, n), divBy2(V * V + D * U * U, n)];
 
     if (digit === '1') {
-      [U, V] = [div2Mod(P * U + V, n), div2Mod(D * U + P * V, n)];
+      [U, V] = [divBy2(P * U + V, n), divBy2(D * U + P * V, n)];
     }
   }
 
@@ -141,6 +150,63 @@ function strongLucas(n: bigint, D: bigint, P: bigint, Q: bigint) {
   return false;
 }
 
+const smallPrimes: readonly bigint[] = [
+  2n,
+  3n,
+  5n,
+  7n,
+  11n,
+  13n,
+  17n,
+  19n,
+  23n,
+  29n,
+  31n,
+  37n,
+  41n,
+  43n,
+  47n,
+  53n,
+  59n,
+  61n,
+  67n,
+  71n,
+  73n,
+  79n,
+  83n,
+  89n,
+  97n,
+  101n,
+  103n,
+  107n,
+  109n,
+  113n,
+  127n,
+  131n,
+  137n,
+  139n,
+  149n,
+  151n,
+  157n,
+  163n,
+  167n,
+  173n,
+  179n,
+  181n,
+  191n,
+  193n,
+  197n,
+  199n,
+  211n,
+  223n,
+  227n,
+  229n,
+  233n,
+  239n,
+  241n,
+  251n,
+];
+
 /**
  * Baillie-PSW primality test
  * @param n tested integer
@@ -148,78 +214,22 @@ function strongLucas(n: bigint, D: bigint, P: bigint, Q: bigint) {
  */
 export function bailliePSW(n: bigint): boolean {
   if (n <= 1n) return false;
-  if (n % 2n === 0n) return n === 2n;
 
   // 小さな素数で試し割り
-  for (const p of [
-    2n,
-    3n,
-    5n,
-    7n,
-    11n,
-    13n,
-    17n,
-    19n,
-    23n,
-    29n,
-    31n,
-    37n,
-    41n,
-    43n,
-    47n,
-    53n,
-    59n,
-    61n,
-    67n,
-    71n,
-    73n,
-    79n,
-    83n,
-    89n,
-    97n,
-    101n,
-    103n,
-    107n,
-    109n,
-    113n,
-    127n,
-    131n,
-    137n,
-    139n,
-    149n,
-    151n,
-    157n,
-    163n,
-    167n,
-    173n,
-    179n,
-    181n,
-    191n,
-    193n,
-    197n,
-    199n,
-    211n,
-    223n,
-    227n,
-    229n,
-    233n,
-    239n,
-    241n,
-    251n,
-  ]) {
+  for (const p of smallPrimes) {
     if (n % p === 0n) {
       return n === p;
     }
   }
 
-  if (!millerRabin(n)) {
+  if (!millerRabin(n, [2n])) {
     return false;
   }
 
   const D = DChooser(n);
   if (D == null) return false;
 
-  const Q = (1n - D) / 4n;
+  const Q = (1n - D) >> 2n;
   return strongLucas(n, D, 1n, Q);
 }
 
@@ -270,4 +280,49 @@ export async function bailliePSWAsync(n: bigint) {
   const { getWorker } = await import('./bpsw_worker_wrap');
   const worker = getWorker();
   return worker.postMessage(n);
+}
+
+function findSquareRootOf1(mod: bigint) {
+  const k = mod >> 1n;
+  const inSmallPrimes = () =>
+    smallPrimes.find((p) => modPow(p, k, mod) === mod - 1n);
+
+  const inBigOdds = () => {
+    const LIMIT = 1n << 20n;
+    let odd = smallPrimes.at(-1);
+    if (odd == null) throw Error('unreachable');
+
+    for (let c = 0n; c < LIMIT; c++) {
+      odd += 2n;
+      if (modPow(odd, k, mod) === mod - 1n) {
+        return odd;
+      }
+    }
+
+    throw Error(`couldn't find`);
+  };
+
+  const b = inSmallPrimes() ?? inBigOdds();
+  return modPow(b, k >> 1n, mod);
+}
+
+/**
+ * Decomposes a given integer into the sum of 2 square numbers
+ * @param n
+ * @returns
+ */
+export function cornacchia(n: bigint): [a: bigint, b: bigint] | null {
+  if (!bailliePSW(n) || (n & 3n) === 3n) {
+    return null;
+  }
+  if (n === 2n) return [1n, 1n];
+
+  let a = n;
+  let b = findSquareRootOf1(n);
+
+  while (a * a > n) {
+    [a, b] = [b, a - (a / b) * b];
+  }
+
+  return [a, b];
 }

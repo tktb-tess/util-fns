@@ -11,31 +11,31 @@ export function residue(n: bigint, modulo: bigint): bigint {
 }
 
 /**
- * Calculates modpow
+ * Calculates `base` ^ `exponent` (mod `modulo`)
  * @param base
- * @param power
- * @param mod
+ * @param exponent
+ * @param modulo
  *
  */
-export function modPow(base: bigint, power: bigint, mod: bigint) {
-  if (mod < 1n) throw RangeError('`mod` must be positive');
-  if (power < 0n) throw RangeError('`power` must not be negative');
+export function modPow(base: bigint, exponent: bigint, modulo: bigint): bigint {
+  if (modulo < 1n) throw RangeError('`mod` must be positive');
+  if (exponent < 0n) throw RangeError('`exponent` must not be negative');
 
-  base = residue(base, mod);
+  base = residue(base, modulo);
 
-  if (mod === 1n) return 0n;
-  if (base % mod === 1n || base % mod === 0n) return base;
-  if (base === mod - 1n) return power & 1n ? mod - 1n : 1n;
+  if (modulo === 1n) return 0n;
+  if (base % modulo === 1n || base % modulo === 0n) return base;
+  if (base === modulo - 1n) return exponent & 1n ? modulo - 1n : 1n;
 
   let result = 1n;
 
-  while (power > 0n) {
-    if (power & 1n) {
-      result = (result * base) % mod;
+  while (exponent > 0n) {
+    if (exponent & 1n) {
+      result = (result * base) % modulo;
     }
 
-    base = (base * base) % mod;
-    power >>= 1n;
+    base = (base * base) % modulo;
+    exponent >>= 1n;
   }
   return result;
 }
