@@ -1,3 +1,4 @@
+import { __set_name_to_class } from './inner_helpers';
 import { rot32 } from './math';
 
 /** シードなし時の静的初期化定数 */
@@ -64,15 +65,15 @@ export class PCGMinimal {
    *
    * @returns a random 32-bit unsigned integer
    */
-  readonly getRandU32 = () => {
+  getRandU32() {
     this.#bump();
     return this.#value;
-  };
+  }
 
   /**
    * @returns a random 32-bit unsigned integer less than `bound`
    */
-  readonly getBoundedRandU32 = (bound: number) => {
+  getBoundedRandU32(bound: number) {
     /** 32bit 上限 */
     const limit = 0x100000000;
 
@@ -94,7 +95,7 @@ export class PCGMinimal {
     }
 
     throw Error(`exceeded loop limit`);
-  };
+  }
 
   /**
    *
@@ -115,7 +116,7 @@ export class PCGMinimal {
     }
   }
 
-  readonly stream = (byteLen: number) => {
+  stream(byteLen: number): ReadableStream<Uint8Array<ArrayBuffer>> {
     let id: ReturnType<typeof setTimeout>;
     let rest = byteLen;
     return new ReadableStream<Uint8Array<ArrayBuffer>>(
@@ -143,9 +144,7 @@ export class PCGMinimal {
       },
       new ByteLengthQueuingStrategy({ highWaterMark: 1024 }),
     );
-  };
+  }
 }
 
-Object.defineProperty(PCGMinimal.prototype, Symbol.toStringTag, {
-  value: NAME,
-});
+__set_name_to_class(PCGMinimal.prototype, NAME);

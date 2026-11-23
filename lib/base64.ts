@@ -32,6 +32,10 @@ export function toBase64(bin: Uint8Array, options: ToBase64Options = {}) {
   return base64;
 }
 
+const FOUR_BITS_PADDING_ALLOWED: readonly string[] = [...'AQgw'];
+const TWO_BITS_PADDING_ALLOWED: readonly string[] =
+  FOUR_BITS_PADDING_ALLOWED.concat([...'EUk0IYo4Mcs8']);
+
 /**
  * Polyfill for `Uint8Array.fromBase64()`
  * @param base64
@@ -46,9 +50,6 @@ export function fromBase64(base64: string, options: FromBase64Options = {}) {
 
   const { alphabet = 'base64', lastChunkHandling = 'loose' } = options;
   const padLen = base64.match(/=+$/)?.[0].length ?? 0;
-  const FOUR_BITS_PADDING_ALLOWED: readonly string[] = [...'AQgw'];
-  const TWO_BITS_PADDING_ALLOWED: readonly string[] =
-    FOUR_BITS_PADDING_ALLOWED.concat([...'EUk0IYo4Mcs8']);
 
   if (padLen !== 0 && padLen !== 1 && padLen !== 2) {
     throw SyntaxError('Invalid padding letter length');

@@ -74,7 +74,9 @@ describe('bailliePSW works well', () => {
   it('Cunningham chain', (ctx) => {
     const chain = [79910197721667870187016101n];
     for (let i = 0; i < 18; i++) {
-      const next = chain[i] * 2n - 1n;
+      const prev = chain.at(-1);
+      if (prev == null) throw TypeError('!');
+      const next = prev * 2n - 1n;
       chain.push(next);
     }
 

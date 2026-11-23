@@ -11,6 +11,7 @@ describe('random performance', () => {
 
   const pcg_f = U.floatRng(() => {
     const [upper, lower] = pcg.genRandU32s(2);
+    if (upper == null || lower == null) throw TypeError('!');
     return (BigInt(upper) << 32n) | BigInt(lower);
   });
 
