@@ -3,6 +3,7 @@
   "compilerOptions": {
     "lib": ["ES2024"],
     "types": ["node"],
+    "rootDir": "./"
   },
   "include": ["vite.config.mts"]
 }

@@ -33,7 +33,7 @@ export default defineConfig(async (env): Promise<UserConfig> => {
   switch (mode) {
     case 'esm': {
       return {
-        plugins: [dts()],
+        plugins: [dts({ tsconfigPath: './tsconfig.app.json' })],
         server: {
           port: 8000,
         },
