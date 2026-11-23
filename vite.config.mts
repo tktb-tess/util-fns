@@ -26,13 +26,12 @@ const fileNames: readonly string[] = [
 
 export default defineConfig(async (env): Promise<UserConfig> => {
   const { mode } = env;
-  if (mode !== 'esm' && mode !== 'iife' && mode !== 'test') {
+  if (mode !== 'esm' && mode !== 'iife') {
     throw Error(`Invalid 'mode' value: ${mode}`);
   }
 
   switch (mode) {
-    case 'esm':
-    case 'test': {
+    case 'esm': {
       return {
         plugins: [dts()],
         server: {

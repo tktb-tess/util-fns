@@ -152,11 +152,12 @@ export function createWorker(
 ) {
   const strMessage = `self.onmessage=${onmessage};`;
   const strError = onerror ? `self.onerror=${onerror};` : '';
-  const workerStr = `(()=>{${strMessage}${strError}})();`.replace(/\s+/g, ' ');
-  const blob = new Blob([workerStr], { type: 'text/javascript;charset=UTF-8' });
-  const burl = URL.createObjectURL(blob);
-  setTimeout(() => URL.revokeObjectURL(burl), 1000 * 60);
-  return new Worker(burl);
+  const workerStr = `(()=>{${strMessage}${strError}})();`.replace(
+    /\s+/g,
+    '\x20',
+  );
+  const dataUrl = `data:text/javascript;charset=utf-8,${encodeURIComponent(workerStr)}`;
+  return new Worker(dataUrl);
 }
 
 export function createArrayLike<T>(length: number, fill?: T) {
