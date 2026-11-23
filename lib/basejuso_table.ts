@@ -58,12 +58,12 @@ function genTable() {
   return [eta, dta] as const;
 }
 
-export function getETable() {
+export function getETable(): EncodeTable {
   tables ??= genTable();
   return tables[0];
 }
 
-export function getDTable() {
+export function getDTable(): DecodeTable {
   tables ??= genTable();
   return tables[1];
 }

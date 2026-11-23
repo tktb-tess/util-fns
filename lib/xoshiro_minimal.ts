@@ -1,3 +1,4 @@
+import { __set_name_to_class } from './inner_helpers';
 import { rot64 } from './math';
 
 const XOSHIRO_INITIAL_STATE = [
@@ -90,10 +91,10 @@ export class XoshiroMinimal {
     return prev;
   };
 
-  readonly getRandU32 = () => {
+  getRandU32() {
     const r = BigInt.asUintN(32, this.getRandU64());
     return Number(r);
-  };
+  }
 
   readonly getBoundedRandU64 = (bound: bigint) => {
     const LIMIT = 1n << 64n;
@@ -119,7 +120,7 @@ export class XoshiroMinimal {
     throw Error('exceeded loop limit');
   };
 
-  readonly getBoundedRandU32 = (bound: number) => {
+  getBoundedRandU32(bound: number) {
     const LIMIT = 2 ** 32;
     if (bound > LIMIT) {
       throw RangeError('`bound` exceeded limit');
@@ -131,7 +132,7 @@ export class XoshiroMinimal {
 
     const r = this.getBoundedRandU64(BigInt(bound));
     return Number(r);
-  };
+  }
 
   *genRandU64s(step: number, bound?: bigint) {
     if (step <= 0) {
@@ -155,7 +156,7 @@ export class XoshiroMinimal {
     }
   }
 
-  readonly stream = (byteLen: number) => {
+  stream(byteLen: number): ReadableStream<Uint8Array<ArrayBuffer>> {
     let id: ReturnType<typeof setTimeout>;
     let rest = byteLen;
     return new ReadableStream<Uint8Array<ArrayBuffer>>(
@@ -183,9 +184,7 @@ export class XoshiroMinimal {
       },
       new ByteLengthQueuingStrategy({ highWaterMark: 1024 }),
     );
-  };
+  }
 }
 
-Object.defineProperty(XoshiroMinimal.prototype, Symbol.toStringTag, {
-  value: NAME,
-});
+__set_name_to_class(XoshiroMinimal.prototype, NAME);

@@ -1,3 +1,5 @@
+import { __set_name_to_class } from './inner_helpers';
+
 interface NamedError<EName extends string> {
   readonly stack?: string;
   readonly message: string;
@@ -17,7 +19,7 @@ class NamedError<EName extends string> extends Error {
     this.name = errName;
   }
 
-  readonly toJSON = () => {
+  toJSON() {
     const cause = (() => {
       const c = this.cause;
       if (c == null) return;
@@ -33,11 +35,9 @@ class NamedError<EName extends string> extends Error {
       stack,
       cause,
     };
-  };
+  }
 }
 
-Object.defineProperty(NamedError.prototype, Symbol.toStringTag, {
-  value: NAME,
-});
+__set_name_to_class(NamedError.prototype, NAME);
 
 export { NamedError };

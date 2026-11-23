@@ -1,26 +1,8 @@
 {
-  "compilerOptions": {
-    "module": "esnext",
-    "target": "es2022",
-    "lib": ["ES2022", "DOM"],
-    "skipLibCheck": true,
-    "types": ["vite/client"],
-    "rootDir": "./lib",
-    "moduleResolution": "bundler",
-    "noEmit": true,
-    "isolatedModules": true,
-    "resolveJsonModule": true,
-    "allowImportingTsExtensions": true,
-    "allowJs": true,
-    "verbatimModuleSyntax": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "erasableSyntaxOnly": true,
-    "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true
-  },
-  "include": ["./lib"]
+  "files": [],
+  "references": [
+    { "path": "tsconfig.app.json" },
+    { "path": "tsconfig.test.json" },
+    { "path": "tsconfig.node.json" },
+  ]
 }

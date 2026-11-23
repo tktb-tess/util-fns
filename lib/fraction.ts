@@ -1,3 +1,4 @@
+import { __set_name_to_class } from './inner_helpers';
 import { exEuclidean } from './math';
 
 export interface RationalData {
@@ -84,69 +85,69 @@ export class Rational {
   /**
    * reduction
    */
-  readonly #reduction = () => {
+  #reduction() {
     const { gcd } = exEuclidean(this.#num, this.#denom);
     if (gcd !== 0n) {
       this.#num /= gcd;
       this.#denom /= gcd;
     }
-  };
+  }
 
   /**
    *
    * @returns A fraction multiplied by -1
    */
-  readonly minus = () => {
+  minus() {
     return new Rational(-this.#num, this.#denom);
-  };
+  }
 
   /**
    *
    * @returns Inverse of this fraction
    */
-  readonly inverse = () => {
+  inverse() {
     return new Rational(this.#denom, this.#num);
-  };
+  }
 
   /**
    *
    * @param right
    * @returns `this + right`
    */
-  readonly add = (right: Rational) => {
+  add(right: Rational) {
     const denom = this.#denom * right.#denom;
     const num = this.#num * right.#denom + right.#num * this.#denom;
     return new Rational(num, denom);
-  };
+  }
 
   /**
    *
    * @param right
    * @returns `this - right`
    */
-  readonly substr = (right: Rational) => {
+  substr(right: Rational) {
     return this.add(right.minus());
-  };
+  }
 
   /**
    *
    * @param right
    * @returns `this * right`
    */
-  readonly multiply = (right: Rational) => {
+  multiply(right: Rational) {
     const denom = this.#denom * right.#denom;
     const num = this.#num * right.#num;
     return new Rational(num, denom);
-  };
+  }
 
   /**
    *
    * @param right
    * @returns `this / right`
    */
-  readonly divide = (right: Rational) => {
+  divide(right: Rational) {
     return this.multiply(right.inverse());
-  };
+  }
 
   /**
    * Returns mediant
@@ -154,25 +155,25 @@ export class Rational {
    * @param right `c / d`
    * @returns `(a + c) / (b + d)`
    */
-  readonly mediant = (right: Rational) => {
+  mediant(right: Rational) {
     const denom = this.#denom + right.#denom;
     const num = this.#num + right.#num;
     return new Rational(num, denom);
-  };
+  }
 
   /**
    * Returns `number` type decimal
    * @returns decimal
    */
-  readonly toDecimal = () => {
+  toDecimal() {
     return Number(this.#num) / Number(this.#denom);
-  };
+  }
 
   /**
    * returns `'numerator/denominator'`
    * @returns string form
    */
-  readonly toString = () => {
+  toString() {
     if (this.#num === 0n && this.#denom === 0n) {
       return `NaN`;
     } else if (this.#num === 0n) {
@@ -184,18 +185,18 @@ export class Rational {
     } else {
       return `${this.#num}/${this.#denom}`;
     }
-  };
+  }
 
-  readonly valueOf = () => {
+  valueOf() {
     return this.toDecimal();
-  };
+  }
 
-  readonly toJSON = (): RationalData => {
+  toJSON(): RationalData {
     return {
       type: 'Rational',
       value: ['0x' + this.#num.toString(16), '0x' + this.#denom.toString(16)],
     };
-  };
+  }
 
   /**
    * makes instance from RationalData
@@ -232,6 +233,4 @@ export class Rational {
   }
 }
 
-Object.defineProperty(Rational.prototype, Symbol.toStringTag, {
-  value: NAME,
-});
+__set_name_to_class(Rational.prototype, NAME);

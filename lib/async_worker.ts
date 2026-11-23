@@ -4,6 +4,7 @@ import type {
   ID,
   WorkerMessage,
 } from './async_worker_type';
+import { __set_name_to_class } from './inner_helpers';
 
 const NAME = 'AsyncWorker';
 
@@ -30,10 +31,10 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
    * @param message
    * @param options
    */
-  readonly postMessage = (
+  postMessage(
     message: TPost,
     options?: StructuredSerializeOptions,
-  ) => {
+  ): Promise<TRecv> {
     return new Promise<TRecv>((resolve, reject) => {
       const id = getId();
       const controller = new AbortController();
@@ -67,10 +68,7 @@ export class AsyncWorker<TPost = unknown, TRecv = unknown> {
 
       this.#worker.postMessage(msg, options);
     });
-  };
+  }
 }
 
-Object.defineProperty(AsyncWorker.prototype, Symbol.toStringTag, {
-  value: NAME,
-  enumerable: true,
-});
+__set_name_to_class(AsyncWorker.prototype, NAME);
